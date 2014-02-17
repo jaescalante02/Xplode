@@ -16,6 +16,8 @@
 namespace Xplode {
 	class FlexScanner : public yyFlexLexer {
 		public:
+
+                        FlexScanner(std::istream* fp){switch_streams(fp, 0); }
 			// save the pointer to yylval so we can change it, and invoke scanner
 			int yylex(Xplode::BisonParser::semantic_type * lval) { yylval = lval; return yylex(); }
 		
