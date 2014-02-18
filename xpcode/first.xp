@@ -1,0 +1,38 @@
+program
+
+type human{
+
+    int peso;
+    float tamano;
+
+}
+
+function void firstfunction(){
+
+    print("Este es el primer programa en Xplode!.");
+
+}
+
+type animal{
+
+    string familia;
+    string color;
+
+
+}
+
+union ser{
+
+    animal a;
+    human h;
+
+}
+
+begin
+
+    int a;
+
+    firstfunction();
+
+end
+
