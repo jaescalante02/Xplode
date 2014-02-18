@@ -52,6 +52,7 @@
 %token x_ELSE
 %token x_CASE
 %token x_TYPE
+%token x_UNION
 
 //Single characters
 %token x_LPAR
@@ -62,7 +63,7 @@
 %token x_RBRACE
 %token x_SEMICOLON
 %token x_COMMA
-
+%token x_DOT
 
 //Operators
 %token x_PLUS
@@ -94,6 +95,7 @@ testRule
 	| x_END testRule { $$ = $1; }
 	| x_POWER testRule { printf("found power.\n"); $$ = $1; }
 	| x_MULT testRule { printf("found mult.\n"); $$ = $1; }
+	| x_FOR testRule { printf("found for.\n"); $$ = $1; }
 	| /* empty rule */
 	;	
 

@@ -1,5 +1,5 @@
-               Xplode
-=============================
+#Xplode
+
         Version 1.0
 
 
@@ -71,6 +71,7 @@ Instrucciones
 * return
 * break
 * continue
+* exit
 
 Valores
 -------

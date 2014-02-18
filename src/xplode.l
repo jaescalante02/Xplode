@@ -41,6 +41,7 @@ if { return Xplode::BisonParser::token::x_IF; }
 else { return Xplode::BisonParser::token::x_ELSE; }
 case { return Xplode::BisonParser::token::x_CASE; }
 type { return Xplode::BisonParser::token::x_TYPE; }
+union { return Xplode::BisonParser::token::x_UNION; }
 
 "(" { return Xplode::BisonParser::token::x_LPAR; }
 ")" { return Xplode::BisonParser::token::x_RPAR; }
@@ -50,6 +51,7 @@ type { return Xplode::BisonParser::token::x_TYPE; }
 "}" { return Xplode::BisonParser::token::x_RBRACE; }
 ";" { return Xplode::BisonParser::token::x_SEMICOLON; }
 "," { return Xplode::BisonParser::token::x_COMMA; }
+"." { return Xplode::BisonParser::token::x_DOT; }
 
 "+" { return Xplode::BisonParser::token::x_PLUS; }
 "-" { return Xplode::BisonParser::token::x_MINUS; }
