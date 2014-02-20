@@ -79,7 +79,7 @@
 %token x_OR
 %token x_NOT
 
-
+%token x_NL
 
 %%
 
@@ -96,6 +96,7 @@ testRule
 	| x_POWER testRule { printf("found power.\n"); $$ = $1; }
 	| x_MULT testRule { printf("found mult.\n"); $$ = $1; }
 	| x_FOR testRule { printf("found for.\n"); $$ = $1; }
+	| x_NL testRule { printf("found ENTER.\n"); $$ = $1; }
 	| /* empty rule */
 	;	
 

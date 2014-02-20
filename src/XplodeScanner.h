@@ -25,7 +25,11 @@ namespace Xplode {
 			// Scanning function created by Flex; make this private to force usage
 			// of the overloaded method so we can get a pointer to Bison's yylval
 			int yylex();
-			
+			void LexerError( const char* msg ){
+
+                          std::cout << "Simbolo extrano encontrado '"<< msg<<"'\n";
+
+                        }
 			// point to yylval (provided by Bison in overloaded yylex)
 			Xplode::BisonParser::semantic_type * yylval;
 	};
