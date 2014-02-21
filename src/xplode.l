@@ -66,6 +66,6 @@ union { return Xplode::BisonParser::token::x_UNION; }
 "||" { return Xplode::BisonParser::token::x_OR; }
 "!"  { return Xplode::BisonParser::token::x_NOT; }
 \n   {return Xplode::BisonParser::token::x_NL; }
-.+   {LexerError(yytext);return 0;}
+.+   {LexerError(yytext);}
 
 
