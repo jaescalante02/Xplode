@@ -121,6 +121,94 @@ como manejar rango variables
 
 *** Por completar *** 
 
+*version inicial*
+
+grammar: 
+
+       x_PROGRAM declaraciones main;
+
+declaraciones: 
+
+       // empty
+       | declaraciones declaracion;
+       
+declaracion:
+
+       functions
+       | types
+       | unions;
+
+bloque: // al principio o donde sea? valorar
+
+       declaraciones instrucciones;
+
+instrucciones:
+
+       instrucciones instruccion x_SEMICOLON;
+
+instruccion: 
+
+       | asignacion
+       | condicional
+       | determinada
+       | indeterminada;
+
+asignacion: leftside x_ASSIGN expresion;
+
+leftside: 
+       x_ID
+       | leftside x_DOT x_ID;
+
+expresion:
+
+       x_LPAR expresion x_RPAR
+       | x_NOT expresion
+       | x_MINUS expresion
+       | expresion x_PLUS expresion
+       | expresion x_MINUS expresion
+       | expresion x_MULT expresion
+       | expresion x_DIV expresion
+       | expresion x_POWER expresion
+       | expresion x_ASSIGN expresion
+       | expresion x_EQ expresion
+       | expresion x_NEQ expresion
+       | expresion x_AND expresion
+       | expresion x_OR expresion;
+
+condicional: 
+
+       x_IF expresion x_LBRACE bloque x_RBRACE;
+       | x_IF expresion x_LBRACE bloque x_RBRACE x_ELSE x_LBRACE bloque x_RBRACE;
+
+determinada: x_FOR;
+
+indeterminada: x_WHILE expresion x_LBRACE bloque x_RBRACE;
+
+functions:
+
+       x_FUNCTION tipo x_ID x_LPAR argumentos x_RPAR x_LBRACE bloque x_RBRACE;
+
+tipos: 
+ 
+       x_INT
+       | x_CHAR
+       | x_FLOAT
+       | x_ID
+       | tipos x_LBRACKET x_NUMBER x_RBRACKET;
+
+types:
+
+      x_TYPE x_ID x_LBRACE bloque x_RBRACE;
+
+unions:
+
+      x_UNION x_ID x_LBRACE bloque x_RBRACE;
+
+main:
+
+       x_BEGIN bloque x_END;
+
+
 ##3 Estructura del programa
 
 *** Por completar ***
