@@ -3,6 +3,7 @@
 %defines
 %define namespace "Xplode"
 %define parser_class_name "BisonParser"
+%parse-param { int *program } //int momentaneo, clase por crear 
 %parse-param { Xplode::FlexScanner &scanner }
 %lex-param   { Xplode::FlexScanner &scanner }
 
@@ -84,7 +85,7 @@
 %%
 
 testGrammar 
-  : x_PROGRAM testRule { std::cout <<  $1  << std::endl; }
+  : x_PROGRAM testRule { *program= 12345; } //int momentaneo}
   | testRule 
 
 testRule

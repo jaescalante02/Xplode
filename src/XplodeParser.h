@@ -3,7 +3,7 @@
 namespace Xplode {
 	class Parser {
 		public:
-			Parser(std::istream* fp) : scanner(fp),parser(scanner) {}
+			Parser(int *program, std::istream* fp) : scanner(fp),parser(program,scanner) {}
 		
 			int parse() {
 				return parser.parse();

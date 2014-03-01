@@ -7,10 +7,13 @@
 int main(int argc, char * argv[]) {
 
         std::filebuf fb;
+        int program =0 ; //int momentaneo
         fb.open (argv[1],std::ios::in);
         std::istream is(&fb);
-        Xplode::Parser parser(&is);
-	return parser.parse();
+        Xplode::Parser parser(&program, &is);
+        parser.parse();
+        std::cout << program << std::endl; 
+	return 0;
 
 }
 

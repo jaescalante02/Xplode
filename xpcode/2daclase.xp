@@ -1,0 +1,19 @@
+program
+
+proc TipoPrint(int): void;
+type function TipoPrint(int): void;
+type TipoPrint(int): void;
+proc void TipoPrint(int); //Esta
+type void TipoPrint(int);
+type function void TipoPrint(int);
+
+
+void fun(int j){
+
+int[j] a;
+}
+
+read(j);
+fun(j);
+
+int[j] a;
