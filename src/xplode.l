@@ -18,10 +18,13 @@ program { return Xplode::BisonParser::token::x_PROGRAM; }
 begin { return Xplode::BisonParser::token::x_BEGIN; }
 end { return Xplode::BisonParser::token::x_END; }
 function { return Xplode::BisonParser::token::x_FUNCTION; }
+proc { return Xplode::BisonParser::token::x_PROC; }
 return { return Xplode::BisonParser::token::x_RETURN; }
 break { return Xplode::BisonParser::token::x_BREAK; }
 continue { return Xplode::BisonParser::token::x_CONTINUE; }
 exit { return Xplode::BisonParser::token::x_EXIT; }
+sleep { return Xplode::BisonParser::token::x_SLEEP; }
+
 
 int { return Xplode::BisonParser::token::x_INT; }
 char { return Xplode::BisonParser::token::x_CHAR; }
@@ -58,6 +61,8 @@ union { return Xplode::BisonParser::token::x_UNION; }
 "*" { return Xplode::BisonParser::token::x_MULT; }
 "/" { return Xplode::BisonParser::token::x_DIV; }
 "**" { return Xplode::BisonParser::token::x_POWER; }
+
+"..." { return Xplode::BisonParser::token::x_EXTEND;}
 
 ":=" { return Xplode::BisonParser::token::x_ASSIGN; }
 "==" { return Xplode::BisonParser::token::x_EQ; }

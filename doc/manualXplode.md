@@ -134,8 +134,9 @@ declaraciones:
        
 declaracion:
 
-       functions
+       decl_functions
        | types
+       | decl_procs;
        | unions;
 
 bloque: // al principio o donde sea? valorar
@@ -144,14 +145,15 @@ bloque: // al principio o donde sea? valorar
 
 instrucciones:
 
-       instrucciones instruccion x_SEMICOLON;
+       instrucciones instruccion;
 
 instruccion: 
 
        | asignacion
        | condicional
        | determinada
-       | indeterminada;
+       | indeterminada
+       | x_EXIT x_SEMICOLON;
 
 asignacion: leftside x_ASSIGN expresion;
 
@@ -175,18 +177,30 @@ expresion:
        | expresion x_AND expresion
        | expresion x_OR expresion;
 
-condicional: 
+condicional: //conversar sobre poner el elif de nuevo
 
        x_IF expresion x_LBRACE bloque x_RBRACE;
        | x_IF expresion x_LBRACE bloque x_RBRACE x_ELSE x_LBRACE bloque x_RBRACE;
 
-determinada: x_FOR;
+determinada: x_FOR x_LPAR expresion x_COMMA expresion x_COMMA expresion x_RPAR x_LBRACE bloque x_RBRACE;
 
 indeterminada: x_WHILE expresion x_LBRACE bloque x_RBRACE;
 
-functions:
+decl_functions:
 
        x_FUNCTION tipo x_ID x_LPAR argumentos x_RPAR x_LBRACE bloque x_RBRACE;
+
+decl_procs:
+
+      x_PROC tipo x_ID x_LPAR tipos_proc x_RPAR;
+
+tipos_proc:
+  
+     | list_tipos_proc tipo;
+
+list_tipos_proc:
+
+     | list_tipos_proc tipo x_COMMA;
 
 tipos: 
  
@@ -198,11 +212,17 @@ tipos:
 
 types:
 
-      x_TYPE x_ID x_LBRACE bloque x_RBRACE;
+      x_TYPE x_ID x_LBRACE atributos x_RBRACE;
 
 unions:
 
-      x_UNION x_ID x_LBRACE bloque x_RBRACE;
+      x_UNION x_ID x_LBRACE atributos x_RBRACE;
+
+atributos: 
+
+      tipo x_ID x_SEMICOLON
+      | atributos tipo x_ID x_SEMICOLON; 
+
 
 main:
 

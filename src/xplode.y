@@ -82,11 +82,15 @@
 
 %token x_NL
 
+%token x_EXTEND
+%token x_PROC
+%token x_SLEEP
+
 %%
 
 testGrammar 
   : x_PROGRAM testRule { *program= 12345; } //int momentaneo}
-  | testRule 
+  | testRule ;
 
 testRule
   : 
