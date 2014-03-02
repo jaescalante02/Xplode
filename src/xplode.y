@@ -6,7 +6,11 @@
 %parse-param { int *program } //int momentaneo, clase por crear 
 %parse-param { Xplode::FlexScanner &scanner }
 %lex-param   { Xplode::FlexScanner &scanner }
+%union {
 
+Token *tok;
+
+}
 
 %code requires {
 	// Forward-declare the Scanner class; the Parser needs to be assigned a 
@@ -15,6 +19,7 @@
 		class FlexScanner;
 	}
 	#include <stdio.h>
+	#include "Token.h"
 }
 
 %code {
@@ -22,7 +27,7 @@
 	static int yylex(Xplode::BisonParser::semantic_type * yylval, Xplode::FlexScanner &scanner);
 }
 
-%token INTEGER
+%token<tok> INTEGER
 %token FLOAT
 
 //Reserved words
@@ -71,7 +76,7 @@
 %token x_MINUS
 %token x_MULT
 %token x_DIV
-%token x_POWER
+%token<tok> x_POWER
 
 %token x_ASSIGN
 %token x_EQ
@@ -94,14 +99,14 @@ testGrammar
 
 testRule
   : 
-	| INTEGER testRule { $$ = $1; }
-	| FLOAT testRule { $$ = $1; }
-	| x_BEGIN testRule { $$ = $1; }
-	| x_END testRule { $$ = $1; }
-	| x_POWER testRule { printf("found power.\n"); $$ = $1; }
-	| x_MULT testRule { printf("found mult.\n"); $$ = $1; }
-	| x_FOR testRule { printf("found for.\n"); $$ = $1; }
-	| x_NL testRule { printf("found ENTER.\n"); $$ = $1; }
+	| INTEGER testRule {  std::cout<< "found int. val=" << $1->value << " linea=" << $1->line << std::endl;  }
+	| FLOAT testRule {  }
+	| x_BEGIN testRule {  }
+	| x_END testRule {  }
+	| x_POWER testRule { std::cout<< "found power. val=" << $1->value << " linea=" << $1->line << std::endl;  }
+	| x_MULT testRule { printf("found mult.\n");  }
+	| x_FOR testRule { printf("found for.\n"); }
+	| x_NL testRule { printf("found ENTER.\n");}
 	| /* empty rule */
 	;	
 

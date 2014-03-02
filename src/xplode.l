@@ -8,69 +8,72 @@
 DIGIT    [0-9]
 ID       [a-z][a-z0-9]*
 
+
+%option yylineno
+
 %%
 
-{DIGIT}+  { *yylval = atoi(yytext); printf("found integer.\n");return Xplode::BisonParser::token::INTEGER; }
-({DIGIT}+).({DIGIT}+)  { *yylval = atof(yytext); printf("found float number.\n");return Xplode::BisonParser::token::FLOAT; }
+{DIGIT}+  { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::INTEGER; }
+({DIGIT}+).({DIGIT}+)  { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::FLOAT; }
 
 
-program { return Xplode::BisonParser::token::x_PROGRAM; }
-begin { return Xplode::BisonParser::token::x_BEGIN; }
-end { return Xplode::BisonParser::token::x_END; }
-function { return Xplode::BisonParser::token::x_FUNCTION; }
-proc { return Xplode::BisonParser::token::x_PROC; }
-return { return Xplode::BisonParser::token::x_RETURN; }
-break { return Xplode::BisonParser::token::x_BREAK; }
-continue { return Xplode::BisonParser::token::x_CONTINUE; }
-exit { return Xplode::BisonParser::token::x_EXIT; }
-sleep { return Xplode::BisonParser::token::x_SLEEP; }
+program { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PROGRAM; }
+begin { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_BEGIN; }
+end { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_END; }
+function { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_FUNCTION; }
+proc { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PROC; }
+return { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_RETURN; }
+break { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_BREAK; }
+continue { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_CONTINUE; }
+exit { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_EXIT; }
+sleep { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_SLEEP; }
 
 
-int { return Xplode::BisonParser::token::x_INT; }
-char { return Xplode::BisonParser::token::x_CHAR; }
-bool { return Xplode::BisonParser::token::x_BOOL; }
-float { return Xplode::BisonParser::token::x_FLOAT; }
-void { return Xplode::BisonParser::token::x_VOID; }
+int { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_INT; }
+char { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_CHAR; }
+bool { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_BOOL; }
+float { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_FLOAT; }
+void { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_VOID; }
 
-true { return Xplode::BisonParser::token::x_TRUE; }
-false { return Xplode::BisonParser::token::x_FALSE; }
+true { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_TRUE; }
+false { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_FALSE; }
 
-write { return Xplode::BisonParser::token::x_WRITE; }
-read { return Xplode::BisonParser::token::x_READ; }
+write { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_WRITE; }
+read { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_READ; }
 
-for { return Xplode::BisonParser::token::x_FOR; }
-while { return Xplode::BisonParser::token::x_WHILE; }
-if { return Xplode::BisonParser::token::x_IF; }
-else { return Xplode::BisonParser::token::x_ELSE; }
-case { return Xplode::BisonParser::token::x_CASE; }
-type { return Xplode::BisonParser::token::x_TYPE; }
-union { return Xplode::BisonParser::token::x_UNION; }
+for { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_FOR; }
+while { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_WHILE; }
+if { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_IF; }
+else { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_ELSE; }
+case { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_CASE; }
+type { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_TYPE; }
+union { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_UNION; }
 
-"(" { return Xplode::BisonParser::token::x_LPAR; }
-")" { return Xplode::BisonParser::token::x_RPAR; }
-"[" { return Xplode::BisonParser::token::x_LBRACKET; }
-"]" { return Xplode::BisonParser::token::x_RBRACKET; }
-"{" { return Xplode::BisonParser::token::x_LBRACE; }
-"}" { return Xplode::BisonParser::token::x_RBRACE; }
-";" { return Xplode::BisonParser::token::x_SEMICOLON; }
-"," { return Xplode::BisonParser::token::x_COMMA; }
-"." { return Xplode::BisonParser::token::x_DOT; }
+"(" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_LPAR; }
+")" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_RPAR; }
+"[" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_LBRACKET; }
+"]" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_RBRACKET; }
+"{" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_LBRACE; }
+"}" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_RBRACE; }
+";" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_SEMICOLON; }
+"," { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_COMMA; }
+"." { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_DOT; }
 
-"+" { return Xplode::BisonParser::token::x_PLUS; }
-"-" { return Xplode::BisonParser::token::x_MINUS; }
-"*" { return Xplode::BisonParser::token::x_MULT; }
-"/" { return Xplode::BisonParser::token::x_DIV; }
-"**" { return Xplode::BisonParser::token::x_POWER; }
+"+" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PLUS; }
+"-" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_MINUS; }
+"*" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_MULT; }
+"/" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_DIV; }
+"**" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_POWER; }
 
-"..." { return Xplode::BisonParser::token::x_EXTEND;}
+"..." { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_EXTEND;}
 
-":=" { return Xplode::BisonParser::token::x_ASSIGN; }
-"==" { return Xplode::BisonParser::token::x_EQ; }
-"!=" { return Xplode::BisonParser::token::x_NEQ; }
-"&&" { return Xplode::BisonParser::token::x_AND; }
-"||" { return Xplode::BisonParser::token::x_OR; }
-"!"  { return Xplode::BisonParser::token::x_NOT; }
-\n   {return Xplode::BisonParser::token::x_NL; }
+":=" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_ASSIGN; }
+"==" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_EQ; }
+"!=" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_NEQ; }
+"&&" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_AND; }
+"||" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_OR; }
+"!"  { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_NOT; }
+\n   { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_NL; }
 .+   {LexerError(yytext);}
 
 
