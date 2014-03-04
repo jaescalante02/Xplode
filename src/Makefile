@@ -1,5 +1,5 @@
 all:
-	bison xplode.y
+	bison xplode.y -v
 	flex xplode.l
 	g++ lex.yy.cc Main.cpp xplode.tab.c -o xplode
 	
