@@ -13,7 +13,14 @@ int main(int argc, char * argv[]) {
         int program =0 ; //int momentaneo
         fb.open (argv[1],std::ios::in);
         std::istream is(&fb);
-        Xplode::Parser parser(&program, &is);
+	Xplode::FlexScanner *scanner;
+        int a=0;
+        if(argc<=2) a=1;
+        else a=atoi(argv[2]);
+        if (a==1) scanner = new Xplode::ClassicScanner(&is);
+        else scanner = new Xplode::XplodeScanner(&is);
+
+        Xplode::Parser parser(&program,scanner);
         parser.parse();
         std::cout << program << std::endl; 
 	return 0;

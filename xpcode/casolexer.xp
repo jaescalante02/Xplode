@@ -1,3 +1,5 @@
 program        begin
 
+a:=9;
+
 end

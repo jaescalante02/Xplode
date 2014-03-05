@@ -12,7 +12,7 @@
 %option nodefault yyclass="Xplode::ClassicScanner" noyywrap c++
 
 DIGIT    [0-9]
-ID       [a-z][a-z0-9]*
+ID       [a-zA-Z][a-zA-Z0-9]*
 
 
 %option yylineno
@@ -26,7 +26,7 @@ ID       [a-z][a-z0-9]*
 
 
 [ \t\r\x20]+  {std::cout<< "found space\n"; }  // ignore all whitespace
-explotion { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PROGRAM; }
+program { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PROGRAM; }
 begin { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_BEGIN; }
 end { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_END; }
 function { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_FUNCTION; }
@@ -83,6 +83,15 @@ union { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser
 "||" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_OR; }
 "!"  { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_NOT; }
 \n   { std::cout<< "found enter\n";  }
+
+"<"  { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_LESS; }
+"<=" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_LESSEQ; }
+">" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_GREATER; }
+">=" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_GREATEREQ; }
+
+{ID} { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_ID; }
+
+
 
 
 %%

@@ -1,4 +1,5 @@
 PROGRAM   BEGIN
 
+a:=9;
 
 END
