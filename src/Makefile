@@ -8,11 +8,11 @@ bis: xplode.y
 	bison -v xplode.y
 
 fle: classic.l xplode.l
-	flex classic.l
-	flex xplode.l
+	flex -i classic.l
+	flex -i xplode.l
 
 clean:
 	rm -rf xplode.tab.c xplode.tab.h location.hh position.hh stack.hh
 	rm -rf lex.xp.cc lex.cl.cc
-	rm -rf xplode FlexScanner.o 
+	rm -rf xplode FlexScanner.o xplode.output
 	rm -rf *~
