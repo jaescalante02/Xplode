@@ -1,7 +1,10 @@
-#include "XplodeScanner.h"
-#include "XplodeParser.h"
 #include <iostream>     // std::ios, std::istream, std::cout
 #include <fstream> 
+
+#include "XplodeScanner.h"
+#include "ClassicScanner.h"
+#include "XplodeParser.h"
+#include "FlexScanner.h"
 
 // Entry Point
 int main(int argc, char * argv[]) {

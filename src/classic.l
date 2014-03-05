@@ -1,25 +1,23 @@
 %{
 
-
-#ifndef XP_FLEX_LEXER
-#define XP_FLEX_LEXER
+#ifndef CL_FLEX_LEXER
+#define CL_FLEX_LEXER
 #endif
 
-#include "XplodeScanner.h"
+#include "ClassicScanner.h"
 #include <math.h>
-
 
 %}
 
-%option nodefault yyclass="Xplode::XplodeScanner" noyywrap c++
+%option nodefault yyclass="Xplode::ClassicScanner" noyywrap c++
 
 DIGIT    [0-9]
-ID       [a-zA-Z][a-zA-Z0-9]*
+ID       [a-z][a-z0-9]*
 
 
 %option yylineno
 
-%option prefix="xp"
+%option prefix="cl"
 
 %%
 
@@ -28,7 +26,7 @@ ID       [a-zA-Z][a-zA-Z0-9]*
 
 
 [ \t\r\x20]+  {std::cout<< "found space\n"; }  // ignore all whitespace
-"program" { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PROGRAM; }
+explotion { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_PROGRAM; }
 begin { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_BEGIN; }
 end { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_END; }
 function { (*yylval).tok = new Token(yylineno,0,yytext); return Xplode::BisonParser::token::x_FUNCTION; }

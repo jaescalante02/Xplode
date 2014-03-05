@@ -1,22 +1,24 @@
 #pragma once
 
-#ifndef XP_FLEX_LEXER
-#define yyFlexLexer xpFlexLexer
+#ifndef CL_FLEX_LEXER
+#define yyFlexLexer clFlexLexer
 #include <FlexLexer.h>
+#define CL_FLEX_LEXER
 #endif
 
 // Override the interface for yylex since we namespaced it
+
 
 // Include Bison for types / tokens
 #include "xplode.tab.h"
 #include "FlexScanner.h"
 
 namespace Xplode {
-	class XplodeScanner : public xpFlexLexer, public FlexScanner {
+	class ClassicScanner : public clFlexLexer, public FlexScanner {
 		public:
 
-                        XplodeScanner();
-                        XplodeScanner(std::istream* fp){ switch_streams(fp, 0); }
+                        ClassicScanner();
+                        ClassicScanner(std::istream* fp){ switch_streams(fp, 0); }
 			// save the pointer to yylval so we can change it, and invoke scanner
 			int yylex(Xplode::BisonParser::semantic_type * lval) { yylval = lval; return yylex(); }
 		

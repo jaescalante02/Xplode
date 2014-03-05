@@ -27,8 +27,6 @@ Token *tok;
 	static int yylex(Xplode::BisonParser::semantic_type * yylval, Xplode::FlexScanner &scanner);
 }
 
-
-
 %token<tok> INTEGER
 %token FLOAT
 
@@ -110,13 +108,13 @@ Token *tok;
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { std::cout << "I'm a very basic program\n"; }
+  : x_PROGRAM main { std::cout << "I'm a very basic program\n"; *program=12345; }
   | x_PROGRAM definition_list main { std::cout << "I've got at least a definition \n"; }
   ;
 
 main
   : x_BEGIN statement_list x_END
-  | x_BEGIN declaration_list statement_list x_END
+  | x_BEGIN declaration_list statement_list x_END;
   
 
 definition_list
@@ -188,8 +186,9 @@ declaration_list
   ;
   
 statement_list
-  : statement x_SEMICOLON
-  | statement_list statement x_SEMICOLON 
+  : 
+  | statement x_SEMICOLON
+  | statement_list statement x_SEMICOLON ;
 
 //statements
 statement
