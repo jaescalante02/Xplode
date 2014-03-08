@@ -7,9 +7,7 @@
 %parse-param { Xplode::FlexScanner &scanner }
 %lex-param   { Xplode::FlexScanner &scanner }
 %union {
-
-Token *tok;
-
+  Token *tok;
 }
 
 %code requires {
@@ -27,73 +25,74 @@ Token *tok;
 	static int yylex(Xplode::BisonParser::semantic_type * yylval, Xplode::FlexScanner &scanner);
 }
 
-%token<tok> INTEGER
-%token FLOAT
+%token<tok><tok> INTEGER
+%token<tok> FLOAT
 
 //Reserved words
-%token x_PROGRAM
-%token x_BEGIN
-%token x_END
-%token x_FUNCTION
-%token x_RETURN
-%token x_BREAK
-%token x_CONTINUE
-%token x_EXIT
+%token<tok><tok> x_PROGRAM
+%token<tok> x_BEGIN
+%token<tok> x_END
+%token<tok> x_FUNCTION
+%token<tok> x_RETURN
+%token<tok> x_BREAK
+%token<tok> x_CONTINUE
+%token<tok> x_EXIT
 
-%token x_ID
-%token x_INT
-%token x_CHAR
-%token x_BOOL
-%token x_FLOAT
-%token x_VOID
+%token<tok> x_ID
+%token<tok> x_INT
+%token<tok> x_CHAR
+%token<tok> x_BOOL
+%token<tok> x_FLOAT
+%token<tok> x_VOID
 
-%token x_TRUE
-%token x_FALSE
+%token<tok> x_TRUE
+%token<tok> x_FALSE
 
-%token x_WRITE
-%token x_READ
+%token<tok> x_WRITE
+%token<tok> x_READ
 
-%token x_FOR
-%token x_WHILE
-%token x_IF
-%token x_ELSE
-%token x_CASE
-%token x_TYPE
-%token x_UNION
+%token<tok> x_FOR
+%token<tok> x_WHILE
+%token<tok> x_IF
+%token<tok> x_ELSE
+%token<tok> x_CASE
+%token<tok> x_TYPE
+%token<tok> x_UNION
 
 //Single characters
-%token x_LPAR
-%token x_RPAR
-%token x_LBRACKET
-%token x_RBRACKET
-%token x_LBRACE
-%token x_RBRACE
-%token x_SEMICOLON
-%token x_COMMA
-%token x_DOT
+%token<tok> x_LPAR
+%token<tok> x_RPAR
+%token<tok> x_LBRACKET
+%token<tok> x_RBRACKET
+%token<tok> x_LBRACE
+%token<tok> x_RBRACE
+%token<tok> x_SEMICOLON
+%token<tok> x_COMMA
+%token<tok> x_DOT
 
 //Operators
-%token x_PLUS
-%token x_MINUS
-%token x_MULT
-%token x_DIV
-%token<tok> x_POWER
+%token<tok> x_PLUS
+%token<tok> x_MINUS
+%token<tok> x_MULT
+%token<tok> x_DIV
+%token<tok><tok> x_POWER
 
-%token x_ASSIGN
-%token x_EQ
-%token x_NEQ
-%token x_AND
-%token x_OR
-%token x_NOT
+%token<tok> x_ASSIGN
+%token<tok> x_EQ
+%token<tok> x_NEQ
+%token<tok> x_AND
+%token<tok> x_OR
+%token<tok> x_NOT
 
-%token x_LESS
-%token x_LESSEQ
-%token x_GREATER
-%token x_GREATEREQ
+%token<tok> x_LESS
+%token<tok> x_LESSEQ
+%token<tok> x_GREATER
+%token<tok> x_GREATEREQ
 
-%token x_EXTEND
-%token x_PROC
-%token x_SLEEP
+%token<tok> x_EXTEND
+%token<tok> x_PROC
+%token<tok> x_SLEEP
+
 
 //Precedence and associativity
 %nonassoc x_EQ x_NEQ
@@ -108,7 +107,7 @@ Token *tok;
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { std::cout << "I'm a very basic program\n"; *program=12345; }
+  : x_PROGRAM main { std::cout  << "I'm a very basic program\n";  }
   | x_PROGRAM definition_list main { std::cout << "I've got at least a definition \n"; }
   ;
 
@@ -129,7 +128,7 @@ definition
   ;
 
 def_union
-  :   x_UNION x_ID x_LBRACE attributes x_RBRACE {std::cout << "I'm a basic union";}
+  :   x_UNION x_ID x_LBRACE attributes x_RBRACE
   ;
 
 def_type 
@@ -324,8 +323,13 @@ function_arguments
 %%
 
 // We have to implement the error function
+
+extern int line,column;  
+extern std::string tok;
+ 
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
-	std::cerr << "Error: " << msg << std::endl;
+	std::cerr << "Error de sintaxis en linea " << line << ", columna " << column << ": token "
+	<< "\'" << tok << "\' inesperado.\n"; 
 }
 
 // Now that we have the Parser declared, we can declare the Scanner and implement
