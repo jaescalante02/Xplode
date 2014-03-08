@@ -1,0 +1,7 @@
+program
+union test2 {
+  int zys;
+  float jks;
+}
+begin **
+end
