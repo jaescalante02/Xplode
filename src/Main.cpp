@@ -6,6 +6,11 @@
 #include "XplodeParser.h"
 #include "FlexScanner.h"
 
+
+int line = 1;
+int column = 1;
+std::string tok;
+ 
 // Entry Point
 int main(int argc, char * argv[]) {
 

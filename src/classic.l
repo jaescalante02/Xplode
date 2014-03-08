@@ -8,9 +8,8 @@
 #include <math.h>
 #include <string>
 
-int line = 1;
-int column = 1;
-std::string tok; 
+extern int line,column;
+extern std::string tok; 
 
 #define UPDATE_LOC column += yyleng
 #define SAVE_TOK (*yylval).tok = new Token(line,column,yytext); tok = yytext
@@ -21,7 +20,6 @@ std::string tok;
 
 DIGIT    [0-9]
 ID       [a-zA-Z][a-zA-Z0-9]*
-
 
 
 %option yylineno
