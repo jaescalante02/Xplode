@@ -25,11 +25,12 @@
 	static int yylex(Xplode::BisonParser::semantic_type * yylval, Xplode::FlexScanner &scanner);
 }
 
-%token<tok><tok> INTEGER
+%token<tok> INTEGER
 %token<tok> FLOAT
+%token<tok> STRING
 
 //Reserved words
-%token<tok><tok> x_PROGRAM
+%token<tok> x_PROGRAM
 %token<tok> x_BEGIN
 %token<tok> x_END
 %token<tok> x_FUNCTION
@@ -107,8 +108,8 @@
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { std::cout  << "I'm a very basic program\n";  }
-  | x_PROGRAM definition_list main { std::cout << "I've got at least a definition \n"; }
+  : x_PROGRAM main { std::cout  << "I'm a very basic program\n"; *program=12345;  }
+  | x_PROGRAM definition_list main { std::cout << "I've got at least a definition \n"; *program=12345; }
   ;
 
 main
