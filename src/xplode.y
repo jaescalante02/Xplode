@@ -8,6 +8,8 @@
 %lex-param   { Xplode::FlexScanner &scanner }
 %union {
   Token *tok;
+  Node *node; //Node from the AST
+  NodeList *nodelist;
 }
 
 %code requires {
@@ -18,6 +20,7 @@
 	}
 	#include <stdio.h>
 	#include "Token.h"
+	#include "ast.h"
 }
 
 %code {
@@ -104,6 +107,15 @@
 %left x_POWER
 %left	x_UMINUS
 
+
+//Types for non-terminals
+%type <node> def_union
+%type <nodelist> declaration_list 
+
+
+//
+%type <tok> type 
+
 %%
 
 // Grammar for classic version
@@ -114,7 +126,8 @@ start
 
 main
   : x_BEGIN statement_list x_END
-  | x_BEGIN declaration_list statement_list x_END;
+  | x_BEGIN declaration_list statement_list x_END {$2->print();}
+  ;
   
 
 definition_list
@@ -129,16 +142,16 @@ definition
   ;
 
 def_union
-  :   x_UNION x_ID x_LBRACE attributes x_RBRACE
+  :   x_UNION x_ID x_LBRACE attribute_list x_RBRACE { Union unionDef($2->value); unionDef.print(); }
   ;
 
 def_type 
-  :   x_TYPE x_ID x_LBRACE attributes x_RBRACE
+  :   x_TYPE x_ID x_LBRACE attribute_list x_RBRACE
   ; 
 
-attributes
+attribute_list
   : type x_ID x_SEMICOLON
-  | attributes type x_ID x_SEMICOLON
+  | attribute_list type x_ID x_SEMICOLON
   ;
 
 //Used for second class functions
@@ -167,22 +180,29 @@ function_parameters
   ;
 
 type 
-  :  x_INT
-  | x_CHAR
-  | x_FLOAT
+  :  x_INT {$$ = $1; }
+  | x_CHAR {$$ = $1; } 
+  | x_FLOAT {$$ = $1; }
 //  | x_ID
   | type x_LBRACKET INTEGER x_RBRACKET
   ;     
 
 
 block 
-  : x_LBRACE declaration_list statement_list x_RBRACE
+  : x_LBRACE declaration_list statement_list x_RBRACE 
   | x_LBRACE statement_list x_RBRACE
   ;
 
 declaration_list
-  : type x_ID x_SEMICOLON
-  | declaration_list type x_ID x_SEMICOLON
+  : type x_ID x_SEMICOLON { 
+    $$ = new NodeList();
+    $$->add(new Declaration($1->value, $2->value));  
+  }
+  
+  | declaration_list type x_ID x_SEMICOLON {
+    $1->add(new Declaration($2->value, $3->value));
+    $$ = $1;
+  }
   ;
   
 statement_list
@@ -311,6 +331,7 @@ variable
 variable_id
   : x_ID 
   | variable_id x_DOT x_ID
+  ;
 
 function
   : x_ID x_LPAR function_arguments x_RPAR

@@ -1,0 +1,13 @@
+program
+union abc {
+  int y;
+  float z;
+}
+function void suma (int a){
+}
+begin
+int y;
+float w;
+int abd;
+read(y);
+end
