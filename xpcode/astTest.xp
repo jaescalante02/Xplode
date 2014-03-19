@@ -1,13 +1,27 @@
 program
-union abc {
-  int y;
-  float z;
+
+type person{
+  float height;
+  int id;
 }
+
+proc int MenorQue(int,int);
+
+function void doSomething(int a, int d, float c, ...){
+}
+
+union abc {
+  int x;
+  float y;
+  char z;
+}
+
 function void suma (int a){
 }
+
 begin
-int y;
-float w;
-int abd;
-read(y);
+  int y;
+  float w;
+  int abd;
+  read(y);
 end

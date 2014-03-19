@@ -109,74 +109,124 @@
 
 
 //Types for non-terminals
+
+%type <node> definition
 %type <node> def_union
-%type <nodelist> declaration_list 
+%type <node> def_type
+%type <node> def_proc
+%type <node> def_function
+
+
+%type <nodelist> definition_list
+%type <nodelist> declaration_list
+%type <nodelist> attribute_list
+%type <nodelist> proc_type_list
+%type <nodelist> function_parameters
 
 
 //
-%type <tok> type 
+%type <tok> type
+%type <tok> function_type 
 
 %%
 
 // Grammar for classic version
 start
   : x_PROGRAM main { std::cout  << "I'm a very basic program\n"; *program=12345;  }
-  | x_PROGRAM definition_list main { std::cout << "I've got at least a definition \n"; *program=12345; }
+  | x_PROGRAM definition_list main { $2->print(); std::cout << "I've got at least a definition \n"; *program=12345; }
   ;
 
 main
   : x_BEGIN statement_list x_END
-  | x_BEGIN declaration_list statement_list x_END {$2->print();}
+  | x_BEGIN declaration_list statement_list x_END { }
   ;
   
 
 definition_list
-  : definition
-  | definition_list definition
+  : definition { 
+    $$ = new NodeList();
+    $$->push($1);  
+  }
+  | definition_list definition {
+    $1->push($2);
+    $$ = $1;
+  }
   ;
 definition
-  : def_union
-  | def_proc 
-  | def_type 
-  | def_function
+  : def_union { $$ = $1; }
+  | def_proc { $$ = $1; }
+  | def_type { $$ = $1; }
+  | def_function {$$ = $1; }
   ;
 
 def_union
-  :   x_UNION x_ID x_LBRACE attribute_list x_RBRACE { Union unionDef($2->value); unionDef.print(); }
+  : x_UNION x_ID x_LBRACE attribute_list x_RBRACE { 
+    $$ = new Union($2->value, $4);
+  }
   ;
 
 def_type 
-  :   x_TYPE x_ID x_LBRACE attribute_list x_RBRACE
+  :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE { 
+    $$ = new Type($2->value, $4);
+  }
   ; 
 
 attribute_list
-  : type x_ID x_SEMICOLON
-  | attribute_list type x_ID x_SEMICOLON
+  : type x_ID x_SEMICOLON { 
+    $$ = new NodeList();
+    $$->push(new Declaration($1->value, $2->value));  
+  }
+  | attribute_list type x_ID x_SEMICOLON {
+    $1->push(new Declaration($2->value, $3->value));
+    $$ = $1;
+  }
   ;
 
 //Used for second class functions
 def_proc
-  :   x_PROC type x_ID x_LPAR proc_types x_RPAR x_SEMICOLON 
+  : x_PROC type x_ID x_LPAR proc_type_list x_RPAR x_SEMICOLON {
+    $$ = new Procedure($2->value,$3->value,$5);
+  }
   ;
 
-proc_types
-  : type { }
-  | proc_types x_COMMA type { }   
+proc_type_list
+  : type {
+    $$ = new NodeList();
+    $$->add(new ProcedureType($1->value));
+  }
+  | proc_type_list x_COMMA type { 
+    $1->add(new ProcedureType($3->value));
+    $$ = $1;
+  }   
   ;
 
+//Missing body
 def_function  
-  : x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR x_LBRACE x_RBRACE
+  : x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR x_LBRACE x_RBRACE{
+    $$ = new Function($3->value, $2->value, $5);
+  }
   ;
 
 function_type
-  : type
-  | x_VOID
+  : type {$$ = $1; }
+  | x_VOID {$$ = $1; }
   ;
   
 function_parameters 
-  : type x_ID {}
-  | type x_ID x_COMMA x_EXTEND 
-  | type x_ID x_COMMA function_parameters 
+  : type x_ID {
+    $$ = new NodeList();
+    $$->push(new FunctionParameter($1->value,$2->value));
+  }
+  | type x_ID x_COMMA x_EXTEND {
+    $$ = new NodeList();
+    $$->push(new Extends($1->value));
+    $$->push(new FunctionParameter($1->value,$2->value));
+    
+  }
+  | type x_ID x_COMMA function_parameters {
+    $4->push(new FunctionParameter($1->value,$2->value));
+    $$ = $4;  
+  }
   ;
 
 type 
