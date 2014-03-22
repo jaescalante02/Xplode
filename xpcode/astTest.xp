@@ -23,5 +23,11 @@ begin
   int y;
   float w;
   int abd;
+  
+  w := (43.5 - 38.5) ** 2; 
+  z := doSomething(3232+x<z,x,y);
+  y := true + 2345 + w.ads.ds.ds[324][435];
   read(y);
+  write(y,w,2345);
+  sleep(y);
 end

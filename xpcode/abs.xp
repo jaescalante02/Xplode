@@ -1,0 +1,22 @@
+program
+
+union abs{
+  int a;
+  int b;
+  float s;
+}
+ 
+function void hello(int a, int b, int s){
+  write(a,b,s);
+}
+
+begin
+  int n;
+  read(n);
+  if (n >0){
+    write(n);
+  } else {
+    write(-n);
+  };
+
+end

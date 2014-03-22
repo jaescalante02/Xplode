@@ -10,6 +10,9 @@
   Token *tok;
   Node *node; //Node from the AST
   NodeList *nodelist;
+  Variable *var;
+  Expression *exp;
+  std::list<Expression *> *explist;
 }
 
 %code requires {
@@ -115,13 +118,35 @@
 %type <node> def_type
 %type <node> def_proc
 %type <node> def_function
+%type <node> statement
+%type <node> statement_assign statement_sleep 
+%type <node> statement_read statement_write
+%type <node> statement_while statement_for
+%type <node> statement_if statement_else
+%type <node> for_init for_increment
+
+%type <node> block
+%type <node> main
+%type <node> start
+
+
+//expressions
+
+%type <var> variable
+%type <var> variable_id
+%type <exp> constant
+%type <exp> expression expression_unary function
+%type <explist> function_arguments write_list
+%type <exp> while_condition for_condition if_condition
 
 
 %type <nodelist> definition_list
 %type <nodelist> declaration_list
 %type <nodelist> attribute_list
 %type <nodelist> proc_type_list
-%type <nodelist> function_parameters
+%type <nodelist> function_parameters 
+%type <nodelist> statement_list 
+
 
 
 //
@@ -132,23 +157,23 @@
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { std::cout  << "I'm a very basic program\n"; *program=12345;  }
-  | x_PROGRAM definition_list main { $2->print(); std::cout << "I've got at least a definition \n"; *program=12345; }
+  : x_PROGRAM main { $$ = new Main($2); $$->print(); *program=12345;  }
+  | x_PROGRAM definition_list main { $$ = new Main($2,$3); $$->print(); *program=12345; }
   ;
 
 main
-  : x_BEGIN statement_list x_END
-  | x_BEGIN declaration_list statement_list x_END { }
+  : x_BEGIN statement_list x_END {$$ = new Block($2); } 
+  | x_BEGIN declaration_list statement_list x_END {$$ = new Block($2,$3);}
   ;
   
 
 definition_list
   : definition { 
     $$ = new NodeList();
-    $$->push($1);  
+    $$->add($1);  
   }
   | definition_list definition {
-    $1->push($2);
+    $1->add($2);
     $$ = $1;
   }
   ;
@@ -200,10 +225,12 @@ proc_type_list
   }   
   ;
 
-//Missing body
 def_function  
   : x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR x_LBRACE x_RBRACE{
     $$ = new Function($3->value, $2->value, $5);
+  }
+  | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
+    $$ = new Function($3->value, $2->value, $5, $7);
   }
   ;
 
@@ -239,8 +266,8 @@ type
 
 
 block 
-  : x_LBRACE declaration_list statement_list x_RBRACE 
-  | x_LBRACE statement_list x_RBRACE
+  : x_LBRACE declaration_list statement_list x_RBRACE {$$ = new Block($2,$3); }
+  | x_LBRACE statement_list x_RBRACE {$$ = new Block($2); }
   ;
 
 declaration_list
@@ -256,82 +283,81 @@ declaration_list
   ;
   
 statement_list
-  : 
-  | statement x_SEMICOLON
-  | statement_list statement x_SEMICOLON ;
+  : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
+  | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
+  ;
+
 
 //statements
 statement
-  : statement_assign
-  | statement_for
-  | statement_while
-  | statement_if
-  | statement_read
-  | statement_write
-  | statement_sleep
+  : statement_assign {$$ = $1; }
+  | statement_for {$$ = $1; }
+  | statement_while {$$ = $1; }
+  | statement_if {$$ = $1; }
+  | statement_read {$$ = $1; }
+  | statement_write {$$ = $1; }
+  | statement_sleep {$$ = $1; }
   ;
 
 statement_for
-  : x_FOR x_LPAR for_def x_RPAR block
-  ;
-
-for_def
-  : for_init x_SEMICOLON for_condition x_SEMICOLON for_increment
+  : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block{
+    $$ = new ForStatement($3,$5,$7,$9); $$->print();
+  }
   ;
 
 for_init
-  : statement_assign
+  : statement_assign {$$ = $1; }
   ;
 
 for_condition
-  : expression
+  : expression {$$ = $1; }
   ;
 
 for_increment
-  : statement_assign
+  : statement_assign {$$ = $1; }
   ;
 
 statement_while
-  : x_WHILE x_LPAR while_condition x_RPAR block
+  : x_WHILE x_LPAR while_condition x_RPAR block {$$ = new  WhileStatement($3,$5); }
   ;
 
 while_condition
-  : expression
+  : expression {$$ = $1; }
   ;
 
 statement_if
-  : x_IF x_LPAR if_condition x_RPAR block
-  | x_IF x_LPAR if_condition x_RPAR block statement_else
+  : x_IF x_LPAR if_condition x_RPAR block {$$ = new IfStatement($3,$5); }
+  | x_IF x_LPAR if_condition x_RPAR block statement_else {$$ = new IfStatement($3,$5,$6); }
   ;
   
 if_condition
-  : expression
+  : expression {$$ = $1; }
   ;
   
 statement_else
-  : x_ELSE block
+  : x_ELSE block {$$ = $2; }
   ;
 
 statement_assign
-  : variable x_ASSIGN expression
+  : variable x_ASSIGN expression {$$ = new AssignStatement($1,$3); }
   ;
   
 statement_read
-  : x_READ x_LPAR variable x_RPAR
+  : x_READ x_LPAR variable x_RPAR {$$ = new ReadStatement($3); }
   ;
   
 statement_write
-  : x_WRITE x_LPAR write_list x_RPAR
+  : x_WRITE x_LPAR write_list x_RPAR {$$ = new WriteStatement($3); }
   ;
 
 write_list
-  : expression
+  : expression {$$ = new std::list<Expression *>(); $$->push_back($1);}
   // String missing  
-  | write_list x_COMMA expression
+  | write_list x_COMMA expression {$$ = $1; $$->push_back($3); }
   ;
  
 statement_sleep
-  : x_SLEEP x_LPAR INTEGER x_RPAR
+  : x_SLEEP x_LPAR variable x_RPAR {$$ = new SleepStatement($3); }
   ;    
 
 
@@ -339,58 +365,58 @@ statement_sleep
 
 
 expression
-  : expression_unary  
-  | expression x_PLUS expression
-  | expression x_MINUS expression
-  | expression x_MULT expression
-  | expression x_DIV expression
-  | expression x_POWER expression
+  : expression_unary  {$$ = $1;}
+  | expression x_PLUS expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_MINUS expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_MULT expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_DIV expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_POWER expression {$$ = new BinaryExpression($2->value,$1,$3); }
 
-  | expression x_AND expression
-  | expression x_OR expression
-   
-  | expression x_LESS expression
-  | expression x_LESSEQ expression
-  | expression x_GREATER expression
-  | expression x_GREATEREQ expression
+  | expression x_AND expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_OR expression {$$ = new BinaryExpression($2->value,$1,$3); }
   
-  | expression x_EQ expression
-  | expression x_NEQ expression
+  | expression x_LESS expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_LESSEQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_GREATER expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_GREATEREQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  
+  | expression x_EQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_NEQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
   ;
 
 expression_unary
-  : constant
-  | variable
-  | function
-  | x_MINUS expression %prec x_UMINUS
-  | x_LPAR expression x_RPAR 
+  : constant { $$ = $1; }
+  | variable { $$ = $1; }
+  | function { $$ = $1; }
+  | x_MINUS expression %prec x_UMINUS { $$ = new Uminus($2); }
+  | x_LPAR expression x_RPAR { $$ = new UnaryExpression($2); }
   ;
  
 constant
-  : INTEGER
-  | FLOAT
-  | x_TRUE
-  | x_FALSE
+  : INTEGER { $$ = new Constant($1->value);}
+  | FLOAT { $$ = new Constant($1->value);}
+  | x_TRUE { $$ = new Constant($1->value);}
+  | x_FALSE { $$ = new Constant($1->value);}
   ;
   
 variable
-  : variable_id
-  | variable x_LBRACKET INTEGER x_RBRACKET
+  : variable_id { $$ = $1;}
+  | variable x_LBRACKET INTEGER x_RBRACKET { $1->addIndex($3->value); $$ = $1; }
   ;
 
 variable_id
-  : x_ID 
-  | variable_id x_DOT x_ID
+  : x_ID { $$ = new Variable($1->value);}
+  | variable_id x_DOT x_ID { $1->addField($3->value); $$ = $1; }
   ;
 
 function
-  : x_ID x_LPAR function_arguments x_RPAR
+  : x_ID x_LPAR function_arguments x_RPAR {$$ = new FunctionExpression($1->value,$3); }
   ;
 
 function_arguments
-  : expression
-  | function_arguments x_COMMA expression
-  
+  : expression {$$ = new std::list<Expression *>(); $$->push_back($1); }
+  | function_arguments x_COMMA expression {$$ = $1; $$->push_back($3); }
+  ;
   
 %%
 

@@ -1,0 +1,24 @@
+program
+
+function void doSomething (int a){
+}
+
+
+begin
+  int y;
+  int i;
+  int n;
+  read(y);
+  while (y >0){
+    int x;
+    read(x);
+    write(x+y);
+  };
+  read(n);
+  for(i :=0; i < n; i:=i+1){
+    int z;
+    z := i*n;
+    write(z);
+  };
+
+end
