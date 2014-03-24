@@ -186,23 +186,23 @@ definition
 
 def_union
   : x_UNION x_ID x_LBRACE attribute_list x_RBRACE { 
-    $$ = new Union($2->value, $4);
+    $$ = new Union($2, $4);
   }
   ;
 
 def_type 
   :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE { 
-    $$ = new Type($2->value, $4);
+    $$ = new Type($2, $4);
   }
   ; 
 
 attribute_list
   : type x_ID x_SEMICOLON { 
     $$ = new NodeList();
-    $$->push(new Declaration($1->value, $2->value));  
+    $$->push(new Declaration($1->value, $2));  
   }
   | attribute_list type x_ID x_SEMICOLON {
-    $1->push(new Declaration($2->value, $3->value));
+    $1->push(new Declaration($2->value, $3));
     $$ = $1;
   }
   ;
@@ -210,7 +210,7 @@ attribute_list
 //Used for second class functions
 def_proc
   : x_PROC type x_ID x_LPAR proc_type_list x_RPAR x_SEMICOLON {
-    $$ = new Procedure($2->value,$3->value,$5);
+    $$ = new Procedure($3, $2->value, $5);
   }
   ;
 
@@ -227,10 +227,10 @@ proc_type_list
 
 def_function  
   : x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR x_LBRACE x_RBRACE{
-    $$ = new Function($3->value, $2->value, $5);
+    $$ = new Function($3, $2->value, $5);
   }
   | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
-    $$ = new Function($3->value, $2->value, $5, $7);
+    $$ = new Function($3, $2->value, $5, $7);
   }
   ;
 
@@ -273,11 +273,11 @@ block
 declaration_list
   : type x_ID x_SEMICOLON { 
     $$ = new NodeList();
-    $$->add(new Declaration($1->value, $2->value));  
+    $$->add(new Declaration($1->value, $2));  
   }
   
   | declaration_list type x_ID x_SEMICOLON {
-    $1->add(new Declaration($2->value, $3->value));
+    $1->add(new Declaration($2->value, $3));
     $$ = $1;
   }
   ;
@@ -301,7 +301,7 @@ statement
 
 statement_for
   : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block{
-    $$ = new ForStatement($3,$5,$7,$9); $$->print();
+    $$ = new ForStatement($3,$5,$7,$9);
   }
   ;
 

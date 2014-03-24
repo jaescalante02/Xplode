@@ -10,6 +10,38 @@
  
 #define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
 
+#define INT_SYMBOL new Symbol("int","_type",0,0,true)
+#define FLOAT_SYMBOL new Symbol("float","_type",0,0,true)
+#define CHAR_SYMBOL new Symbol("char","_type",0,0,true)
+
+class Symbol {
+
+    public:
+
+        Symbol(std::string n, std::string t, int l, int c, bool e){
+
+            name=n;
+            ntype = t;
+            line = l;
+            column = c; 
+            editable = e;
+
+        }
+
+        std::string getname() {return name;}
+
+        std::string name;
+//valor
+        std::string ntype;
+//tamano
+        
+        int line;
+        int column;
+        bool editable;
+
+
+};
+
 
 class Node {
 public:
@@ -18,6 +50,11 @@ public:
   //virtual Node *clone() = 0;
 
   virtual void print() = 0;
+
+  virtual Symbol *toSymbol(){}
+
+  int line;
+  int column;
 
 };
 
@@ -54,7 +91,13 @@ class Declaration : public Node {
   std::string ntype;
   std::string var;
   
-Declaration(std::string n, std::string v) { ntype = n; var = v; }
+  Declaration(std::string n, Xplode::Token *v) { 
+      ntype = n; 
+      var = v->value; 
+      line = v->line; 
+      column = v->column; 
+  }
+
   void print(){
    std::string tab = std::string(4, ' ');
    
@@ -63,33 +106,7 @@ Declaration(std::string n, std::string v) { ntype = n; var = v; }
    std::cout << "var: " << var << "\n";
   }
 
-};
-
-
-class Symbol {
-
-    public:
-
-        Symbol(std::string n, std::string t, int l, int c, bool e){
-
-            name=n;
-            ntype = t;
-            line = l;
-            column = c; 
-            editable = e;
-
-        }
-
-        std::string getname() {return name;}
-
-        std::string name;
-//valor
-        std::string ntype;
-//tamano
-        
-        int line;
-        int column;
-        bool editable;
+  Symbol *toSymbol(){ return new Symbol(var,ntype, line, column, false); }
 
 
 };
@@ -99,15 +116,20 @@ class SymTable {
 
     public:
 
+        SymTable(){
+
+           table = new std::map<std::string, Symbol *>;
+           father = NULL;
+
+        }
+
         SymTable(NodeList *l) {
 
            table = new std::map<std::string, Symbol *>;
            father = NULL;
-           Declaration *d;
            std::list<Node *>::iterator iter;
            for(iter = (*l).nodeList.begin(); iter != (*l).nodeList.end(); ++iter){
-                d = (Declaration *) *iter;
-                this->insert(new Symbol(d->var,d->ntype, 0, 0, false)); 
+                this->insert((*iter)->toSymbol()); 
            }            
 
         }
@@ -132,11 +154,12 @@ class SymTable {
 
             std::map<std::string, Symbol *>::iterator pos;
             for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
-                printf(" |%10s|%5s|%3d|%3d|%2d|\n",(*pos).first.c_str(), 
+                printf(" |%15s|%10s|%3d|%3d|%2d|\n",(*pos).first.c_str(), 
                 pos->second->ntype.c_str(), pos->second->line, 
                 pos->second->column,pos->second->editable);
 
             }
+            std::cout << " ---------------------------------------\n";
 
 
         }
@@ -168,13 +191,22 @@ class Union : public Node {
   std::string name;
   NodeList *attributes;
   
-Union(std::string n, NodeList* a) { name = n; attributes = a;}
+  Union(Xplode::Token *n, NodeList* a) { 
+
+    name = n->value; 
+    attributes = a;
+    line = n->line; 
+    column = n->column; 
+  }
+
   void print(){
    std::cout << "UNION\n";
    std::cout << "name: " << name << "\n";
    std::cout << "ATTRIBUTES\n";
    attributes->print();
   }
+
+  Symbol *toSymbol() { return new Symbol(name,"_union",line,column,true); }
 
 };
 
@@ -183,13 +215,21 @@ class Type : public Node {
   std::string name;
   NodeList *attributes;
   
-Type(std::string n, NodeList* a) { name = n; attributes = a;}
+  Type(Xplode::Token *n, NodeList* a) { 
+
+    name = n->value; 
+    attributes = a;
+    line = n->line; 
+    column = n->column; 
+  }
   void print(){
    std::cout << "TYPE\n";
    std::cout << "name: " << name << "\n";
    std::cout << "ATTRIBUTES\n";
    attributes->print();
   }
+
+Symbol *toSymbol() { return new Symbol(name,"_type", line, column, true); }
 
 };
 
@@ -199,7 +239,14 @@ class Procedure : public Node {
   std::string returnType;
   NodeList* types;
   
-Procedure(std::string n, std::string r, NodeList* t) { name = n; returnType = r; types = t; }
+  Procedure(Xplode::Token *n, std::string r, NodeList* t) { 
+      name = n->value; 
+      returnType = r; 
+      types = t; 
+      line = n->line;
+      column = n->column;
+  }
+
   void print(){
    std::cout << "PROCEDURE\n";
    std::cout << "name: " << name << "\n";
@@ -208,6 +255,8 @@ Procedure(std::string n, std::string r, NodeList* t) { name = n; returnType = r;
    types->print();
 
   }
+
+Symbol *toSymbol() {return new Symbol(name,"_proc", line, column, true); }
 
 };
 
@@ -231,12 +280,15 @@ class Function : public Node {
   NodeList *parameters;
   Node* block;
   
-  Function(std::string n, std::string r, NodeList *p, Node *b = 0) { 
-    name = n; 
+  Function(Xplode::Token *n, std::string r, NodeList *p, Node *b = 0) { 
+    name = n->value; 
     returnType = r; 
     parameters = p; 
     block  = b;
+    line = n->line;
+    column = n->column;
   }
+
   void print(){
    std::cout << "FUNCTION\n";
    std::cout << "name: " << name << "\n";
@@ -247,6 +299,8 @@ class Function : public Node {
    }
 
   }
+
+Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true); }
 
 };
 
@@ -456,10 +510,13 @@ class CompoundStatement: public Statement {
 
 public:
 
-  CompoundStatement(){}
-  void print(){}
   Block *block;
-  void printTable() {
+
+  CompoundStatement(){}
+
+  void print(){}
+
+  virtual void printTable() {
 
      if (block!=NULL) block->printTable();
 
@@ -475,19 +532,52 @@ public:
 
 
 class Main : public CompoundStatement {
+
 public:
   NodeList *definitionList; 
-  Main(Node *b){ definitionList = 0; block = (Block *) b; }
-  Main(NodeList *d, Node *b){ definitionList = d; block = (Block *) b; }
-  void print(){
-   std::cout << "PROGRAM \n";
-   if (definitionList != 0 ){
-    std::cout << "DEFINITIONS \n";
-    definitionList->print();
-   }
-   block->print();
+  SymTable *table;
+
+  Main(Node *b){ 
+
+    table= new SymTable();
+    this->insertPrimitives(); 
+    definitionList = 0; 
+    block = (Block *) b; 
+
   }
 
+  Main(NodeList *d, Node *b){ 
+
+    table = new SymTable(d); 
+    this->insertPrimitives(); 
+    definitionList = d; 
+    block = (Block *) b; 
+
+  }
+
+  void insertPrimitives(){
+
+    table->insert(INT_SYMBOL);
+    table->insert(FLOAT_SYMBOL); 
+    table->insert(CHAR_SYMBOL);   
+
+  }
+
+  void print(){
+    std::cout << "PROGRAM \n";
+    if (definitionList != 0 ){
+     std::cout << "DEFINITIONS \n";
+     definitionList->print();
+    }
+    block->print();
+  }
+
+  void printTable(){
+
+    if(table!=NULL) table->print();
+    if(block!=NULL) block->printTable();
+
+  }
 
 };
 

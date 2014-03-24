@@ -1,22 +1,24 @@
 program
 
 begin
-int b;
-int c;
-float A;
-int a;
-if (a==2){
-int f;
+    int b;
+    int c;
+    float A;
+    int a;
 
-if (f==7){
-int h;
-int k;
-char a;
+    if (a==2){
+        int f;
 
-k:=h;
+        if (f==7){
+            
+            int h;
+            int k;
+            char a;
 
-};
+            k:=h;
 
-};
+        };
+
+    };
 
 end
