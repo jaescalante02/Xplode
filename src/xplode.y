@@ -3,7 +3,7 @@
 %defines
 %define namespace "Xplode"
 %define parser_class_name "BisonParser"
-%parse-param { int *program } //int momentaneo, clase por crear 
+%parse-param { Main **program } //int momentaneo, clase por crear 
 %parse-param { Xplode::FlexScanner &scanner }
 %lex-param   { Xplode::FlexScanner &scanner }
 %union {
@@ -157,8 +157,8 @@
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { $$ = new Main($2); $$->print(); *program=12345;  }
-  | x_PROGRAM definition_list main { $$ = new Main($2,$3); $$->print(); *program=12345; }
+  : x_PROGRAM main { *program = new Main($2); }
+  | x_PROGRAM definition_list main { *program = new Main($2,$3); }
   ;
 
 main

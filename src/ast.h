@@ -3,7 +3,13 @@
 #include <iostream>
 #include <stdio.h>
 #include <list> 
+#include <map>
+#include <algorithm>
 #include <cstdlib>
+#include <stdio.h>
+ 
+#define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
+
 
 class Node {
 public:
@@ -12,6 +18,7 @@ public:
   //virtual Node *clone() = 0;
 
   virtual void print() = 0;
+
 };
 
 //List of nodes
@@ -44,17 +51,115 @@ class NodeList  {
 //Definition part
 class Declaration : public Node {
   public:
-  std::string name;
+  std::string ntype;
   std::string var;
   
-Declaration(std::string n, std::string v) { name = n; var = v; }
+Declaration(std::string n, std::string v) { ntype = n; var = v; }
   void print(){
    std::string tab = std::string(4, ' ');
    
    std::cout << "DECLARATION\n";
-   std::cout << "type: " << name << "\n";
+   std::cout << "type: " << ntype << "\n";
    std::cout << "var: " << var << "\n";
   }
+
+};
+
+
+class Symbol {
+
+    public:
+
+        Symbol(std::string n, std::string t, int l, int c, bool e){
+
+            name=n;
+            ntype = t;
+            line = l;
+            column = c; 
+            editable = e;
+
+        }
+
+        std::string getname() {return name;}
+
+        std::string name;
+//valor
+        std::string ntype;
+//tamano
+        
+        int line;
+        int column;
+        bool editable;
+
+
+};
+
+
+class SymTable {
+
+    public:
+
+        SymTable(NodeList *l) {
+
+           table = new std::map<std::string, Symbol *>;
+           father = NULL;
+           Declaration *d;
+           std::list<Node *>::iterator iter;
+           for(iter = (*l).nodeList.begin(); iter != (*l).nodeList.end(); ++iter){
+                d = (Declaration *) *iter;
+                this->insert(new Symbol(d->var,d->ntype, 0, 0, false)); 
+           }            
+
+        }
+
+        void insert(Symbol *s){
+
+            //falta caso error, ya existe
+            std::string lowsymbol(s->getname()); 
+            toLower(lowsymbol);
+            if (!isMember(lowsymbol)) (*table)[lowsymbol] = s;
+
+        }
+
+        Symbol *find(std::string variable){ 
+
+            std::string var(variable);
+            toLower(var);
+            return this->findall(var);
+        }
+
+        void print(){
+
+            std::map<std::string, Symbol *>::iterator pos;
+            for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
+                printf(" |%10s|%5s|%3d|%3d|%2d|\n",(*pos).first.c_str(), 
+                pos->second->ntype.c_str(), pos->second->line, 
+                pos->second->column,pos->second->editable);
+
+            }
+
+
+        }
+
+        void setFather(SymTable *s){ father=s; }
+       
+    private:
+
+        bool isMember(std::string variable){return ((*table).count(variable)>0);} 
+
+        Symbol *findall(std::string variable) {
+
+            if(isMember(variable)) return (*table)[variable];
+            if(father==NULL) return NULL;            
+            return (*father).findall(variable);
+
+        }
+
+             
+        SymTable *father;
+        std::map<std::string, Symbol *> *table;
+
+
 
 };
 
@@ -278,12 +383,34 @@ class BinaryExpression : public Expression {
 };
 
 //statements
+
+
+class Statement: public Node {
+public:
+  
+  virtual void print() {};
+
+  virtual void printTable() {}
+
+  virtual void setFather(SymTable *s){}
+
+};
+
 class Block : public Node {
   public:
   NodeList *declarationList; 
   NodeList *statementList; 
+  SymTable *table;
+
   Block(NodeList *s){ declarationList = 0; statementList = s; }
-  Block(NodeList *d, NodeList *s){ declarationList = d; statementList = s; }
+  Block(NodeList *d, NodeList *s) { 
+
+    table = new SymTable(d); 
+    declarationList = d; 
+    statementList = s; 
+    this->setFathers();
+  }
+
   void print(){
    std::cout << "BLOCK \n";
    if (declarationList != 0 ){
@@ -294,14 +421,64 @@ class Block : public Node {
    statementList->print();
   }
 
+  void printTable(){
+
+    table->print();
+    Statement *st;
+    std::list<Node *>::iterator iter;
+    for(iter = (*statementList).nodeList.begin(); iter != (*statementList).nodeList.end(); ++iter){
+        st = (Statement *) *iter;          
+        st->printTable(); 
+    }       
+  }
+
+  virtual void setFathers() {
+
+    Statement *st;
+    std::list<Node *>::iterator iter;
+    for(iter = (*statementList).nodeList.begin(); iter != (*statementList).nodeList.end(); ++iter){
+        st = (Statement *) *iter;          
+        st->setFather(table); 
+    }
+
+
+  }
+
+  virtual void setFather(SymTable *s){
+
+    table->setFather(s);
+
+  }
+
 };
 
-class Main : public Node {
+class CompoundStatement: public Statement {
+
+public:
+
+  CompoundStatement(){}
+  void print(){}
+  Block *block;
+  void printTable() {
+
+     if (block!=NULL) block->printTable();
+
+  }
+
+  virtual void setFather(SymTable *s){
+
+    block->setFather(s);
+
+  }
+
+};
+
+
+class Main : public CompoundStatement {
 public:
   NodeList *definitionList; 
-  Node *block;
-  Main(Node *b){ definitionList = 0; block = b; }
-  Main(NodeList *d, Node *b){ definitionList = d; block = b; }
+  Main(Node *b){ definitionList = 0; block = (Block *) b; }
+  Main(NodeList *d, Node *b){ definitionList = d; block = (Block *) b; }
   void print(){
    std::cout << "PROGRAM \n";
    if (definitionList != 0 ){
@@ -314,7 +491,7 @@ public:
 
 };
 
-class AssignStatement : public Node {
+class AssignStatement : public Statement {
   public:
   Expression *lvalue, *rvalue;
   AssignStatement(Expression *l, Expression *r){
@@ -331,7 +508,7 @@ class AssignStatement : public Node {
 
 };
 
-class ReadStatement : public Node {
+class ReadStatement : public Statement {
   public:
   Expression *var;
   ReadStatement(Expression *v){ var = v; }
@@ -343,7 +520,7 @@ class ReadStatement : public Node {
 
 };
 
-class WriteStatement : public Node {
+class WriteStatement : public Statement {
   public:
   std::list<Expression *> *writeList; 
   WriteStatement(std::list<Expression *> *a){writeList = a; }
@@ -357,7 +534,7 @@ class WriteStatement : public Node {
 
 };
 
-class SleepStatement : public Node {
+class SleepStatement : public Statement {
   public:
   Expression *var;
   SleepStatement(Expression *v){ var = v; }
@@ -370,11 +547,10 @@ class SleepStatement : public Node {
 };
 
 
-class WhileStatement : public Node {
+class WhileStatement : public CompoundStatement {
   public:
   Expression *condition; 
-  Node *block; 
-  WhileStatement(Expression *c, Node *b){ condition = c; block = b; }
+  WhileStatement(Expression *c, Node *b){ condition = c; block = (Block *) b; }
   void print(){
    std::cout << "WHILE STATEMENT \n";
    std::cout << "condition: \n";
@@ -384,17 +560,16 @@ class WhileStatement : public Node {
 
 };
 
-class ForStatement : public Node {
+class ForStatement : public CompoundStatement {
   public:
   Node *init;
   Expression *condition;
-  Node *increment;
-  Node *block; 
+  Node *increment; 
   ForStatement(Node *i, Expression *c, Node *inc, Node *b){
     init = i;
     increment = inc;
     condition = c;
-    block = b;
+    block = (Block *) b;
   }
   void print(){
    std::cout << "FOR STATEMENT \n";
@@ -409,22 +584,21 @@ class ForStatement : public Node {
 
 };
 
-class IfStatement : public Node {
+class IfStatement : public CompoundStatement {
   public:
   Expression *condition;
-  Node *thenBlock;
-  Node *elseBlock; 
+  Block *elseBlock; 
   IfStatement(Expression *c, Node *t, Node *e = 0){
     condition = c;
-    thenBlock = t;
-    elseBlock = e;
+    block = (Block *) t;
+    elseBlock = (Block *) e;
   }
   void print(){
    std::cout << "IF STATEMENT \n";
    std::cout << "condition: \n";
    condition->print();
    std::cout << "then: \n";
-   thenBlock->print();
+   block->print();
    if (elseBlock != 0){
     std::cout << "else: \n";
     elseBlock->print();
@@ -432,3 +606,6 @@ class IfStatement : public Node {
   }
 
 };
+
+
+

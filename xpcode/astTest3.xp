@@ -1,0 +1,22 @@
+program
+
+begin
+int b;
+int c;
+float A;
+int a;
+if (a==2){
+int f;
+
+if (f==7){
+int h;
+int k;
+char a;
+
+k:=h;
+
+};
+
+};
+
+end

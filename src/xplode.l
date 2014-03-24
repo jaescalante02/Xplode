@@ -39,26 +39,26 @@ ID       [a-zA-Z][a-zA-Z0-9]*
            }
 
 [ \t\r\x20]+  {UPDATE_LOC; }  // ignore all whitespace
-explotion { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROGRAM; }
+xplodegram { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROGRAM; }
 begin { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BEGIN; }
 end { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_END; }
-function { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FUNCTION; }
+explotion { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FUNCTION; }
 proc { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROC; }
-return { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RETURN; }
-break { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BREAK; UPDATE_LOC; }
+reburn { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RETURN; }
+abort { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BREAK; UPDATE_LOC; }
 continue { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CONTINUE; }
 exit { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EXIT; }
-sleep { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SLEEP; }
+wait { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SLEEP; }
 
 
-int { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_INT; }
-char { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CHAR; }
-bool { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BOOL; }
-float { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FLOAT; }
+tnt { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_INT; }
+c4ar { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CHAR; }
+boomb { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BOOL; }
+floating { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FLOAT; }
 void { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VOID; }
 
-true { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TRUE; }
-false { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FALSE; }
+on { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TRUE; }
+off { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FALSE; }
 
 write { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_WRITE; }
 read { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_READ; }

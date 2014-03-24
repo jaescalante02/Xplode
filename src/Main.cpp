@@ -44,14 +44,15 @@ int main(int argc, char * argv[]) {
     std::istream is(&fb);
 
     Xplode::FlexScanner *scanner;
-    int a=0, program=0;
+    int a=0;
+    Main *program;
     a = selectLexer(argv[1]);
     if (a==1) scanner = new Xplode::ClassicScanner(&is);
     else scanner = new Xplode::XplodeScanner(&is);
     Xplode::Parser parser(&program,scanner);
     parser.parse();
-    std::cout << program << std::endl; 
-	return 0;
+    program->printTable(); 
+    return 0;
 
 }
 
