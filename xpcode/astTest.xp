@@ -17,6 +17,13 @@ union abc {
 }
 
 function void suma (int a){
+
+int m;
+float j;
+//person p;
+
+p:=j;
+
 }
 
 begin

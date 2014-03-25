@@ -1,6 +1,8 @@
 program
 
-function void doSomething (int a){
+function void doSomething (int a, char c){
+//float b; //para que vacio? no tiene bloque ni symtable
+//write(b);
 }
 
 

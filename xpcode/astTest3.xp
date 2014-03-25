@@ -7,7 +7,7 @@ begin
     int a;
 
     if (a==2){
-        int f;
+//        int f;
 
         if (f==7){
             

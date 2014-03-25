@@ -242,16 +242,16 @@ function_type
 function_parameters 
   : type x_ID {
     $$ = new NodeList();
-    $$->push(new FunctionParameter($1->value,$2->value));
+    $$->push(new Declaration($1->value,$2)); //Modifique FunctionParameter por Declaration
   }
   | type x_ID x_COMMA x_EXTEND {
     $$ = new NodeList();
     $$->push(new Extends($1->value));
-    $$->push(new FunctionParameter($1->value,$2->value));
+    $$->push(new Declaration($1->value,$2));
     
   }
   | type x_ID x_COMMA function_parameters {
-    $4->push(new FunctionParameter($1->value,$2->value));
+    $4->push(new Declaration($1->value,$2));
     $$ = $4;  
   }
   ;

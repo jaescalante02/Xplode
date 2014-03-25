@@ -127,10 +127,15 @@ class SymTable {
 
            table = new std::map<std::string, Symbol *>;
            father = NULL;
+           this->add(l);
+        }
+
+        void add(NodeList *l){
+
            std::list<Node *>::iterator iter;
            for(iter = (*l).nodeList.begin(); iter != (*l).nodeList.end(); ++iter){
                 this->insert((*iter)->toSymbol()); 
-           }            
+           } 
 
         }
 
@@ -183,150 +188,6 @@ class SymTable {
         std::map<std::string, Symbol *> *table;
 
 
-
-};
-
-class Union : public Node {
-  public:
-  std::string name;
-  NodeList *attributes;
-  
-  Union(Xplode::Token *n, NodeList* a) { 
-
-    name = n->value; 
-    attributes = a;
-    line = n->line; 
-    column = n->column; 
-  }
-
-  void print(){
-   std::cout << "UNION\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "ATTRIBUTES\n";
-   attributes->print();
-  }
-
-  Symbol *toSymbol() { return new Symbol(name,"_union",line,column,true); }
-
-};
-
-class Type : public Node {
-  public:
-  std::string name;
-  NodeList *attributes;
-  
-  Type(Xplode::Token *n, NodeList* a) { 
-
-    name = n->value; 
-    attributes = a;
-    line = n->line; 
-    column = n->column; 
-  }
-  void print(){
-   std::cout << "TYPE\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "ATTRIBUTES\n";
-   attributes->print();
-  }
-
-Symbol *toSymbol() { return new Symbol(name,"_type", line, column, true); }
-
-};
-
-class Procedure : public Node {
-  public:
-  std::string name;
-  std::string returnType;
-  NodeList* types;
-  
-  Procedure(Xplode::Token *n, std::string r, NodeList* t) { 
-      name = n->value; 
-      returnType = r; 
-      types = t; 
-      line = n->line;
-      column = n->column;
-  }
-
-  void print(){
-   std::cout << "PROCEDURE\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "return: "<< returnType << "\n";
-   std::cout << "TYPE PARAMETERS\n";
-   types->print();
-
-  }
-
-Symbol *toSymbol() {return new Symbol(name,"_proc", line, column, true); }
-
-};
-
-class ProcedureType : public Node {
-  public:
-  std::string name;
-  
-ProcedureType(std::string n) { name = n;}
-  void print(){
-   std::cout << "PROCEDURE TYPE\n";
-   std::cout << "type: " << name << "\n";
-  }
-
-};
-
-
-class Function : public Node {
-  public:
-  std::string name;
-  std::string returnType;
-  NodeList *parameters;
-  Node* block;
-  
-  Function(Xplode::Token *n, std::string r, NodeList *p, Node *b = 0) { 
-    name = n->value; 
-    returnType = r; 
-    parameters = p; 
-    block  = b;
-    line = n->line;
-    column = n->column;
-  }
-
-  void print(){
-   std::cout << "FUNCTION\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "return: "<< returnType << "\n";
-   parameters->print();
-   if (block != 0 ){
-    block->print();
-   }
-
-  }
-
-Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true); }
-
-};
-
-class FunctionParameter : public Node {
-  public:
-  std::string type;
-  std::string var;
-  
-FunctionParameter(std::string t, std::string v) { type = t; var = v; }
-  void print(){
-   std::cout << "PARAMETER\n";
-   std::cout << "type: " << type << "\n";
-   std::cout << "var: " << var << "\n";
-  }
-
-};
-
-class Extends : public Node {
-  public:
-  std::string type;
-  
-Extends(std::string t) { type = t; }
-  void print(){
-   std::cout << "EXTENDS\n";
-   std::cout << "type: " << type << "\n";
-  }
 
 };
 
@@ -456,7 +317,14 @@ class Block : public Node {
   NodeList *statementList; 
   SymTable *table;
 
-  Block(NodeList *s){ declarationList = 0; statementList = s; }
+  Block(NodeList *s){ 
+
+    table= new SymTable(); 
+    declarationList = 0; 
+    statementList = s; 
+    this->setFathers();
+  }
+
   Block(NodeList *d, NodeList *s) { 
 
     table = new SymTable(d); 
@@ -530,6 +398,167 @@ public:
 
 };
 
+class Union : public Statement {
+  public:
+  std::string name;
+  NodeList *attributes;
+  SymTable *table;
+  
+  Union(Xplode::Token *n, NodeList* a) { 
+
+    table = new SymTable(a);
+    name = n->value; 
+    attributes = a;
+    line = n->line; 
+    column = n->column; 
+  }
+
+  void print(){
+   std::cout << "UNION\n";
+   std::cout << "name: " << name << "\n";
+   std::cout << "ATTRIBUTES\n";
+   attributes->print();
+  }
+
+  void printTable() {
+
+     if (table!=NULL) table->print();
+
+  }
+
+  Symbol *toSymbol() { return new Symbol(name,"_union",line,column,true); }
+
+};
+
+class Type : public Statement {
+  public:
+  std::string name;
+  NodeList *attributes;
+  SymTable *table;
+  
+  Type(Xplode::Token *n, NodeList* a) { 
+
+    table = new SymTable(a);
+    name = n->value; 
+    attributes = a;
+    line = n->line; 
+    column = n->column; 
+  }
+  void print(){
+   std::cout << "TYPE\n";
+   std::cout << "name: " << name << "\n";
+   std::cout << "ATTRIBUTES\n";
+   attributes->print();
+  }
+
+  void printTable() {
+
+     if (table!=NULL) table->print();
+
+  }
+
+  Symbol *toSymbol() { return new Symbol(name,"_type", line, column, true); }
+
+};
+
+class Procedure : public Statement {
+  public:
+  std::string name;
+  std::string returnType;
+  NodeList* types;
+  
+  Procedure(Xplode::Token *n, std::string r, NodeList* t) { 
+      name = n->value; 
+      returnType = r; 
+      types = t; 
+      line = n->line;
+      column = n->column;
+  }
+
+  void print(){
+   std::cout << "PROCEDURE\n";
+   std::cout << "name: " << name << "\n";
+   std::cout << "return: "<< returnType << "\n";
+   std::cout << "TYPE PARAMETERS\n";
+   types->print();
+
+  }
+
+Symbol *toSymbol() {return new Symbol(name,"_proc", line, column, true); }
+
+};
+
+class ProcedureType : public Node {
+  public:
+  std::string name;
+  
+ProcedureType(std::string n) { name = n;}
+  void print(){
+   std::cout << "PROCEDURE TYPE\n";
+   std::cout << "type: " << name << "\n";
+  }
+
+};
+
+
+class Function : public CompoundStatement {
+  public:
+  std::string name;
+  std::string returnType;
+  NodeList *parameters;
+
+  
+  Function(Xplode::Token *n, std::string r, NodeList *p, Node *b = 0) { 
+    name = n->value; 
+    returnType = r; 
+    parameters = p; 
+    block  = (Block *) b;
+    if (block!=NULL) block->table->add(parameters);
+    line = n->line;
+    column = n->column;
+  }
+
+  void print(){
+   std::cout << "FUNCTION\n";
+   std::cout << "name: " << name << "\n";
+   std::cout << "return: "<< returnType << "\n";
+   parameters->print();
+   if (block != 0 ){
+    block->print();
+   }
+
+  }
+
+Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true); }
+
+};
+
+class FunctionParameter : public Node {
+  public:
+  std::string type;
+  std::string var;
+  
+FunctionParameter(std::string t, std::string v) { type = t; var = v; }
+  void print(){
+   std::cout << "PARAMETER\n";
+   std::cout << "type: " << type << "\n";
+   std::cout << "var: " << var << "\n";
+  }
+
+};
+
+class Extends : public Node {
+  public:
+  std::string type;
+  
+Extends(std::string t) { type = t; }
+  void print(){
+   std::cout << "EXTENDS\n";
+   std::cout << "type: " << type << "\n";
+  }
+
+};
+
 
 class Main : public CompoundStatement {
 
@@ -575,6 +604,14 @@ public:
   void printTable(){
 
     if(table!=NULL) table->print();
+    std::list<Node *>::iterator iter;
+    Statement *st;
+    if (definitionList!=NULL) 
+      for(iter = (*definitionList).nodeList.begin(); iter != (*definitionList).nodeList.end(); ++iter){
+            st = (Statement *) *iter;
+            st->printTable(); 
+      }
+  
     if(block!=NULL) block->printTable();
 
   }
