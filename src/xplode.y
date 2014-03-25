@@ -100,6 +100,8 @@
 %token<tok> x_PROC
 %token<tok> x_SLEEP
 
+%token<tok> x_LET
+
 
 //Precedence and associativity
 %nonassoc x_EQ x_NEQ
@@ -260,7 +262,7 @@ type
   :  x_INT {$$ = $1; }
   | x_CHAR {$$ = $1; } 
   | x_FLOAT {$$ = $1; }
-//  | x_ID
+  | x_ID
   | type x_LBRACKET INTEGER x_RBRACKET
   ;     
 
@@ -271,13 +273,13 @@ block
   ;
 
 declaration_list
-  : type x_ID x_SEMICOLON { 
+  : x_LET type x_ID x_SEMICOLON { 
     $$ = new NodeList();
-    $$->add(new Declaration($1->value, $2));  
+    $$->add(new Declaration($2->value, $3));  
   }
   
-  | declaration_list type x_ID x_SEMICOLON {
-    $1->add(new Declaration($2->value, $3));
+  | declaration_list x_LET type x_ID x_SEMICOLON {
+    $1->add(new Declaration($3->value, $4));
     $$ = $1;
   }
   ;

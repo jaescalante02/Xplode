@@ -157,14 +157,17 @@ class SymTable {
 
         void print(){
 
+            if (table->empty()) return;
+
             std::map<std::string, Symbol *>::iterator pos;
+            std::cout << " -------------------------------------------------\n";
             for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
-                printf(" |%15s|%10s|%3d|%3d|%2d|\n",(*pos).first.c_str(), 
+                printf(" | %15s | %10s | %3d | %3d | %2d |\n",(*pos).first.c_str(), 
                 pos->second->ntype.c_str(), pos->second->line, 
                 pos->second->column,pos->second->editable);
 
             }
-            std::cout << " ---------------------------------------\n";
+            std::cout << " -------------------------------------------------\n";
 
 
         }

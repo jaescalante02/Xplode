@@ -48,6 +48,8 @@ continue { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CONTINUE; 
 exit { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EXIT; }
 sleep { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SLEEP; }
 
+let {SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LET;}
+
 
 int { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_INT; }
 char { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CHAR; }

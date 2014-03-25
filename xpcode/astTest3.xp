@@ -1,19 +1,19 @@
 program
 
 begin
-    int b;
-    int c;
-    float A;
-    int a;
+    let int b;
+    let int c;
+    let float A;
+    let int a;
 
     if (a==2){
 //        int f;
 
         if (f==7){
             
-            int h;
-            int k;
-            char a;
+            let int h;
+            let int k;
+            let char a;
 
             k:=h;
 

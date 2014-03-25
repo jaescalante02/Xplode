@@ -18,18 +18,18 @@ union abc {
 
 function void suma (int a){
 
-int m;
-float j;
-//person p;
+let int m;
+let float j;
+let person p;
 
 p:=j;
 
 }
 
 begin
-  int y;
-  float w;
-  int abd;
+  let int y;
+  let float w;
+  let int abd;
   
   w := (43.5 - 38.5) ** 2; 
   z := doSomething(3232+x<z,x,y);
