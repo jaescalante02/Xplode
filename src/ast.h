@@ -86,31 +86,6 @@ class NodeList  {
 
 
 //Definition part
-class Declaration : public Node {
-  public:
-  std::string ntype;
-  std::string var;
-  
-  Declaration(std::string n, Xplode::Token *v) { 
-      ntype = n; 
-      var = v->value; 
-      line = v->line; 
-      column = v->column; 
-  }
-
-  void print(){
-   std::string tab = std::string(4, ' ');
-   
-   std::cout << "DECLARATION\n";
-   std::cout << "type: " << ntype << "\n";
-   std::cout << "var: " << var << "\n";
-  }
-
-  Symbol *toSymbol(){ return new Symbol(var,ntype, line, column, false); }
-
-
-};
-
 
 class SymTable {
 
@@ -300,6 +275,54 @@ class BinaryExpression : public Expression {
 
 };
 
+
+class TypeDeclaration: public Node {
+
+  public:
+
+    std::string name;
+    std::list<std::string> *max_index;
+
+    TypeDeclaration(std::string n) {
+
+      name = n;
+      max_index = new std::list<std::string>;
+
+    }
+
+    void addDimension(std::string number){ (*max_index).push_front(number); }
+
+    void print(){}
+
+
+};
+
+
+class Declaration : public Node {
+  public:
+  TypeDeclaration *ntype;
+  std::string var;
+  
+  Declaration(Node *n, Xplode::Token *v) { 
+      ntype = (TypeDeclaration *) n; 
+      var = v->value; 
+      line = v->line; 
+      column = v->column; 
+  }
+
+  void print(){
+   std::string tab = std::string(4, ' ');
+   
+   std::cout << "DECLARATION\n";
+   std::cout << "type: " << ntype << "\n";
+   std::cout << "var: " << var << "\n";
+  }
+
+  Symbol *toSymbol(){ return new Symbol(var,ntype->name, line, column, false); }
+
+
+};
+
 //statements
 
 
@@ -433,13 +456,13 @@ class Union : public Statement {
 
 };
 
-class Type : public Statement {
+class TypeStructure : public Statement {
   public:
   std::string name;
   NodeList *attributes;
   SymTable *table;
   
-  Type(Xplode::Token *n, NodeList* a) { 
+  TypeStructure(Xplode::Token *n, NodeList* a) { 
 
     table = new SymTable(a);
     name = n->value; 
@@ -470,9 +493,10 @@ class Procedure : public Statement {
   std::string returnType;
   NodeList* types;
   
-  Procedure(Xplode::Token *n, std::string r, NodeList* t) { 
+  Procedure(Xplode::Token *n, Node* r, NodeList* t) { 
       name = n->value; 
-      returnType = r; 
+      TypeDeclaration *tp = (TypeDeclaration *) r; 
+      returnType = tp->name; 
       types = t; 
       line = n->line;
       column = n->column;
@@ -495,7 +519,10 @@ class ProcedureType : public Node {
   public:
   std::string name;
   
-ProcedureType(std::string n) { name = n;}
+  ProcedureType(Node *n) { 
+    TypeDeclaration *tp = (TypeDeclaration *) n; 
+    name = tp->name;
+  }
   void print(){
    std::cout << "PROCEDURE TYPE\n";
    std::cout << "type: " << name << "\n";
@@ -511,9 +538,11 @@ class Function : public CompoundStatement {
   NodeList *parameters;
 
   
-  Function(Xplode::Token *n, std::string r, NodeList *p, Node *b = 0) { 
+  Function(Xplode::Token *n, Node *r, NodeList *p, Node *b = 0) { 
+
     name = n->value; 
-    returnType = r; 
+    TypeDeclaration *tp = (TypeDeclaration *) r; 
+    returnType = tp->name; 
     parameters = p; 
     block  = (Block *) b;
     if (block!=NULL) block->table->add(parameters);
@@ -554,7 +583,11 @@ class Extends : public Node {
   public:
   std::string type;
   
-Extends(std::string t) { type = t; }
+  Extends(Node *t) {     
+    TypeDeclaration *tp = (TypeDeclaration *) t; 
+    type = tp->name; 
+  }
+
   void print(){
    std::cout << "EXTENDS\n";
    std::cout << "type: " << type << "\n";

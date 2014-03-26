@@ -152,8 +152,8 @@
 
 
 //
-%type <tok> type
-%type <tok> function_type 
+%type <node> type
+%type <node> function_type 
 
 %%
 
@@ -194,17 +194,17 @@ def_union
 
 def_type 
   :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE { 
-    $$ = new Type($2, $4);
+    $$ = new TypeStructure($2, $4);
   }
   ; 
 
 attribute_list
   : type x_ID x_SEMICOLON { 
     $$ = new NodeList();
-    $$->push(new Declaration($1->value, $2));  
+    $$->push(new Declaration($1, $2));  
   }
   | attribute_list type x_ID x_SEMICOLON {
-    $1->push(new Declaration($2->value, $3));
+    $1->push(new Declaration($2, $3));
     $$ = $1;
   }
   ;
@@ -212,62 +212,67 @@ attribute_list
 //Used for second class functions
 def_proc
   : x_PROC type x_ID x_LPAR proc_type_list x_RPAR x_SEMICOLON {
-    $$ = new Procedure($3, $2->value, $5);
+    $$ = new Procedure($3, $2, $5);
   }
   ;
 
 proc_type_list
   : type {
     $$ = new NodeList();
-    $$->add(new ProcedureType($1->value));
+    $$->add(new ProcedureType($1));
   }
   | proc_type_list x_COMMA type { 
-    $1->add(new ProcedureType($3->value));
+    $1->add(new ProcedureType($3));
     $$ = $1;
   }   
   ;
 
 def_function  
   : x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR x_LBRACE x_RBRACE{
-    $$ = new Function($3, $2->value, $5);
+    $$ = new Function($3, $2, $5);
   }
   | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
-    $$ = new Function($3, $2->value, $5, $7);
+    $$ = new Function($3, $2, $5, $7);
   }
   ;
 
 function_type
   : type {$$ = $1; }
-  | x_VOID {$$ = $1; }
+  | x_VOID {$$ = new TypeDeclaration($1->value); }
   ;
   
 function_parameters 
   : type x_ID {
     $$ = new NodeList();
-    $$->push(new Declaration($1->value,$2)); //Modifique FunctionParameter por Declaration
+    $$->push(new Declaration($1 , $2)); //Modifique FunctionParameter por Declaration
   }
   | type x_ID x_COMMA x_EXTEND {
     $$ = new NodeList();
-    $$->push(new Extends($1->value));
-    $$->push(new Declaration($1->value,$2));
+    $$->push(new Extends($1));
+    $$->push(new Declaration($1,$2));
     
   }
   | type x_ID x_COMMA function_parameters {
-    $4->push(new Declaration($1->value,$2));
+    $4->push(new Declaration($1,$2));
     $$ = $4;  
   }
   ;
 
 type 
-  :  x_INT {$$ = $1; }
-  | x_CHAR {$$ = $1; } 
-  | x_FLOAT {$$ = $1; }
-  | x_ID
-  | type x_LBRACKET INTEGER x_RBRACKET
+  :  x_INT {$$ = new TypeDeclaration($1->value); }
+  | x_CHAR {$$ = new TypeDeclaration($1->value); } 
+  | x_FLOAT {$$ = new TypeDeclaration($1->value); }
+  | x_ID {$$ = new TypeDeclaration($1->value); }
+  | type x_LBRACKET INTEGER x_RBRACKET { 
+
+    TypeDeclaration *tp = (TypeDeclaration *) $1; 
+     tp->addDimension($3->value);
+     $$ = tp;
+    }
   ;     
 
 
-block 
+block  
   : x_LBRACE declaration_list statement_list x_RBRACE {$$ = new Block($2,$3); }
   | x_LBRACE statement_list x_RBRACE {$$ = new Block($2); }
   ;
@@ -275,11 +280,11 @@ block
 declaration_list
   : x_LET type x_ID x_SEMICOLON { 
     $$ = new NodeList();
-    $$->add(new Declaration($2->value, $3));  
+    $$->add(new Declaration($2, $3));  
   }
   
   | declaration_list x_LET type x_ID x_SEMICOLON {
-    $1->add(new Declaration($3->value, $4));
+    $1->add(new Declaration($3, $4));
     $$ = $1;
   }
   ;
