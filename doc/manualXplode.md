@@ -1,22 +1,31 @@
 #Xplode
 
-        Version 1.0
-
-
-
 *** Se decidió que se ignorará mayúsculas, confirmar ***
 
 *** Se decidió permitir número variable de argumentos, no tenemos notacion ***
 
 *** Posible pase de funciones como parametros (2da clase) ***
 
-*** Posible parámetros desordenados ***
-
 *** int[5:8][3:6] ***
 
 *** sleep? ***
 
 *** concat? i++, i--, solo instrucciones ***
+
+        Version 1.0
+
+Xplode es un compilador para los cursos de la cadena de Lenguajes de Programación de la
+Univerisdad Simón Bolívar.
+
+%%%%%faltan caracteristicas
+
+En su diseño se tomaron en cuenta peculiaridades de C/C++ y Pascal/Modula-2, entre otros,
+en la búsqueda de ofrecer facilidades en torno al uso de Xplode, en base a experiencias previas.
+
+Sin embargo, es necesario aclarar que no es ninguno de los lenguajes anteriormente señalados,
+es un lenguaje simplificado que cumple ciertos parámetros obligatorios y 
+en nuestro caso algunos extras, para acceder a otro nivel de expresividad.
+
 
 ##1 Consideraciones léxicas
 
@@ -97,6 +106,14 @@ Otros
 * ?length?
 
 
+Otros aspectos
+
+Xplode entre sus características a tener en cuenta ignora el uso de mayúsculas,
+es decir, el identificador FOO, FoO y foo se refieren a la misma variable, aplicando
+lo mismo para todas las palabras reservadas.
+
+%%%%% falta explicar los 2 modos
+
 Tipos
 --------
 
@@ -107,7 +124,7 @@ Tipos
 * types
 * unions
 
-ejemplo de un arreglo:    int[]   
+ejemplo de un arreglo:    int[]
 
 *** ?multidimensional?.
 como manejar rango variables
@@ -123,113 +140,71 @@ como manejar rango variables
 
 *version inicial*
 
-grammar: 
+La grámatica todavía presenta arreglos por lo que no se explicará en detalle en
+esta versión, sin embargo copiamos la referencia al archivo xplode.y en donde se encuentra 
+implementada.
 
-       x_PROGRAM declaraciones main;
-
-declaraciones: 
-
-       // empty
-       | declaraciones declaracion;
-       
-declaracion:
-
-       decl_functions
-       | types
-       | decl_procs;
-       | unions;
-
-bloque: // al principio o donde sea? valorar
-
-       declaraciones instrucciones;
-
-instrucciones:
-
-       instrucciones instruccion;
-
-instruccion: 
-
-       | asignacion
-       | condicional
-       | determinada
-       | indeterminada
-       | x_EXIT x_SEMICOLON;
-
-asignacion: leftside x_ASSIGN expresion;
-
-leftside: 
-       x_ID
-       | leftside x_DOT x_ID;
-
-expresion:
-
-       x_LPAR expresion x_RPAR
-       | x_NOT expresion
-       | x_MINUS expresion
-       | expresion x_PLUS expresion
-       | expresion x_MINUS expresion
-       | expresion x_MULT expresion
-       | expresion x_DIV expresion
-       | expresion x_POWER expresion
-       | expresion x_ASSIGN expresion
-       | expresion x_EQ expresion
-       | expresion x_NEQ expresion
-       | expresion x_AND expresion
-       | expresion x_OR expresion;
-
-condicional: //conversar sobre poner el elif de nuevo
-
-       x_IF expresion x_LBRACE bloque x_RBRACE;
-       | x_IF expresion x_LBRACE bloque x_RBRACE x_ELSE x_LBRACE bloque x_RBRACE;
-
-determinada: x_FOR x_LPAR expresion x_COMMA expresion x_COMMA expresion x_RPAR x_LBRACE bloque x_RBRACE;
-
-indeterminada: x_WHILE expresion x_LBRACE bloque x_RBRACE;
-
-decl_functions:
-
-       x_FUNCTION tipo x_ID x_LPAR argumentos x_RPAR x_LBRACE bloque x_RBRACE;
-
-decl_procs:
-
-      x_PROC tipo x_ID x_LPAR tipos_proc x_RPAR;
-
-tipos_proc:
-  
-     | list_tipos_proc tipo;
-
-list_tipos_proc:
-
-     | list_tipos_proc tipo x_COMMA;
-
-tipos: 
- 
-       x_INT
-       | x_CHAR
-       | x_FLOAT
-       | x_ID
-       | tipos x_LBRACKET x_NUMBER x_RBRACKET;
-
-types:
-
-      x_TYPE x_ID x_LBRACE atributos x_RBRACE;
-
-unions:
-
-      x_UNION x_ID x_LBRACE atributos x_RBRACE;
-
-atributos: 
-
-      tipo x_ID x_SEMICOLON
-      | atributos tipo x_ID x_SEMICOLON; 
-
-
-main:
-
-       x_BEGIN bloque x_END;
 
 
 ##3 Estructura del programa
 
-*** Por completar ***
+Un programa en Xplode se puede dividir en 3 secciones a las cuáles se deberán prestar 
+atención.
 
+1. Palabra de inicio: La cual es una señal de que es un programa en Xplode, además
+de decidir en cual modo de ejecución se encuentra (ver sección 2).
+
+2. Sección de definiciones: En este espacio se podrán definir los tipos, uniones,
+variables globales, constantes y funciones que desea que existan en el programa.
+
+3. Programa Principal: Sección que será llamada al iniciar la ejecución, iniciada por
+un begin y finalizada en end.
+
+##4 Alcance
+
+##5 Tipos
+
+primitivos
+
+types
+
+unions
+
+procs
+
+##6 Variables
+
+##7 Arreglos
+
+##8 Strings
+
+write
+
+##9 Funciones
+
+...
+
+2da clase
+
+
+##10 Asignación
+
+##11 Estructuras de control
+
+if
+else
+while
+for
+
+
+##12 Expresiones
+
+
+
+##13 Chequeos a tiempo de ejecución
+
+Se espera que sea el menor número de verificaciones posibles
+
+##14 Cosas que explotan!
+
+Por ahora es díficil decirlo porque apenas hacemos los primeros chequeos.

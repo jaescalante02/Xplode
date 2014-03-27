@@ -1,7 +1,7 @@
 #include <iostream>     // std::ios, std::istream, std::cout
 #include <fstream> 
 #include <string>
-
+#include "ErrorLog.h"
 #include "XplodeScanner.h"
 #include "ClassicScanner.h"
 #include "XplodeParser.h"
@@ -11,7 +11,7 @@
 int line = 1;
 int column = 1;
 std::string tok;
- 
+ErrorLog *errorlog = new ErrorLog(); 
 
 int selectLexer(char* fp){
 
