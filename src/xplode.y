@@ -407,13 +407,13 @@ constant
   ;
   
 variable
-  : variable_id { $$ = $1;}
-  | variable x_LBRACKET INTEGER x_RBRACKET { $1->addIndex($3->value); $$ = $1; }
+  : variable_id {$$ = $1; }
+  | variable x_DOT variable_id { $1->concat($3); $$=$1;  }
   ;
 
 variable_id
-  : x_ID { $$ = new Variable($1->value);}
-  | variable_id x_DOT x_ID { $1->addField($3->value); $$ = $1; }
+  : x_ID {$$ = new Variable($1->value); }
+  | variable_id x_LBRACKET expression x_RBRACKET { $1->addIndex($3); $$=$1; }
   ;
 
 function
@@ -431,6 +431,7 @@ function_arguments
 
 extern int line,column;  
 extern std::string tok;
+extern ErrorLog *errorlog;
  
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
 	std::cerr << "Error de sintaxis en linea " << line << ", columna " << column << ": token "

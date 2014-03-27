@@ -1,4 +1,7 @@
 
+#ifndef X_ERROR_LOG
+#define X_ERROR_LOG
+
 class ErrorLog{
   public:
   
@@ -10,3 +13,6 @@ class ErrorLog{
     bool a;
 
 };
+
+
+#endif

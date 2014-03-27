@@ -7,12 +7,15 @@
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
+#include "ErrorLog.h" 
  
 #define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
 
 #define INT_SYMBOL new Symbol("int","_type",0,0,true)
 #define FLOAT_SYMBOL new Symbol("float","_type",0,0,true)
 #define CHAR_SYMBOL new Symbol("char","_type",0,0,true)
+
+extern ErrorLog *errorlog;
 
 class Symbol {
 
@@ -175,6 +178,13 @@ class Expression : public Node {
   public:
   std::string type; //Used for type checks
 
+  virtual void print() {}
+
+  virtual void firstcheck(SymTable *symtb){
+  
+  
+  }
+
 };
 
 class Constant : public Expression {
@@ -186,35 +196,59 @@ class Constant : public Expression {
    std::cout << "value: " << value << "\n";
   }
 
+  void firstcheck(SymTable *symtb){}
+
 };
 
 class Variable : public Expression {
   public:
-  std::string var;
-  std::list<int> indexList;
-  std::list<std::string> fieldList;
+
+  std::list<std::string> *varList;
+  std::list<std::pair<int, Expression *> > *indexList;
   
-  Variable(std::string v){var = v; }
-  void print(){
+  Variable(std::string v){
+    varList = new std::list<std::string>; 
+    indexList = new std::list<std::pair<int, Expression *> >;
+    varList->push_back(v);
+  }
+  
+  void print(){ 
    std::cout << "VARIABLE\n";
-   std::cout << "var: " << var << "\n";
-   for(std::list<std::string >::iterator iter = fieldList.begin(); iter != fieldList.end(); ++iter){
+   for(std::list<std::string >::iterator iter = varList->begin(); iter != varList->end(); ++iter){
      std::cout << "field: " << *iter << "\n"; 
    }
-   for(std::list<int>::iterator iter = indexList.begin(); iter != indexList.end(); ++iter){
-     std::cout << "index: " << *iter << "\n"; 
+   for(std::list<std::pair<int, Expression *> >::iterator iter = indexList->begin(); iter != indexList->end(); ++iter){
+     std::cout << "index: " << (*iter).first <<"|"<<"\n";
+     iter->second->print(); 
    }
-   
   }
   
-  void addIndex(std::string i){
-    int index = atoi(i.c_str());
-    indexList.push_back(index);
+  void addIndex(Expression *exp){
+    indexList->push_back(std::make_pair(0, exp));
   }
 
-  void addField(std::string f){
-    fieldList.push_back(f);
+  void concat(Variable *v){
+  
+    varList->push_back(*v->varList->begin());
+    
+    std::list<std::pair<int, Expression *> >::iterator it;
+    
+    for(it=v->indexList->begin(); it != v->indexList->end();++it){
+    
+      indexList->push_back(std::make_pair(varList->size()-1, (*it).second));
+    
+    }
+  
+  
   }
+
+  void firstcheck(SymTable *symtb){
+  
+   //  if(symtb->find(*varList->begin())){std::cout << "Declarada "<<*varList->begin()<<"\n";}
+   //  else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
+  
+  }
+
 };
 
 class FunctionExpression : public Expression {
@@ -230,6 +264,11 @@ class FunctionExpression : public Expression {
     }
   }
 
+  void firstcheck(SymTable *symtb){
+  
+  
+  }
+
 };
 
 
@@ -243,6 +282,11 @@ class Uminus : public Expression {
    exp->print();
   }
 
+  void firstcheck(SymTable *symtb){
+  
+  
+  }
+
 };
 
 class UnaryExpression : public Expression {
@@ -252,6 +296,12 @@ class UnaryExpression : public Expression {
   void print(){
    std::cout << "UNARY EXPRESSION\n";
    exp->print();
+  }
+
+  void firstcheck(SymTable *symtb){
+  
+    exp->firstcheck(symtb);
+  
   }
 
 };
@@ -271,6 +321,13 @@ class BinaryExpression : public Expression {
    lexp->print();
    std::cout << "right expression: \n";
    rexp ->print();
+  }
+
+  void firstcheck(SymTable *symtb){
+
+    lexp->firstcheck(symtb);
+    rexp-> firstcheck(symtb);
+  
   }
 
 };
@@ -335,6 +392,9 @@ public:
 
   virtual void setFather(SymTable *s){}
 
+  virtual void firstcheck(SymTable *symtb){}
+
+
 };
 
 class Block : public Node {
@@ -398,6 +458,19 @@ class Block : public Node {
 
   }
 
+  void firstcheck(){
+  
+    Statement *st;
+    std::list<Node *>::iterator iter;
+    for(iter = (*statementList).nodeList.begin(); iter != (*statementList).nodeList.end(); ++iter){
+        st = (Statement *) *iter;          
+        st->firstcheck(table); 
+    } 
+  
+  
+  }
+
+
 };
 
 class CompoundStatement: public Statement {
@@ -454,6 +527,11 @@ class Union : public Statement {
 
   Symbol *toSymbol() { return new Symbol(name,"_union",line,column,true); }
 
+  void firstcheck(){
+  
+  
+  }
+
 };
 
 class TypeStructure : public Statement {
@@ -470,6 +548,7 @@ class TypeStructure : public Statement {
     line = n->line; 
     column = n->column; 
   }
+  
   void print(){
    std::cout << "TYPE\n";
    std::cout << "name: " << name << "\n";
@@ -484,6 +563,11 @@ class TypeStructure : public Statement {
   }
 
   Symbol *toSymbol() { return new Symbol(name,"_type", line, column, true); }
+
+  void firstcheck(){
+  
+  
+  }
 
 };
 
@@ -511,7 +595,13 @@ class Procedure : public Statement {
 
   }
 
-Symbol *toSymbol() {return new Symbol(name,"_proc", line, column, true); }
+  Symbol *toSymbol() {return new Symbol(name,"_proc", line, column, true); }
+
+  void firstcheck(){
+  
+  
+  
+  }
 
 };
 
@@ -561,7 +651,15 @@ class Function : public CompoundStatement {
 
   }
 
-Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true); }
+  Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true); }
+
+  void firstcheck(){
+  
+    if(block!=NULL) block->firstcheck();
+  
+  }
+
+
 
 };
 
@@ -652,6 +750,27 @@ public:
 
   }
 
+  void check(){
+  
+    this->firstcheck();
+  
+  }
+
+  void firstcheck(){
+
+    std::list<Node *>::iterator iter;
+    Statement *st;
+    if (definitionList!=NULL) 
+      for(iter = (*definitionList).nodeList.begin(); iter != (*definitionList).nodeList.end(); ++iter){
+            st = (Statement *) *iter;
+            st->firstcheck(table); 
+      }
+  
+    if(block!=NULL) block->firstcheck();  
+    
+  
+  }
+
 };
 
 class AssignStatement : public Statement {
@@ -668,17 +787,32 @@ class AssignStatement : public Statement {
    std::cout << "right value: \n";
    rvalue ->print();
   }
+  
+  void firstcheck(SymTable *symtb){
+  
+    lvalue->firstcheck(symtb);
+    rvalue->firstcheck(symtb);
+  
+  }
 
 };
 
 class ReadStatement : public Statement {
   public:
   Expression *var;
+  
   ReadStatement(Expression *v){ var = v; }
+  
   void print(){
    std::cout << "READ STATEMENT\n";
    std::cout << "variable:\n";
    var->print();
+  }
+  
+  void firstcheck(SymTable *symtb){
+  
+    var->firstcheck(symtb);
+  
   }
 
 };
@@ -686,7 +820,9 @@ class ReadStatement : public Statement {
 class WriteStatement : public Statement {
   public:
   std::list<Expression *> *writeList; 
+
   WriteStatement(std::list<Expression *> *a){writeList = a; }
+
   void print(){
    std::cout << "WRITE STATEMENT\n";
    for(std::list<Expression *>::iterator iter = writeList->begin(); iter != writeList->end(); ++iter){
@@ -695,16 +831,31 @@ class WriteStatement : public Statement {
     }
   }
 
+  void firstcheck(SymTable *symtb){
+  
+    for(std::list<Expression *>::iterator iter = writeList->begin(); iter != writeList->end(); ++iter)
+      (*iter)->firstcheck(symtb); 
+    
+  
+  }
+
 };
 
 class SleepStatement : public Statement {
   public:
   Expression *var;
   SleepStatement(Expression *v){ var = v; }
+  
   void print(){
    std::cout << "SLEEP STATEMENT\n";
    std::cout << "argument:\n";
    var->print();
+  }
+
+  void firstcheck(SymTable *symtb){
+  
+    var->firstcheck(symtb);
+  
   }
 
 };
@@ -712,13 +863,25 @@ class SleepStatement : public Statement {
 
 class WhileStatement : public CompoundStatement {
   public:
+  
   Expression *condition; 
-  WhileStatement(Expression *c, Node *b){ condition = c; block = (Block *) b; }
+  WhileStatement(Expression *c, Node *b){ 
+    condition = c; 
+    block = (Block *) b;
+  }
+  
   void print(){
    std::cout << "WHILE STATEMENT \n";
    std::cout << "condition: \n";
    condition->print();
    block->print();
+  }
+
+  void firstcheck(SymTable *symtb){
+  
+    condition->firstcheck(symtb);
+    if(block!=NULL) block->firstcheck();
+  
   }
 
 };
@@ -745,6 +908,12 @@ class ForStatement : public CompoundStatement {
    block->print();
   }
 
+  void firstcheck(SymTable *symtb){
+  
+    if (block!=NULL) block->firstcheck();  
+  
+  }
+
 };
 
 class IfStatement : public CompoundStatement {
@@ -766,6 +935,14 @@ class IfStatement : public CompoundStatement {
     std::cout << "else: \n";
     elseBlock->print();
    }
+  }
+
+  void firstcheck(SymTable *symtb){
+  
+    condition->firstcheck(symtb);    
+    if(block != NULL) block->firstcheck();
+    if (elseBlock != NULL) elseBlock->firstcheck();
+    
   }
 
 };

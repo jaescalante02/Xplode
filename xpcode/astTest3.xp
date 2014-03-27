@@ -15,7 +15,8 @@ begin
             let int k;
             let char a;
 
-            k:=h;
+            k:=999 + m;
+            p[2].a.l := r[3][4].m[2].h[7];
 
         };
 
