@@ -1,3 +1,6 @@
+#ifndef X_EXPRESSION
+#define X_EXPRESSION
+
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -7,10 +10,9 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "Node.h"
-#include "../SymTable.h"
 
-#ifndef X_EXPRESSION
-#define X_EXPRESSION
+
+class SymTable;
 
 
 class Expression : public Node {

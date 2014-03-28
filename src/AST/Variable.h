@@ -1,3 +1,6 @@
+#ifndef X_VARIABLEEXP
+#define X_VARIABLEEXP
+
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -8,9 +11,6 @@
 #include <stdio.h>
 #include "Expression.h"
 #include "../SymTable.h"
-
-#ifndef X_VARIABLEEXP
-#define X_VARIABLEEXP
 
 class Variable : public Expression {
   public:

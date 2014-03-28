@@ -1,3 +1,7 @@
+#ifndef X_SYMTABLE_
+#define X_SYMTABLE_
+
+
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -8,9 +12,7 @@
 #include <stdio.h>
 #include "Symbol.h"
 #include "AST/NodeList.h"
-
-#ifndef X_SYMTABLE_
-#define X_SYMTABLE_
+#include "AST/Variable.h"
 
 #define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
 
@@ -50,9 +52,9 @@ class SymTable {
 
         }
 
-        Symbol *find(std::string variable){ 
+        Symbol *find(Variable *variable){ 
 
-            std::string var(variable);
+            std::string var(*variable->varList->begin());
             toLower(var);
             return this->findall(var);
         }
