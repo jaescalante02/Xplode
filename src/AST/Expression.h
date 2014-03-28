@@ -10,9 +10,7 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "Node.h"
-
-
-class SymTable;
+#include "../SymTable.h"
 
 
 class Expression : public Node {

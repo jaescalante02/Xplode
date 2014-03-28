@@ -37,6 +37,13 @@ class TypeStructure : public Statement {
    attributes->print();
   }
 
+  void setFather(SymTable *s){
+  
+    table->setFather(s);
+  
+  }
+
+
   void printTable() {
 
      if (table!=NULL) table->print();

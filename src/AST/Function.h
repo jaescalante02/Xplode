@@ -47,9 +47,15 @@ class Function : public CompoundStatement {
 
   }
 
+  void setFather(SymTable *s){
+  
+    if(block!=NULL) block->setFather(s);
+  
+  }
+
   Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true, 0); }
 
-  void firstcheck(){
+  void firstcheck(SymTable *symtb){
   
     if(block!=NULL) block->firstcheck();
   

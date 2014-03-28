@@ -1,5 +1,5 @@
-all:  bis fle FlexScanner.o ErrorLog.o
-	g++ lex.xp.cc lex.cl.cc FlexScanner.o ErrorLog.o Main.cpp xplode.tab.c -o xplode
+all:  bis fle FlexScanner.o ErrorLog.o SymTable.o
+	g++ lex.xp.cc lex.cl.cc FlexScanner.o ErrorLog.o SymTable.o Main.cpp xplode.tab.c -o xplode
 	
 FlexScanner.o:  FlexScanner.h FlexScanner.cpp bis
 	g++ -c FlexScanner.cpp	
@@ -7,6 +7,9 @@ FlexScanner.o:  FlexScanner.h FlexScanner.cpp bis
 ErrorLog.o: ErrorLog.h ErrorLog.cpp
 	g++ -c ErrorLog.cpp
 
+SymTable.o: SymTable.h SymTable.cpp
+	g++ -c SymTable.cpp
+	
 bis: xplode.y 
 	bison -v xplode.y
 

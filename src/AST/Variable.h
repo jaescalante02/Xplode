@@ -12,6 +12,7 @@
 #include "Expression.h"
 #include "../SymTable.h"
 
+
 class Variable : public Expression {
   public:
 
@@ -60,8 +61,8 @@ class Variable : public Expression {
 
   void firstcheck(SymTable *symtb){
   
-   //  if(symtb->find(*varList->begin())){std::cout << "Declarada "<<*varList->begin()<<"\n";}
-   //  else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
+     if(symtb->find(this)){std::cout << "Declarada "<<*varList->begin()<<"\n";}
+     else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
   
   }
 

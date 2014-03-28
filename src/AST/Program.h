@@ -30,7 +30,8 @@ public:
     table= new SymTable();
     this->insertPrimitives(); 
     definitionList = 0; 
-    block = (Block *) b; 
+    block = (Block *) b;
+    block->setFather(table); 
 
   }
 
@@ -39,7 +40,9 @@ public:
     table = new SymTable(d); 
     this->insertPrimitives(); 
     definitionList = d; 
+    this->setFathers();
     block = (Block *) b; 
+    block->setFather(table);
 
   }
 
@@ -72,6 +75,20 @@ public:
       }
   
     if(block!=NULL) block->printTable();
+
+  }
+
+  void setFathers() {
+
+    Statement *st;
+    std::list<Node *>::iterator iter;
+    for(iter = (*definitionList).nodeList.begin(); 
+        iter != (*definitionList).nodeList.end(); ++iter){
+        
+        st = (Statement *) *iter;          
+        st->setFather(table); 
+    }
+
 
   }
 

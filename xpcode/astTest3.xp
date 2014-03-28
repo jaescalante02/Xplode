@@ -13,6 +13,17 @@ vac z;
 
 }
 
+
+function void drake(int zer){
+let char chat;
+
+chat := sa+chat+ rmm;
+
+
+}
+
+
+
 begin
     let int b;
     let int c;
@@ -30,7 +41,7 @@ begin
             let int k;
             let char a;
 
-            k:=999 + m;
+            k:=999 + m + sa;
             p[2].a.l := r[3][4].m[2].h[7];
 
         };

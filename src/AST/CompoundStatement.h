@@ -37,6 +37,8 @@ public:
 
   }
 
+  virtual void firstcheck(SymTable *symtb){}
+
 };
 
 #endif
