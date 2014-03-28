@@ -45,7 +45,7 @@ int main(int argc, char * argv[]) {
 
     Xplode::FlexScanner *scanner;
     int lexdecision=0;
-    Main *program;
+    Program *program;
     lexdecision = selectLexer(argv[1]);
     if (lexdecision==1) scanner = new Xplode::ClassicScanner(&is);
     else scanner = new Xplode::XplodeScanner(&is);

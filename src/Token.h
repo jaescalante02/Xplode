@@ -2,6 +2,9 @@
 
 #include <string> 
 
+#ifndef X_TOKEN_
+#define X_TOKEN_
+
 namespace Xplode {
 
     class Token {
@@ -16,3 +19,6 @@ namespace Xplode {
     };
 
 }
+
+
+#endif

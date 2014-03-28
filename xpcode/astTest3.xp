@@ -1,5 +1,18 @@
 program
 
+union we {
+
+int g;
+char j;
+}
+
+type sa {
+
+res i;
+vac z;
+
+}
+
 begin
     let int b;
     let int c;
@@ -8,6 +21,8 @@ begin
 
     if (a==2){
 //        int f;
+          let int[2][2] d;
+          let person[7] p;
 
         if (f==7){
             

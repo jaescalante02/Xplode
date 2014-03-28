@@ -3,7 +3,7 @@
 %defines
 %define namespace "Xplode"
 %define parser_class_name "BisonParser"
-%parse-param { Main **program } //int momentaneo, clase por crear 
+%parse-param { Program **program } //int momentaneo, clase por crear 
 %parse-param { Xplode::FlexScanner &scanner }
 %lex-param   { Xplode::FlexScanner &scanner }
 %union {
@@ -23,7 +23,39 @@
 	}
 	#include <stdio.h>
 	#include "Token.h"
-	#include "ast.h"
+	#include "AST/AssignStatement.h"
+  #include "AST/BinaryExpression.h"
+  #include "AST/Block.h"
+  #include "AST/CompoundStatement.h"
+  #include "AST/Constant.h"
+  #include "AST/Declaration.h"
+  #include "AST/Expression.h"
+  #include "AST/Extends.h"
+  #include "AST/ForStatement.h"
+  #include "AST/Function.h"
+  #include "AST/FunctionExpression.h"
+  #include "AST/FunctionParameter.h"
+  #include "AST/IfStatement.h"
+  #include "AST/Program.h"
+  #include "AST/Node.h"
+  #include "AST/NodeList.h"
+  #include "AST/Procedure.h"
+  #include "AST/ProcedureType.h"
+  #include "AST/ReadStatement.h"
+  #include "AST/SleepStatement.h"
+  #include "AST/Statement.h"
+  #include "AST/TypeDeclaration.h"
+  #include "AST/TypeStructure.h"
+  #include "AST/Uminus.h"
+  #include "AST/UnaryExpression.h"
+  #include "AST/Union.h"
+  #include "AST/Variable.h"
+  #include "AST/WhileStatement.h"
+  #include "AST/WriteStatement.h"
+  #include "Symbol.h"
+  #include "SymTable.h"
+  #include "ErrorLog.h"	
+  
 }
 
 %code {
@@ -159,8 +191,8 @@
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { *program = new Main($2); }
-  | x_PROGRAM definition_list main { *program = new Main($2,$3); }
+  : x_PROGRAM main { *program = new Program($2); }
+  | x_PROGRAM definition_list main { *program = new Program($2,$3); }
   ;
 
 main

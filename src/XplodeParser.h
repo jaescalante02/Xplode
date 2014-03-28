@@ -5,7 +5,7 @@
 namespace Xplode {
 	class Parser {
 		public:
-			Parser(Main **program, Xplode::FlexScanner *scanner) {  
+			Parser(Program **program, Xplode::FlexScanner *scanner) {  
 
                                   parser = new Xplode::BisonParser(program, *scanner);
 
