@@ -278,11 +278,11 @@ proc_type_list
   ;
 
 def_function  
-  : x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR x_LBRACE x_RBRACE{
-    $$ = new Function($3, $2, $5);
+  : x_FUNCTION function_type x_ID x_LPAR x_RPAR block {
+    $$ = new Function($3, $2, $6);
   }
   | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
-    $$ = new Function($3, $2, $5, $7);
+    $$ = new Function($3, $2, $7, $5);
   }
   ;
 
@@ -518,6 +518,7 @@ variable_id
 
 function
   : x_ID x_LPAR function_arguments x_RPAR {$$ = new FunctionExpression($1->value,$3); }
+  | x_ID x_LPAR x_RPAR {$$ = new FunctionExpression($1->value); }
   ;
 
 function_arguments

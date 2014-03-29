@@ -23,15 +23,16 @@ class Function : public CompoundStatement {
   std::string returnType;
   NodeList *parameters;
 
-  
-  Function(Xplode::Token *n, Node *r, NodeList *p, Node *b = 0) { 
+  Function(Xplode::Token *n, Node *r,Node *b, NodeList *p = 0 ) { 
 
     name = n->value; 
     TypeDeclaration *tp = (TypeDeclaration *) r; 
     returnType = tp->name; 
     parameters = p; 
     block  = (Block *) b;
-    if (block!=NULL) block->table->add(parameters);
+    if (parameters != 0){
+      block->table->add(parameters);
+    }
     line = n->line;
     column = n->column;
   }
@@ -40,11 +41,11 @@ class Function : public CompoundStatement {
    std::cout << "FUNCTION\n";
    std::cout << "name: " << name << "\n";
    std::cout << "return: "<< returnType << "\n";
-   parameters->print();
-   if (block != 0 ){
-    block->print();
+   
+   if (parameters != 0){
+    parameters->print();
    }
-
+    block->print();
   }
 
   void setFather(SymTable *s){

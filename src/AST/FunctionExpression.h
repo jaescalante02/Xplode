@@ -16,17 +16,19 @@ class FunctionExpression : public Expression {
   public:
   std::string fname;
   std::list<Expression *> *argList; 
-  FunctionExpression(std::string n, std::list<Expression *> *a){fname = n; argList = a; }
+  FunctionExpression(std::string n, std::list<Expression *> *a = 0){fname = n; argList = a; }
   void print(){
-   std::cout << "FUNCTION EXPRESSION\n";
-   for(std::list<Expression *>::iterator iter = argList->begin(); iter != argList->end(); ++iter){
-      std::cout << "argument: \n";
-      (*iter)->print(); 
-    }
+   std::cout << "FUNCTION \n";
+   std::cout << "name: " << fname << "\n";
+   if ( argList != 0 ){
+     for(std::list<Expression *>::iterator iter = argList->begin(); iter != argList->end(); ++iter){
+        std::cout << "argument: \n";
+        (*iter)->print(); 
+     }
+   }
   }
 
   void firstcheck(SymTable *symtb){
-  
   
   }
 
