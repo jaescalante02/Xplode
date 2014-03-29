@@ -11,6 +11,7 @@
   Node *node; //Node from the AST
   NodeList *nodelist;
   Variable *var;
+  Parameter *par;
   Expression *exp;
   std::list<Expression *> *explist;
 }
@@ -26,28 +27,35 @@
 	#include "AST/AssignStatement.h"
   #include "AST/BinaryExpression.h"
   #include "AST/Block.h"
+  #include "AST/BreakStatement.h"
   #include "AST/CompoundStatement.h"
   #include "AST/Constant.h"
+  #include "AST/ContinueStatement.h"
   #include "AST/Declaration.h"
   #include "AST/Expression.h"
+  #include "AST/Error.h"
+  #include "AST/ExitStatement.h"
   #include "AST/Extends.h"
   #include "AST/ForStatement.h"
   #include "AST/Function.h"
   #include "AST/FunctionExpression.h"
   #include "AST/FunctionParameter.h"
+  #include "AST/FunctionStatement.h"
   #include "AST/IfStatement.h"
   #include "AST/Program.h"
   #include "AST/Node.h"
   #include "AST/NodeList.h"
+  #include "AST/Parameter.h"
   #include "AST/Procedure.h"
   #include "AST/ProcedureType.h"
   #include "AST/ReadStatement.h"
+  #include "AST/ReturnStatement.h"
   #include "AST/SleepStatement.h"
   #include "AST/Statement.h"
   #include "AST/TypeDeclaration.h"
   #include "AST/TypeStructure.h"
-  #include "AST/Uminus.h"
   #include "AST/UnaryExpression.h"
+  #include "AST/UnaryOp.h"
   #include "AST/Union.h"
   #include "AST/Variable.h"
   #include "AST/WhileStatement.h"
@@ -66,6 +74,7 @@
 %token<tok> INTEGER
 %token<tok> FLOAT
 %token<tok> STRING
+%token<tok> CHAR
 
 //Reserved words
 %token<tok> x_PROGRAM
@@ -83,6 +92,7 @@
 %token<tok> x_BOOL
 %token<tok> x_FLOAT
 %token<tok> x_VOID
+%token<tok> x_VAR
 
 %token<tok> x_TRUE
 %token<tok> x_FALSE
@@ -139,6 +149,7 @@
 %nonassoc x_EQ x_NEQ
 %nonassoc x_LESS x_LESSEQ x_GREATER x_GREATEREQ
 %left x_AND x_OR
+%left x_NOT
 %left	x_PLUS x_MINUS
 %left x_MULT x_DIV   
 %left x_POWER
@@ -152,17 +163,22 @@
 %type <node> def_type
 %type <node> def_proc
 %type <node> def_function
-%type <node> statement
+%type <node> declaration
+%type <node> statement 
 %type <node> statement_assign statement_sleep 
 %type <node> statement_read statement_write
 %type <node> statement_while statement_for
 %type <node> statement_if statement_else
+%type <node> statement_return statement_exit
+%type <node> statement_break statement_continue
+%type <node> statement_function
 %type <node> for_init for_increment
 
 %type <node> block
 %type <node> main
 %type <node> start
 
+%type <par> parameter
 
 //expressions
 
@@ -178,20 +194,20 @@
 %type <nodelist> declaration_list
 %type <nodelist> attribute_list
 %type <nodelist> proc_type_list
-%type <nodelist> function_parameters 
+%type <nodelist> function_parameters
 %type <nodelist> statement_list 
 
 
 
 //
-%type <node> type
+%type <node> primitive_type param_type type
 %type <node> function_type 
 
 %%
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { *program = new Program($2); }
+  : x_PROGRAM main { *program = new Program($2);  }
   | x_PROGRAM definition_list main { *program = new Program($2,$3); }
   ;
 
@@ -216,6 +232,8 @@ definition
   | def_proc { $$ = $1; }
   | def_type { $$ = $1; }
   | def_function {$$ = $1; }
+  | declaration {$$ = $1; }
+  | error {yyclearin; yyerrok; $$ = new Error();}
   ;
 
 def_union
@@ -269,34 +287,49 @@ def_function
   ;
 
 function_type
-  : type {$$ = $1; }
+  : primitive_type {$$ = $1; }
   | x_VOID {$$ = new TypeDeclaration($1->value); }
   ;
   
 function_parameters 
-  : type x_ID {
+  : parameter {
     $$ = new NodeList();
-    $$->push(new Declaration($1 , $2)); //Modifique FunctionParameter por Declaration
+    $$->push($1); //Modifique FunctionParameter por Declaration
   }
-  | type x_ID x_COMMA x_EXTEND {
+  | parameter x_COMMA x_EXTEND {
     $$ = new NodeList();
-    $$->push(new Extends($1));
-    $$->push(new Declaration($1,$2));
+    $$->push(new Extends($1->ntype));
+    $$->push($1);
     
   }
-  | type x_ID x_COMMA function_parameters {
-    $4->push(new Declaration($1,$2));
-    $$ = $4;  
+  | parameter x_COMMA function_parameters {
+    $3->push($1);
+    $$ = $3;  
   }
   ;
 
-type 
+parameter
+  : param_type x_ID {$$ = new Parameter($1,$2);} 
+  | x_VAR param_type x_ID {$$ = new Parameter($2,$3,"ref");} 
+  ;
+
+param_type 
+  : primitive_type {$$ = $1; }
+  | x_ID {$$ = new TypeDeclaration($1->value); }
+  | param_type x_LBRACKET x_RBRACKET {$$ = $1; } 
+  ;
+  
+primitive_type
   :  x_INT {$$ = new TypeDeclaration($1->value); }
   | x_CHAR {$$ = new TypeDeclaration($1->value); } 
+  | x_BOOL {$$ = new TypeDeclaration($1->value); } 
   | x_FLOAT {$$ = new TypeDeclaration($1->value); }
+  ;
+
+type 
+  : primitive_type {$$ = $1; }
   | x_ID {$$ = new TypeDeclaration($1->value); }
   | type x_LBRACKET INTEGER x_RBRACKET { 
-
     TypeDeclaration *tp = (TypeDeclaration *) $1; 
      tp->addDimension($3->value);
      $$ = tp;
@@ -309,20 +342,24 @@ block
   | x_LBRACE statement_list x_RBRACE {$$ = new Block($2); }
   ;
 
+declaration
+  : x_LET type x_ID x_SEMICOLON { $$ = new Declaration($2, $3);  }
+  ;
+
 declaration_list
-  : x_LET type x_ID x_SEMICOLON { 
+  : declaration { 
     $$ = new NodeList();
-    $$->add(new Declaration($2, $3));  
+    $$->add($1);  
   }
-  
-  | declaration_list x_LET type x_ID x_SEMICOLON {
-    $1->add(new Declaration($3, $4));
+  | declaration_list declaration {
+    $1->add($2);
     $$ = $1;
   }
   ;
   
 statement_list
   : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
+  | error x_SEMICOLON { yyerrok; $$ = new NodeList(); }
   | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
   ;
 
@@ -336,6 +373,11 @@ statement
   | statement_read {$$ = $1; }
   | statement_write {$$ = $1; }
   | statement_sleep {$$ = $1; }
+  | statement_function {$$ = $1; }
+  | statement_break {$$ = $1; }
+  | statement_continue {$$ = $1; }
+  | statement_return {$$ = $1; }
+  | statement_exit{$$ = $1; }
   ;
 
 statement_for
@@ -379,6 +421,7 @@ statement_else
 
 statement_assign
   : variable x_ASSIGN expression {$$ = new AssignStatement($1,$3); }
+  | variable error expression { yyclearin; std::cout << "Maybe you meant to use \':=\'.\n"; $$ = new Error(); }
   ;
   
 statement_read
@@ -390,8 +433,7 @@ statement_write
   ;
 
 write_list
-  : expression {$$ = new std::list<Expression *>(); $$->push_back($1);}
-  // String missing  
+  : expression {$$ = new std::list<Expression *>(); $$->push_back($1);} 
   | write_list x_COMMA expression {$$ = $1; $$->push_back($3); }
   ;
  
@@ -399,6 +441,25 @@ statement_sleep
   : x_SLEEP x_LPAR variable x_RPAR {$$ = new SleepStatement($3); }
   ;    
 
+statement_function
+  : function {$$ = new FunctionStatement($1); }
+  ;
+  
+statement_break
+  : x_BREAK {$$ = new BreakStatement(); }
+  ;
+   
+statement_continue
+  : x_CONTINUE {$$ = new ContinueStatement();}
+  ;
+
+statement_return
+  : x_RETURN expression {$$ = new ReturnStatement($2); }
+  ;
+
+statement_exit
+  : x_EXIT x_LPAR x_RPAR {$$ =  new ExitStatement(); }
+  ;
 
 //expressions
 
@@ -427,13 +488,16 @@ expression_unary
   : constant { $$ = $1; }
   | variable { $$ = $1; }
   | function { $$ = $1; }
-  | x_MINUS expression %prec x_UMINUS { $$ = new Uminus($2); }
+  | x_MINUS expression %prec x_UMINUS { $$ = new UnaryOp($1->value,$2); }
+  | x_NOT expression { $$ = new UnaryOp($1->value,$2); }
   | x_LPAR expression x_RPAR { $$ = new UnaryExpression($2); }
   ;
  
 constant
   : INTEGER { $$ = new Constant($1->value);}
   | FLOAT { $$ = new Constant($1->value);}
+  | STRING { $$ = new Constant($1->value);}
+  | CHAR { $$ = new Constant($1->value);}  
   | x_TRUE { $$ = new Constant($1->value);}
   | x_FALSE { $$ = new Constant($1->value);}
   ;

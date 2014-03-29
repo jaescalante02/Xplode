@@ -19,7 +19,8 @@ extern std::string tok;
 %option nodefault yyclass="Xplode::ClassicScanner" noyywrap c++
 
 DIGIT    [0-9]
-ID       [a-zA-Z][a-zA-Z0-9]*  
+ID       [a-zA-Z][a-zA-Z0-9]*
+CHAR     [^\n]  
 
 %option yylineno
 
@@ -36,6 +37,9 @@ ID       [a-zA-Z][a-zA-Z0-9]*
              //"(\\[\x22\x5c\x6e] | [\x20-\x21\x23-\x5B\x5D-\x7E¿¡áéíóúÁÉÍÓÚñÑ])*"
              //Por discutir que tipo de string se espera
            }
+           
+\'{CHAR}\' { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::CHAR; }              
+           
 [ \t\r\x20]+  {UPDATE_LOC; }  // ignore all whitespace
 program { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROGRAM; }
 begin { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BEGIN; }
@@ -50,12 +54,12 @@ sleep { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SLEEP; }
 
 let {SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LET;}
 
-
 int { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_INT; }
 char { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CHAR; }
 bool { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BOOL; }
 float { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FLOAT; }
 void { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VOID; }
+var { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VAR; }
 
 true { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TRUE; }
 false { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FALSE; }

@@ -1,0 +1,42 @@
+program
+
+union myUnion{
+  char a;
+  int b;
+  float c;
+}
+
+function int myFunction(var int a, int b, int[] c){
+  let int i;
+  let int s;
+  for (i := 0; i < b; i := i +1 ){
+    a := a * (c[i] - a);
+    s := s + c[i];
+    if (c[i] == 0){
+      break;
+    };
+  };
+  return s;
+}
+
+function void Fill(var int[] a, int b){
+  for (i := 0; i < b; i := i +1 ){
+    read(a);
+    if (a[i] == 0){
+      break;
+    };
+  };
+}
+
+
+begin
+  let int y;
+  let int k;
+  let int[500] test;
+  read(y);
+  
+  Fill(test);
+  k := myFunction(y,500,test);
+  write("Result is: ", k);
+   
+end

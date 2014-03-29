@@ -49,7 +49,7 @@ class Union : public Statement {
 
   }
 
-  Symbol *toSymbol() { return new Symbol(name,"_union",line,column,true,0, table); }
+  Symbol *toSymbol() { return new Symbol(name,"_union",line,column,true,0); }
 
   void firstcheck(){
   

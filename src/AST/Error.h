@@ -6,27 +6,19 @@
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
-#include "Expression.h"
 #include "../SymTable.h"
-#include "Expression.h"
 
-#ifndef X_UMINUS
-#define X_UMINUS
+#ifndef ERRORDEF
+#define ERRORDEF
 
 
-class Uminus : public Expression {
+class Error : public Node {
   public:
-  Expression *exp; 
-  Uminus(Expression *e){exp = e; }
+  Error(){ }
   void print(){
-   std::cout << "UMINUS\n";
-   std::cout << "expression:\n";
-   exp->print();
   }
 
   void firstcheck(SymTable *symtb){
-  
-  
   }
 
 };
