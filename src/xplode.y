@@ -316,7 +316,11 @@ parameter
 param_type 
   : primitive_type {$$ = $1; }
   | x_ID {$$ = new TypeDeclaration($1->value); }
-  | param_type x_LBRACKET x_RBRACKET {$$ = $1; } 
+  | param_type x_LBRACKET x_RBRACKET {      
+     TypeDeclaration *tp = (TypeDeclaration *) $1; 
+     tp->addDimension("-1"); //NO TIENE VALOR POR AHORA
+     $$ = tp;
+   } 
   ;
   
 primitive_type

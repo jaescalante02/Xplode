@@ -16,7 +16,7 @@ class Statement: public Node {
 
   public:
   
-    virtual void print() {};
+    virtual void print() {}
 
     virtual void printTable() {}
 

@@ -21,7 +21,7 @@ function int myFunction(var int a, int b, int[] c){
 
 function void Fill(var int[] a, int b){
   for (i := 0; i < b; i := i +1 ){
-    read(a);
+    read(a[i]);
     if (a[i] == 0){
       break;
     };

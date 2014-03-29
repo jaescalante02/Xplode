@@ -9,13 +9,14 @@
 #include "TypeDeclaration.h"
 #include "../Symbol.h"
 #include "Node.h"
+#include "Statement.h"
 #include "../Token.h"
 
 #ifndef X_DECLARATION
 #define X_DECLARATION
 
 
-class Declaration : public Node {
+class Declaration : public Statement {
   public:
   TypeDeclaration *ntype;
   std::string var;
@@ -41,6 +42,10 @@ class Declaration : public Node {
             ntype->max_index->size()); 
   }
 
+  void firstcheck(SymTable *symtb){
+  
+  
+  }  
 
 };
 

@@ -8,11 +8,20 @@ auxilio[8] k;
 
 }
 
-type auxilio{
+union auxilio{
 
 float h;
 int[8] i;
 char[3][4] a; 
+
+}
+
+let int globalvariable;
+
+function int kom(int[] b){
+let int a;
+
+a := b[2];
 
 }
 

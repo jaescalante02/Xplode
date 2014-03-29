@@ -18,6 +18,7 @@
 #define INT_SYMBOL new Symbol("int","_type",0,0,true,0)
 #define FLOAT_SYMBOL new Symbol("float","_type",0,0,true,0)
 #define CHAR_SYMBOL new Symbol("char","_type",0,0,true,0)
+#define BOOL_SYMBOL new Symbol("bool","_type",0,0,true,0)
 
 class Program : public CompoundStatement {
 
@@ -51,6 +52,7 @@ public:
     table->insert(INT_SYMBOL);
     table->insert(FLOAT_SYMBOL); 
     table->insert(CHAR_SYMBOL);   
+    table->insert(BOOL_SYMBOL);   
 
   }
 

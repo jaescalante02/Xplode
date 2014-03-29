@@ -17,9 +17,7 @@
 Xplode es un compilador para los cursos de la cadena de Lenguajes de Programación de la
 Univerisdad Simón Bolívar.
 
-%%%%%faltan caracteristicas
-
-En su diseño se tomaron en cuenta peculiaridades de C/C++ y Pascal/Modula-2, entre otros,
+Xplode es un lenguaje imperativo fuertemente tipado. En su diseño se tomaron en cuenta peculiaridades de C/C++ y Pascal/Modula-2, entre otros,
 en la búsqueda de ofrecer facilidades en torno al uso de Xplode, en base a experiencias previas.
 
 Sin embargo, es necesario aclarar que no es ninguno de los lenguajes anteriormente señalados,
@@ -112,7 +110,9 @@ Xplode entre sus características a tener en cuenta ignora el uso de mayúsculas
 es decir, el identificador FOO, FoO y foo se refieren a la misma variable, aplicando
 lo mismo para todas las palabras reservadas.
 
-%%%%% falta explicar los 2 modos
+Modos
+
+
 
 Tipos
 --------
@@ -123,15 +123,6 @@ Tipos
 * arreglos
 * types
 * unions
-
-ejemplo de un arreglo:    int[]
-
-*** ?multidimensional?.
-como manejar rango variables
-//quizas como matlab int[-4:8][15:30]
-?notacion diferente en declaracion? 
-?posible new? ***
-
 
 
 ##2 Gramática referencial
@@ -164,13 +155,57 @@ un begin y finalizada en end.
 
 ##5 Tipos
 
-primitivos
+Primitivos:
 
-types
+Son los tipos incluidos desde la implantacion del lenguaje.
 
-unions
+Estos son int, bool, float y char.
 
-procs
+
+Creados:
+
+Xplode permite la definición de nuevos tipos dependiendo de las necesidades
+del usuario.
+
+types:
+
+Representa una colección de tipos, los cuales pueden ser usados simultáneamente
+con el operador de acceso '.'.
+
+ej:
+
+type foo{
+
+int bar;
+baz rom;
+
+}
+
+
+
+unions:
+
+Representa una colección de uniones, los cuales **no** pueden ser usados simultáneamente
+con el operador de acceso '.', es decir, solo se podrá mantener guardado el último
+que posea una asignación.
+
+ej:
+
+union foo{
+
+int bar;
+baz rom;
+
+}
+
+procs:
+
+Representa la firma de una función (ver sección 9), con su estructura
+de devolución y parámetros. Usados para el pase de funciones como parámetros.
+
+ej:
+
+proc bool menorQue(person, person);
 
 ##6 Variables
 

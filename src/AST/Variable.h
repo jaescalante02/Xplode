@@ -67,8 +67,9 @@ class Variable : public Expression {
      SymTable *temptb = symtb;
      std::list<std::string>::iterator itvar;
      std::list<std::pair<int, Expression *> >::iterator itindex;
-     int index=0, dim,i;
+     int index=0, dim,i,tam;
      
+     tam = varList->size()-1;
      itvar = varList->begin();
      itindex = indexList->begin();
      
@@ -83,16 +84,23 @@ class Variable : public Expression {
       }
      
       dim = tempsym->dimensions;
-      
-      while (dim>0){
-  
-      if((itindex==indexList->end())||(itindex->first!=index)) { //index malo
+      i=0;
+      while ((itindex!=indexList->end())&&(itindex->first==index)){
+   
+        ++itindex;
+        ++i;
+      }
      
-        errorlog->addError(0,0,0,"[]");
-        return;
-      } 
-      ++itindex;
-      --dim;
+      if((index!=tam)&&(i!=dim)) { //index malo
+     
+          errorlog->addError(0,0,0,"[]");
+          return;
+      }
+     
+      if(i>dim) { //ultimo posee mas [] de lo maximo
+     
+          errorlog->addError(0,0,0,"[]2");
+          return;
       }
      
       tempsym = temptb->find(tempsym->ntype);
@@ -107,13 +115,15 @@ class Variable : public Expression {
       ++itvar;
       temptb = (SymTable *) tempsym->pt;
       
-      if(!temptb){  // primitivo      
+      if(!temptb){  // primitivo
+            
           if((itvar==varList->end())&&(itindex==indexList->end())){
+          
             return; //correcto
           } else { //mal tipo para . y un caso [] con [] en exceso
         
-          errorlog->addError(0,0,0,".");
-          return;          
+            errorlog->addError(0,0,0,".");
+            return;          
           }
       } else {
       
@@ -121,7 +131,7 @@ class Variable : public Expression {
         
           errorlog->addError(0,0,0,"..");
           return;          
-          }
+        }
       
       
       }
