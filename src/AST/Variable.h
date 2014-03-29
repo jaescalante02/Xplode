@@ -11,7 +11,9 @@
 #include <stdio.h>
 #include "Expression.h"
 #include "../SymTable.h"
+#include "../ErrorLog.h"
 
+extern ErrorLog *errorlog;
 
 class Variable : public Expression {
   public:
@@ -61,8 +63,74 @@ class Variable : public Expression {
 
   void firstcheck(SymTable *symtb){
   
-     if(symtb->find(this)){std::cout << "Declarada "<<*varList->begin()<<"\n";}
-     else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
+     Symbol *tempsym;
+     SymTable *temptb = symtb;
+     std::list<std::string>::iterator itvar;
+     std::list<std::pair<int, Expression *> >::iterator itindex;
+     int index=0, dim,i;
+     
+     itvar = varList->begin();
+     itindex = indexList->begin();
+     
+     while(true){
+     
+      tempsym = temptb->find(*itvar);
+     
+      if(tempsym==NULL) {//sin declarar en ningun ambito, campo incorrecto
+     
+        errorlog->addError(0,0,0,*itvar);
+        return;
+      }
+     
+      dim = tempsym->dimensions;
+      
+      while (dim>0){
+  
+      if((itindex==indexList->end())||(itindex->first!=index)) { //index malo
+     
+        errorlog->addError(0,0,0,"[]");
+        return;
+      } 
+      ++itindex;
+      --dim;
+      }
+     
+      tempsym = temptb->find(tempsym->ntype);
+      
+      if(tempsym==NULL){ //no consiguio el tipo
+      
+        errorlog->addError(0,0,0,"tipo");
+        return;      
+      }
+      
+      ++index;
+      ++itvar;
+      temptb = (SymTable *) tempsym->pt;
+      
+      if(!temptb){  // primitivo      
+          if((itvar==varList->end())&&(itindex==indexList->end())){
+            return; //correcto
+          } else { //mal tipo para . y un caso [] con [] en exceso
+        
+          errorlog->addError(0,0,0,".");
+          return;          
+          }
+      } else {
+      
+        if (itvar==varList->end()){ //faltan campos
+        
+          errorlog->addError(0,0,0,"..");
+          return;          
+          }
+      
+      
+      }
+      
+      
+     }
+    
+     // (){std::cout << "Declarada "<<*varList->begin()<<"\n";}
+     // else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
   
   }
 

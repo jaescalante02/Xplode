@@ -16,6 +16,7 @@ vac z;
 
 function void drake(int zer){
 let char chat;
+//let float zer;
 
 chat := sa+chat+ rmm;
 
@@ -28,7 +29,8 @@ begin
     let int b;
     let int c;
     let float A;
-    let int a;
+//    let int a;
+//    let char B;
 
     if (a==2){
 //        int f;

@@ -28,10 +28,22 @@
 
         void SymTable::insert(Symbol *s){
 
-            //falta caso error, ya existe
             std::string lowsymbol(s->getname()); 
             toLower(lowsymbol);
-            if (!isMember(lowsymbol)) (*table)[lowsymbol] = s;
+            if (!isMember(lowsymbol)) {
+            
+              (*table)[lowsymbol] = s;
+              return;
+            }  
+            
+            Symbol *sym = (*table)[lowsymbol];
+            
+            if((s->line<sym->line) ||
+              ((s->line==sym->line)&&(s->column<sym->column)))
+              errorlog->addError(5,sym->line,sym->column,sym->name);
+            else
+              errorlog->addError(5,s->line,s->column, s->name);              
+            
 
         }
 
@@ -43,9 +55,9 @@
 
         }
 
-        Symbol *SymTable::find(Variable *variable){ 
+        Symbol *SymTable::find(std::string variable){ 
 
-            std::string var(*variable->varList->begin());
+            std::string var(variable);
             toLower(var);
             return this->findall(var);
         }

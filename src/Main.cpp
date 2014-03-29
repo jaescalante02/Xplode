@@ -1,4 +1,4 @@
-#include <iostream>     // std::ios, std::istream, std::cout
+#include <iostream> 
 #include <fstream> 
 #include <string>
 #include "ErrorLog.h"
@@ -12,6 +12,7 @@ int line = 1;
 int column = 1;
 std::string tok;
 ErrorLog *errorlog = new ErrorLog(); 
+
 
 int selectLexer(char* fp){
 
@@ -52,7 +53,10 @@ int main(int argc, char * argv[]) {
     Xplode::Parser parser(&program,scanner);
     parser.parse();
     program->check();
-    program->printTable(); 
+    if(errorlog->existError())
+      errorlog->print();
+    else 
+      program->printTable(); 
     return 0;
 
 }

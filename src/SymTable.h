@@ -12,9 +12,9 @@
 #include <stdio.h>
 #include "Symbol.h"
 #include "AST/NodeList.h"
+#include "ErrorLog.h"
 
-
-class Variable;
+extern ErrorLog *errorlog;
 
 class SymTable {
 
@@ -31,7 +31,7 @@ class SymTable {
 
         void insert(Symbol *s);
 
-        Symbol *find(Variable *variable);
+        Symbol *find(std::string variable);
 
         void print();
 

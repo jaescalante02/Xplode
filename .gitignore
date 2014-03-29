@@ -5,4 +5,5 @@ position.hh
 stack.hh
 lex.yy.cc
 xplode
+*.h.gch
 *~

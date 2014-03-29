@@ -1,0 +1,36 @@
+program
+
+type sos{
+
+int b;
+char[6] c;
+auxilio[8] k;
+
+}
+
+type auxilio{
+
+float h;
+int[8] i;
+char[3][4] a; 
+
+}
+
+begin
+
+let sos[3] a;
+let int e;
+let int[4] f;
+let sos g;
+
+//correctos
+a[0].b := 2;
+e := 2;
+a[0].c[3] := 2;
+f[0] := 2;
+g.k[6].i[8] := 2;
+a[0].k[8].a[7][7] := 2;
+
+//incorrecto
+
+end
