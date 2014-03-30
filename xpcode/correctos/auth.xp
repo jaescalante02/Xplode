@@ -1,0 +1,19 @@
+program
+
+function bool authenticate(int id){
+  return id == ((id ** id - id) / id) + id;
+}
+
+
+
+begin
+  let int id;
+  read(id);
+  if (authenticate(id)){
+    write("You're in.\n");
+  } else {
+    write("You thief! \n");
+  };
+  
+
+end
