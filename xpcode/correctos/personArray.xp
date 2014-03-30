@@ -21,13 +21,13 @@ function void readPerson(var person p){
 
 
 begin
-  let person p[10];
+  let person[10] p;
   let int i;
   for (i := 0; i < 10; i:= 1+1){
-    readPerson(person[i]);
+    readPerson(p[i]);
   };
   for (i := 0; i < 10; i:= 1+1){
-    printPerson(person[i]);
+    printPerson(p[i]);
   };
 
 end
