@@ -1,0 +1,92 @@
+program
+
+//No ids are needed. Missing comma between types
+proc void a(int a, int int, float);
+
+//Missing comma between declarations
+type test{
+  int r;
+  float e
+  int c;
+  bool o;
+  char e;
+  int[10] v
+
+}
+
+
+//missing semicolon in declarations
+union recov{
+  int e;
+  float r
+  char y;
+  int c;
+  char v
+  bool o;
+}
+
+//Same as the first proc
+proc void b(int a, int int, float);
+
+
+//no errors
+union noRecov{
+  int e;
+  float r;
+  char y;
+}
+
+//missing union
+noUnion {
+  int r;
+  float e;
+  char c;
+}
+
+//missing semicolon between declarations
+let float afloat
+let char a;
+
+//missing semicolon between declaration and function
+let float test
+function int sum(int a, int b){
+  return a + b
+}
+
+//Missing id
+union {
+  int r;
+  float e;
+  char c;
+}
+
+
+let float afloat
+let char a;
+let char ; //Missing id
+let char c;
+
+//missing function
+void doStuff(int a, int b,  int[] c){
+  write(a+b**b);
+}
+
+//missing comma in parameters
+function void doStuff(int a, int b int[] c){
+  write(a+b**b);
+}
+
+
+let char d;
+
+begin
+  let int y;
+  let int z;
+  let int c;
+  let int k;
+  k := 7;
+  k = 3; //Invalid character
+  
+  write(y);
+
+end

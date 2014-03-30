@@ -1,0 +1,30 @@
+program
+
+let char d;
+
+function void doStuff(int a, int b){
+  write(a+b**b);
+}
+
+function void doStuff2(int r int e, int c , int o, int v){
+  let int a
+  let int b;
+  write(r+e*c);
+}
+
+let char c;
+let char a
+let char b;
+
+let char d
+begin
+  let int y;
+  let int z;
+  let int c;
+  let int k;
+  k := 7;
+  k = 3;
+  
+  write(y);
+
+end

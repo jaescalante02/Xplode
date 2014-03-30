@@ -1,0 +1,69 @@
+program
+begin
+
+//missing semicolon between declaration
+let int a;
+let int b
+let int c;
+let int d
+
+//missing semicolon between declaration and statement
+read(a);
+read(b);
+read(a)
+write(c);
+
+//Missing rpar on if
+if (a > 3{
+  write(a);
+};
+
+if (a > 3) {
+  write("error");
+};
+
+//missing l par on if
+if a > 2){
+  write(a);
+};
+
+//missing rpar on for
+for (b := 3; b < c; b := c-b{
+  write(a,b,c);
+  write(a)
+  read(c);
+};
+
+//missing condition on while
+while () {
+  write(c);
+};
+write(a);
+
+//missing parentheses
+while a {
+
+  //Missing semicolo between declaration and statement
+  let int a;
+  let int b;
+  let int c
+  write(a);
+  read(a);
+};
+
+//Missing semicolon between statements
+read(a);
+read(b)
+a := 4;
+
+//comma instead of semicolon on for
+for (b := 3, b < c, b := c-b){
+  write(a,b,c);
+  write(a);
+  read(c);
+};
+
+break; 
+//Missing semicolon on last statement.
+continue
+end
