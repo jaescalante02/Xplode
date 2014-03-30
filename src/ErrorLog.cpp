@@ -76,7 +76,7 @@
         
       case 11:
     
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0][0]<< "' es un tipo primitivo y no posee el operador de acceso.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' es un tipo primitivo y no posee el operador de acceso.\n";
         break;   
 
       case 12:

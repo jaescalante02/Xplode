@@ -1,0 +1,17 @@
+program
+
+type zona{
+
+int km;
+
+
+}
+
+begin
+
+let zona z;
+
+z.km.e := 8;
+
+
+end

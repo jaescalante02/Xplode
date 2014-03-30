@@ -64,6 +64,10 @@
   #include "SymTable.h"
   #include "ErrorLog.h"	
   
+  extern int line,column;  
+  extern std::string tok;
+  extern ErrorLog *errorlog;
+  
 }
 
 %code {
@@ -227,7 +231,7 @@ definition_list
     $$ = $1;
   }
   | definition_list error {
-    errorlog->addError(14,0,0,NULL);
+    errorlog->addError(14,line,column,NULL);
     $1->add(new Statement());
     $$ = $1;
   }
@@ -355,8 +359,8 @@ type
 block  
   : x_LBRACE declaration_list statement_list x_RBRACE {$$ = new Block($2,$3); }
   | x_LBRACE statement_list x_RBRACE {$$ = new Block($2); }
-  |  declaration_list statement_list x_RBRACE { errorlog->addError(16,0,0,NULL); $$ = new Block($1,$2); }
-  |  statement_list x_RBRACE { errorlog->addError(16,0,0,NULL); $$ = new Block($1); }
+  |  declaration_list statement_list x_RBRACE { errorlog->addError(16,line,column,NULL); $$ = new Block($1,$2); }
+  |  statement_list x_RBRACE { errorlog->addError(16,line,column,NULL); $$ = new Block($1); }
   ;
 
 declaration
@@ -378,7 +382,7 @@ declaration_list
     $$ = $1;
   }
   | declaration_list declaration  {
-    errorlog->addError(14,0,0,NULL);
+    errorlog->addError(14,line,column,NULL);
     $1->add($2);
     $$ = $1;
   }
@@ -388,7 +392,7 @@ statement_list
   : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
   | error x_SEMICOLON { yyclearin; $$ = new NodeList(); }
   | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
-  | statement_list statement {errorlog->addError(14,0,0,NULL); $1->add($2); $$ = $1; }
+  | statement_list statement {errorlog->addError(14,line,column,NULL); $1->add($2); $$ = $1; }
   ;
 
 
@@ -557,9 +561,7 @@ function_arguments
 
 // We have to implement the error function
 
-extern int line,column;  
-extern std::string tok;
-extern ErrorLog *errorlog;
+
  
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
 

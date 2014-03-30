@@ -70,7 +70,7 @@ class Variable : public Expression {
      std::list<Xplode::Token *>::iterator itvar;
      std::list<std::pair<int, Expression *> >::iterator itindex;
      int index=0, dim,i,tam;
-     
+     Xplode::Token *auxtk;
      tam = varList->size()-1;
      itvar = varList->begin();
      itindex = indexList->begin();
@@ -82,7 +82,7 @@ class Variable : public Expression {
       if(tempsymv==NULL) {//sin declarar en ningun ambito, campo incorrecto
      
         if(!tempsymt){ 
-          errorlog->addError(8,0,0,&(*itvar)->value);
+          errorlog->addError(8,(*itvar)->line,(*itvar)->column,&(*itvar)->value);
         }else{
           arrstr[0] = (*itvar)->value;
           arrstr[1] = tempsymt->name;
@@ -116,11 +116,14 @@ class Variable : public Expression {
       
       if(tempsymt==NULL){ //no consiguio el tipo
       
-        errorlog->addError(7, 0, 0, &tempsymv->ntype);
+        arrstr[0] = (*itvar)->value;
+        arrstr[1] = tempsymt->name;
+        errorlog->addError(7, tempsymv->line, tempsymv->line, arrstr);
         return;      
       }
       
       ++index;
+      auxtk = *itvar;
       ++itvar;
       temptb = (SymTable *) tempsymt->pt;
       
@@ -131,7 +134,7 @@ class Variable : public Expression {
             return; //correcto
           } else { //mal tipo para . 
             
-            errorlog->addError(11,0,0, &tempsymt->name);
+            errorlog->addError(11,auxtk->line,auxtk->column, &tempsymt->name);
             return;          
           }
       } else {
