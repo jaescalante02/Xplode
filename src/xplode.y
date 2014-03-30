@@ -226,16 +226,21 @@ definition_list
     $1->add($2);
     $$ = $1;
   }
+  | definition_list error {
+    errorlog->addError(14,0,0,NULL);
+    $1->add(new Statement());
+    $$ = $1;
+  }
   ;
   
 definition
   : def_union { $$ = $1; }
-  | def_proc { $$ = $1; }
+  | def_proc x_SEMICOLON { $$ = $1; }
   | def_type { $$ = $1; }
   | def_function {$$ = $1; }
   | declaration x_SEMICOLON {$$ = $1; }
-  | error x_SEMICOLON { $$ = new Error(); }
-  | error x_RBRACE {  yyerrok; $$ = new Error(); }
+  | error x_SEMICOLON { yyerrok; yyclearin; $$ = new Statement(); }
+  | error x_LBRACE attribute_list x_RBRACE  {  yyerrok; yyclearin; $$ = new Statement(); }
   ;
 
 def_union
@@ -251,7 +256,7 @@ def_type
   ; 
 
 attribute_list
-  : type x_ID x_SEMICOLON { 
+  : type x_ID x_SEMICOLON {  //puede mejorarse
     $$ = new NodeList();
     $$->push(new Declaration($1, $2));  
   }
@@ -265,7 +270,7 @@ attribute_list
 
 //Used for second class functions
 def_proc
-  : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR x_SEMICOLON {
+  : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR {
     $$ = new Procedure($3, $2, $5);
   }
   ;
@@ -361,8 +366,17 @@ declaration_list
     $$ = new NodeList();
     $$->add($1);  
   }
-//  | error x_LET { yyerrok; $$ = new NodeList(); }
+  | declaration  { 
+    errorlog->addError(14,$1->line,$1->column,NULL);
+    $$ = new NodeList();
+    $$->add($1);  
+  }
   | declaration_list declaration x_SEMICOLON {
+    $1->add($2);
+    $$ = $1;
+  }
+  | declaration_list declaration  {
+    errorlog->addError(14,0,0,NULL);
     $1->add($2);
     $$ = $1;
   }
@@ -372,6 +386,7 @@ statement_list
   : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
   | error x_SEMICOLON { yyclearin; $$ = new NodeList(); }
   | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
+  | statement_list statement {errorlog->addError(14,0,0,NULL); $1->add($2); $$ = $1; }
   ;
 
 
@@ -395,7 +410,7 @@ statement_for
   : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block{
     $$ = new ForStatement($3,$5,$7,$9);
   }
-  | x_FOR error block { yyclearin; $$ = new Error(); }
+  | x_FOR error block { yyclearin; $$ = new Statement(); }
   ;
 
 for_init
@@ -412,7 +427,7 @@ for_increment
 
 statement_while
   : x_WHILE x_LPAR while_condition x_RPAR block {$$ = new  WhileStatement($3,$5); }
-  | x_WHILE error block {  yyclearin; $$ = new Error(); }
+  | x_WHILE error block {  yyclearin; $$ = new Statement(); }
   ;
 
 while_condition
@@ -422,7 +437,7 @@ while_condition
 statement_if
   : x_IF x_LPAR if_condition x_RPAR block {$$ = new IfStatement($3,$5); }
   | x_IF x_LPAR if_condition x_RPAR block statement_else {$$ = new IfStatement($3,$5,$6); }
-  | x_IF error block { yyclearin; $$ = new Error(); }
+  | x_IF error block { yyclearin; $$ = new Statement(); }
   ;
   
 if_condition
@@ -435,6 +450,7 @@ statement_else
 
 statement_assign
   : variable x_ASSIGN expression {$$ = new AssignStatement($1,$3); }
+  | variable error { yyclearin; std::cout << "Maybe you meant to use \':=\'.\n"; $$ = new Statement(); }
   ;
   
 statement_read
@@ -521,7 +537,7 @@ variable
   ;
 
 variable_id
-  : x_ID {$$ = new Variable($1->value); }
+  : x_ID {$$ = new Variable($1); }
   | variable_id x_LBRACKET expression x_RBRACKET { $1->addIndex($3); $$=$1; }
   ;
 
@@ -545,8 +561,8 @@ extern ErrorLog *errorlog;
  
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
 
-	std::cerr << "Error de sintaxis en linea " << line << ", columna " << column << ": token "
-	<< "\'" << tok << "\' inesperado.\n"; 
+  errorlog->addError(2,line,column,&tok);
+
 
 }
 

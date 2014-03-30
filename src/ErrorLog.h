@@ -10,7 +10,7 @@ class ErrorLog{
   public:
   
     ErrorLog();
-    void addError(int numerror, int line, int column, std::string lex = "");
+    void addError(int numerror, int line, int column, std::string *arrstr);
 
     bool existError();
     

@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "Node.h"
+#include "../Symbol.h"
 #include "../SymTable.h"
 
 #ifndef X_STATEMENTDEF
@@ -23,6 +24,8 @@ class Statement: public Node {
     virtual void setFather(SymTable *s){}
 
     virtual void firstcheck(SymTable *symtb){}
+    
+    virtual Symbol *toSymbol() {return NULL;}
 
 
 };

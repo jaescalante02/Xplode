@@ -12,27 +12,28 @@
 #include "Expression.h"
 #include "../SymTable.h"
 #include "../ErrorLog.h"
+#include "../Token.h"
 
 extern ErrorLog *errorlog;
 
 class Variable : public Expression {
   public:
 
-  std::list<std::string> *varList;
+  std::list<Xplode::Token *> *varList;
   std::list<std::pair<int, Expression *> > *indexList;
   
-  Variable(std::string v){
-    varList = new std::list<std::string>; 
+  Variable(Xplode::Token *v){
+    varList = new std::list<Xplode::Token *>; 
     indexList = new std::list<std::pair<int, Expression *> >;
     varList->push_back(v);
   }
   
   void print(){ 
    std::cout << "VARIABLE\n";
-   for(std::list<std::string >::iterator iter = varList->begin(); 
+   for(std::list<Xplode::Token *>::iterator iter = varList->begin(); 
       iter != varList->end(); ++iter){
       
-     std::cout << "field: " << *iter << "\n"; 
+     std::cout << "field: " << (*iter)->value << "\n"; 
    }
    for(std::list<std::pair<int, Expression *> >::iterator iter = indexList->begin();
        iter != indexList->end(); ++iter){
@@ -63,9 +64,10 @@ class Variable : public Expression {
 
   void firstcheck(SymTable *symtb){
   
-     Symbol *tempsym;
+     Symbol *tempsymv, *tempsymt=NULL;
      SymTable *temptb = symtb;
-     std::list<std::string>::iterator itvar;
+     std::string arrstr[3];
+     std::list<Xplode::Token *>::iterator itvar;
      std::list<std::pair<int, Expression *> >::iterator itindex;
      int index=0, dim,i,tam;
      
@@ -75,15 +77,22 @@ class Variable : public Expression {
      
      while(true){
      
-      tempsym = temptb->find(*itvar);
+      tempsymv = temptb->find((*itvar)->value);
      
-      if(tempsym==NULL) {//sin declarar en ningun ambito, campo incorrecto
+      if(tempsymv==NULL) {//sin declarar en ningun ambito, campo incorrecto
      
-        errorlog->addError(0,0,0,*itvar);
+        if(!tempsymt){ 
+          errorlog->addError(8,0,0,&(*itvar)->value);
+        }else{
+          arrstr[0] = (*itvar)->value;
+          arrstr[1] = tempsymt->name;
+          arrstr[2] = tempsymt->ntype;
+          errorlog->addError(9,(*itvar)->line,(*itvar)->column,arrstr);
+        }   
         return;
       }
      
-      dim = tempsym->dimensions;
+      dim = tempsymv->dimensions;
       i=0;
       while ((itindex!=indexList->end())&&(itindex->first==index)){
    
@@ -93,43 +102,44 @@ class Variable : public Expression {
      
       if((index!=tam)&&(i!=dim)) { //index malo
      
-          errorlog->addError(0,0,0,"[]");
+          errorlog->addError(10, (*itvar)->line, (*itvar)->column, &(*itvar)->value);
           return;
       }
      
       if(i>dim) { //ultimo posee mas [] de lo maximo
      
-          errorlog->addError(0,0,0,"[]2");
+          errorlog->addError(10, (*itvar)->line, (*itvar)->column, &(*itvar)->value);
           return;
       }
      
-      tempsym = temptb->find(tempsym->ntype);
+      tempsymt = temptb->find(tempsymv->ntype);
       
-      if(tempsym==NULL){ //no consiguio el tipo
+      if(tempsymt==NULL){ //no consiguio el tipo
       
-        errorlog->addError(0,0,0,"tipo");
+        errorlog->addError(7, 0, 0, &tempsymv->ntype);
         return;      
       }
       
       ++index;
       ++itvar;
-      temptb = (SymTable *) tempsym->pt;
+      temptb = (SymTable *) tempsymt->pt;
       
-      if(!temptb){  // primitivo
+      if(!temptb){  // primitivo o arreglo
             
           if((itvar==varList->end())&&(itindex==indexList->end())){
           
             return; //correcto
-          } else { //mal tipo para . y un caso [] con [] en exceso
-        
-            errorlog->addError(0,0,0,".");
+          } else { //mal tipo para . 
+            
+            errorlog->addError(11,0,0, &tempsymt->name);
             return;          
           }
       } else {
       
         if (itvar==varList->end()){ //faltan campos
         
-          errorlog->addError(0,0,0,"..");
+          
+          errorlog->addError(12, 0, 0, &tempsymt->name);
           return;          
         }
       

@@ -28,6 +28,7 @@
 
         void SymTable::insert(Symbol *s){
 
+            if (s==NULL) return;
             std::string lowsymbol(s->getname()); 
             toLower(lowsymbol);
             if (!isMember(lowsymbol)) {
@@ -40,9 +41,9 @@
             
             if((s->line<sym->line) ||
               ((s->line==sym->line)&&(s->column<sym->column)))
-              errorlog->addError(5,sym->line,sym->column,sym->name);
+              errorlog->addError(5,sym->line,sym->column,&sym->name);
             else
-              errorlog->addError(5,s->line,s->column, s->name);              
+              errorlog->addError(5,s->line,s->column, &s->name);              
             
 
         }

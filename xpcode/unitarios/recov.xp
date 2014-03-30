@@ -1,0 +1,26 @@
+program
+
+
+noUnion {
+  int r;
+  float e;
+  char c;
+}
+
+
+begin
+
+let int a
+let int b;
+let int c
+
+a = 2;
+
+
+
+
+
+end
+
+
+

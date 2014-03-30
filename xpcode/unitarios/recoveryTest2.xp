@@ -71,10 +71,7 @@ void doStuff(int a, int b,  int[] c){
   write(a+b**b);
 }
 
-//missing comma in parameters
-function void doStuff(int a, int b int[] c){
-  write(a+b**b);
-}
+
 
 
 let char d;

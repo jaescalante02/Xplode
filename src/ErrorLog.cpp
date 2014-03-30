@@ -19,10 +19,10 @@
         
        
         
-        }
+    }
     
     
-    void ErrorLog::addError(int numerror, int line, int column, std::string lex){
+    void ErrorLog::addError(int numerror, int line, int column, std::string *arrstr){
     
       std::stringstream buffer;
       
@@ -30,25 +30,65 @@
 
       case 0:
       
-        buffer << "'"<<lex<< "' con error.\n";
+        buffer << "'"<<arrstr[0] << "' con error.\n";
         break;
+        
+      case 2:
       
+        buffer << "ERROR " << line << ":" << column << " sintaxis inadecuada token "
+	      << "\'" << arrstr[0] << "\' inesperado.\n"; 
+        break;
       case 5:
       
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<lex<< "' ya ha sido declarada.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' ya ha sido declarada.\n";
         break;
         
       case 6:
       
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<lex<< "' es un tipo.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' es un tipo.\n";
         break;  
       
       case 7:
       
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<lex<< "' no es un tipo.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' no es un tipo.\n";
         break;
             
+      case 8:
+      
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' no ha sido declarada.\n";
+        break;
+
+      case 9: //falta
+      
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<<arrstr[1]<<arrstr[2]<< "' no ha sido declarada.\n";
+        break;
+
+      case 10:
+      
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' posee una cantidad incorrecta de dimensiones.\n";
+        break;
+        
+      case 11:
+    
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0][0]<< "' es un tipo primitivo y no posee el operador de acceso.\n";
+        break;   
+
+      case 12:
+    
+        buffer <<"ERROR "<< line <<":"<<column << " El tipo '"<<arrstr[0]<< "' no se puede operar.\n";
+        break;
+        
+      case 14:
+    
+        buffer <<"ERROR "<< line <<":"<<column << " ';' faltante.\n";
+        break;        
+
+      case 15:
+    
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<<arrstr[1]<<arrstr[2]<< "' no ha sido declarada.\n";
+        break;
       }
+      
       
       errorList->insert(std::make_pair(line,buffer.str())); 
     
