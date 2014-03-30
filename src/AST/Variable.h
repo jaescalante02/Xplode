@@ -139,7 +139,7 @@ class Variable : public Expression {
         if (itvar==varList->end()){ //faltan campos
         
           
-          errorlog->addError(12, 0, 0, &tempsymt->name);
+          //errorlog->addError(12, 0, 0, &tempsymt->name);
           return;          
         }
       

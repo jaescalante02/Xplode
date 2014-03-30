@@ -57,7 +57,21 @@ class Function : public CompoundStatement {
   Symbol *toSymbol() {return new Symbol(name,returnType, line, column, 4, 0); }
 
   void firstcheck(SymTable *symtb){
-  
+
+    /*SymTable *root = symtb->getRoot();
+    Declaration *decl;
+    std::list<Node *>::iterator iter;
+    
+    if(parameters != NULL)
+          for(iter = (*parameters).nodeList.begin();
+              iter != (*parameters).nodeList.end(); ++iter){
+     
+                decl = (Declaration *) *iter;          
+                decl->firstcheck(root); 
+          }
+    
+    */ //falta verificar los parametros de las funciones 
+    
     if(block!=NULL) block->firstcheck();
   
   }

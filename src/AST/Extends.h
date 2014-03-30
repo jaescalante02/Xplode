@@ -31,6 +31,9 @@ class Extends : public Node {
 
   Symbol *toSymbol(){ return NULL;}
 
+
+  void firstcheck(){ }
+
 };
 
 #endif
