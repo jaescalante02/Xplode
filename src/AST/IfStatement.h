@@ -36,6 +36,13 @@ class IfStatement : public CompoundStatement {
    }
   }
 
+  void setFather(SymTable *s){
+
+    block->setFather(s);
+    if (elseBlock!=NULL) elseBlock->setFather(s); 
+
+  }
+
   void firstcheck(SymTable *symtb){
   
     condition->firstcheck(symtb);    

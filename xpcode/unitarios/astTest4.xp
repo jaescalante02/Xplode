@@ -18,7 +18,7 @@ char[3][4] a;
 
 let int globalvariable;
 
-function int kom(mat[] h, int[] b, int c, ...){
+function int kom(mat[] h, int[] b, int d, ...){
 let int a;
 
 a := b[2];

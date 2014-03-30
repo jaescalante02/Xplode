@@ -19,6 +19,7 @@
 #define FLOAT_SYMBOL new Symbol("float","",0,0,1,0)
 #define CHAR_SYMBOL new Symbol("char","",0,0,1,0)
 #define BOOL_SYMBOL new Symbol("bool","",0,0,1,0)
+#define VOID_SYMBOL new Symbol("void","",0,0,1,0)
 
 class Program : public CompoundStatement {
 
@@ -53,6 +54,7 @@ public:
     table->insert(FLOAT_SYMBOL); 
     table->insert(CHAR_SYMBOL);   
     table->insert(BOOL_SYMBOL);   
+    table->insert(VOID_SYMBOL);
 
   }
 

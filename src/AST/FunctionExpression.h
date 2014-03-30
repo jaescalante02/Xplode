@@ -31,8 +31,8 @@ class FunctionExpression : public Expression {
   void firstcheck(SymTable *symtb){
   
   
-     Symbol *sym = symtb->getRoot()->find(fname);
-     if((!sym)||((sym)&&(sym->defined!=4))) errorlog->addError(15,0,0,&fname);
+     //Symbol *sym = symtb->getRoot()->find(fname); //verificar si el nombre pertenece a una funcion
+     //if((!sym)||((sym)&&((sym->defined!=4)&&(sym->defined!=5)))) errorlog->addError(15,0,0,&fname);
      for(std::list<Expression *>::iterator iter = argList->begin(); iter != argList->end(); ++iter){
         (*iter)->firstcheck(symtb); 
      }
