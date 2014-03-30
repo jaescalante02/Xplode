@@ -1,0 +1,16 @@
+program
+
+union charInt{
+  char c;
+  int i;
+}
+
+
+begin
+  let charInt ci;
+  ci.c = 'a';
+  ci.i = 3;
+  
+  print(ci.c);
+
+end

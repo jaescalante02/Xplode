@@ -1,0 +1,51 @@
+program
+
+type person{
+  char[] name;
+  int id;
+  float height;
+  float weight;
+}
+
+function void printPerson(person p){
+  write("Person Data is : ");
+  write(p.id," ", p.name, " ",p.height, " ", p.weight);
+}
+
+function void readPerson(var person p){
+  read(p.id);
+  read(p.height);
+  read(p.weight);
+  read(p.name);
+}
+
+function void personComp(person a, person b){
+  return a.id < b.id;
+}
+
+proc bool compare(person,person);
+
+function bool anotherComp(compPerson f, person a, person b){
+  return f(a,b);
+}
+
+
+begin
+  let person a;
+  let person b;
+  let person c;
+  if(anotherComp(personComp,a,b)){
+    if(anotherComp(personComp,a,c)){
+      printPerson(a);
+    } else {
+      printPerson(c);
+    };
+  } else {
+    if(anotherComp(personComp,b,c)){
+      printPerson(b);
+    } else {
+      printPerson(c);
+    };
+  };
+
+end
