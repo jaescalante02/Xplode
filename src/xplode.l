@@ -10,6 +10,7 @@
 
 extern int line,column;
 extern std::string tok; 
+extern ErrorLog *errorlog;
 
 #define UPDATE_LOC column += yyleng
 #define SAVE_TOK (*yylval).tok = new Token(line,column,yytext); tok = yytext
@@ -71,7 +72,7 @@ for { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FOR; }
 while { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_WHILE; }
 if { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_IF; }
 else { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ELSE; }
-case { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CASE; }
+
 type { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TYPE; }
 union { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_UNION; }
 
@@ -107,7 +108,7 @@ union { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_UNION; }
 ">=" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_GREATEREQ; }
 
 {ID} { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ID; }
-.    { LexerError(yytext);}
+.    { std::string st(yytext); errorlog->addError(1,line,column,&st);}
 
 %%
 

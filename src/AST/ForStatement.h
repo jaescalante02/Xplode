@@ -17,12 +17,12 @@
 
 class ForStatement : public CompoundStatement {
   public:
-  Node *init;
+  Statement *init;
   Expression *condition;
-  Node *increment; 
+  Statement *increment; 
   ForStatement(Node *i, Expression *c, Node *inc, Node *b){
-    init = i;
-    increment = inc;
+    init = (Statement *) i;
+    increment = (Statement *) inc;
     condition = c;
     block = (Block *) b;
   }
@@ -39,6 +39,9 @@ class ForStatement : public CompoundStatement {
 
   void firstcheck(SymTable *symtb){
   
+    init->firstcheck(symtb); 
+    condition->firstcheck(symtb); 
+    increment->firstcheck(symtb); 
     if (block!=NULL) block->firstcheck();  
   
   }

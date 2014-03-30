@@ -70,9 +70,9 @@
             std::map<std::string, Symbol *>::iterator pos;
             std::cout << " -------------------------------------------------\n";
             for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
-                printf(" | %15s | %10s | %2d |%3d | %3d | %2d |%ld\n",(*pos).first.c_str(), 
+                printf(" | %15s | %10s | %2d |%3d | %3d | %2d |\n",(*pos).first.c_str(), 
                 pos->second->ntype.c_str(),pos->second->dimensions, pos->second->line, 
-                pos->second->column,pos->second->defined, (long int) pos->second->pt);
+                pos->second->column,pos->second->defined);
 
             }
             std::cout << " -------------------------------------------------\n";

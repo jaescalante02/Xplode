@@ -104,7 +104,7 @@
 %token<tok> x_WHILE
 %token<tok> x_IF
 %token<tok> x_ELSE
-%token<tok> x_CASE
+
 %token<tok> x_TYPE
 %token<tok> x_UNION
 
@@ -355,6 +355,8 @@ type
 block  
   : x_LBRACE declaration_list statement_list x_RBRACE {$$ = new Block($2,$3); }
   | x_LBRACE statement_list x_RBRACE {$$ = new Block($2); }
+  |  declaration_list statement_list x_RBRACE { errorlog->addError(16,0,0,NULL); $$ = new Block($1,$2); }
+  |  statement_list x_RBRACE { errorlog->addError(16,0,0,NULL); $$ = new Block($1); }
   ;
 
 declaration

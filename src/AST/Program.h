@@ -102,7 +102,7 @@ public:
 
   void firstcheck(){
 
-    this->checktypes(table, table, NULL);
+    //this->checktypes(table, table, NULL);
     std::list<Node *>::iterator iter;
     Statement *st;
     if (definitionList!=NULL) 

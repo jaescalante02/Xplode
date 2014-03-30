@@ -33,9 +33,15 @@
         buffer << "'"<<arrstr[0] << "' con error.\n";
         break;
         
+      case 1:
+      
+        buffer << "ERROR " << line << ":" << column << " caracter inesperado"
+	      << "\'" << arrstr[0] << "\'.\n"; 
+        break;
+        
       case 2:
       
-        buffer << "ERROR " << line << ":" << column << " sintaxis inadecuada token "
+        buffer << "ERROR " << line << ":" << column << " sintaxis inadecuada, token "
 	      << "\'" << arrstr[0] << "\' inesperado.\n"; 
         break;
       case 5:
@@ -85,8 +91,14 @@
 
       case 15:
     
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<<arrstr[1]<<arrstr[2]<< "' no ha sido declarada.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' no es una funcion.\n";
         break;
+        
+      case 16:
+    
+        buffer <<"ERROR "<< line <<":"<<column << " '{' faltante.\n";
+        break;   
+        
       }
       
       

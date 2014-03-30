@@ -52,7 +52,6 @@ int main(int argc, char * argv[]) {
     else scanner = new Xplode::XplodeScanner(&is);
     Xplode::Parser parser(&program,scanner);
     parser.parse();
-    std::cout<<"Acabo parseo\n";
     program->check();
     if(errorlog->existError())
       errorlog->print();

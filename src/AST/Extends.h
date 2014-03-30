@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include "Node.h"
 #include "TypeDeclaration.h"
+#include "../Symbol.h"
+
 
 #ifndef X_EXTENDS
 #define X_ENTENDS
@@ -26,6 +28,8 @@ class Extends : public Node {
    std::cout << "EXTENDS\n";
    std::cout << "type: " << type << "\n";
   }
+
+  Symbol *toSymbol(){ return NULL;}
 
 };
 

@@ -18,10 +18,17 @@ char[3][4] a;
 
 let int globalvariable;
 
-function int kom(mat[] h, int[] b){
+function int kom(mat[] h, int[] b, int c, ...){
 let int a;
 
 a := b[2];
+
+}
+
+function int rr(){
+int m;
+
+m:=2;
 
 }
 
@@ -46,6 +53,15 @@ a[0].k[8].a[7][7] := 2;
 a[2].w:=3;
 a.b :=3;
 a[0].k[8] :=3;
-a[0].b.g :=3;
+a[0].b.g :=3 + km(ww,www,wwww);
+
+if(true)
+
+int pq;
+
+pq:=2;
+
+}
+
 
 end

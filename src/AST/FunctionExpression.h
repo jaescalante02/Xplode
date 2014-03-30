@@ -30,6 +30,14 @@ class FunctionExpression : public Expression {
 
   void firstcheck(SymTable *symtb){
   
+  
+     Symbol *sym = symtb->getRoot()->find(fname);
+     if((!sym)||((sym)&&(sym->defined!=4))) errorlog->addError(15,0,0,&fname);
+     for(std::list<Expression *>::iterator iter = argList->begin(); iter != argList->end(); ++iter){
+        (*iter)->firstcheck(symtb); 
+     }
+  
+  
   }
 
 };
