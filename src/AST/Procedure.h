@@ -41,7 +41,7 @@ class Procedure : public Statement {
 
   }
 
-  Symbol *toSymbol() {return new Symbol(name,"_proc", line, column, true, 0); }
+  Symbol *toSymbol() {return new Symbol(name,returnType, line, column, 5, 0); }
 
   void firstcheck(){ }
 

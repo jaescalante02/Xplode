@@ -18,7 +18,7 @@ char[3][4] a;
 
 let int globalvariable;
 
-function int kom(int[] b){
+function int kom(mat[] h, int[] b){
 let int a;
 
 a := b[2];
@@ -30,7 +30,8 @@ begin
 let sos[3] a;
 let int e;
 let int[4] f;
-let sos g;
+let SOS g;
+let cos c;
 
 //correctos
 a[0].b := 2;

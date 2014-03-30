@@ -54,7 +54,7 @@ class Function : public CompoundStatement {
   
   }
 
-  Symbol *toSymbol() {return new Symbol(name,"_function", line, column, true, 0); }
+  Symbol *toSymbol() {return new Symbol(name,returnType, line, column, 4, 0); }
 
   void firstcheck(SymTable *symtb){
   

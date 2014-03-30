@@ -37,7 +37,16 @@
       
         buffer <<"ERROR "<< line <<":"<<column << " '"<<lex<< "' ya ha sido declarada.\n";
         break;
+        
+      case 6:
       
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<lex<< "' es un tipo.\n";
+        break;  
+      
+      case 7:
+      
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<lex<< "' no es un tipo.\n";
+        break;
             
       }
       

@@ -1,3 +1,6 @@
+#ifndef X_DECLARATION
+#define X_DECLARATION
+
 #include <string>
 #include <iostream>
 #include <stdio.h>
@@ -11,10 +14,9 @@
 #include "Node.h"
 #include "Statement.h"
 #include "../Token.h"
+#include "../ErrorLog.h"
 
-#ifndef X_DECLARATION
-#define X_DECLARATION
-
+extern ErrorLog *errorlog;
 
 class Declaration : public Statement {
   public:
@@ -43,7 +45,15 @@ class Declaration : public Statement {
   }
 
   void firstcheck(SymTable *symtb){
-  
+    
+    Symbol *nvar, *ntp;
+    
+    nvar = symtb->find(var);
+    ntp = symtb->find(ntype->name);
+    //falta
+    if((nvar)&&(nvar->defined)) errorlog->addError(6,0,0,var);    
+    if(!ntp) errorlog->addError(7,0,0,ntype->name); 
+    if((ntp)&&(!ntp->defined)) errorlog->addError(7,0,0,ntype->name); 
   
   }  
 

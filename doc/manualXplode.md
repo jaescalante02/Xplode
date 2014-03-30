@@ -207,39 +207,85 @@ ej:
 
 proc bool menorQue(person, person);
 
+
 ##6 Variables
+
+Una variable podrá ser cualquier identificador declarada con cualquier tipo válido.
+
+Variables solapadas
+
+Variables locales
+
+Variables globales
 
 ##7 Arreglos
 
+Un arreglo en Xplode esta compuesto por una cantidad positiva de elementos de un 
+tipo válido en concreto, indexados linealmente desde el 0, con un número constante de 
+elementos.
+
+Los arreglos podrán pasarse como párametro de una función bajo el modo de referencia,
+esto indica que podrán ser modificados y serán guardadas estas modificaciones al
+salir de dicha función.
+
+Estos también como una de sus características principales, son de asociación 
+profunda, es decir, deberán ser asignados uno a uno (ver sección 10).
+
 ##8 Strings
 
-write
+Los strings en Xplode son una cadena de caracteres rodeados de comillas dobles y 
+escritos en una sola línea que podran imprimirse al estar como parámetro en
+la función write.
 
 ##9 Funciones
 
+Definición
+
+Invocación
+
+Funciones de número de parámetros variables
+
 ...
 
-2da clase
+Funciones de segunda clase o pase de funciones como parámetros
 
 
 ##10 Asignación
 
+
 ##11 Estructuras de control
 
 if
-else
-while
-for
 
+else
+
+while
+
+for
 
 ##12 Expresiones
 
+%nonassoc x_EQ x_NEQ
+%nonassoc x_LESS x_LESSEQ x_GREATER x_GREATEREQ
+%left x_AND x_OR
+%left x_NOT
+%left	x_PLUS x_MINUS
+%left x_MULT x_DIV
+%left x_POWER
+%left	x_UMINUS
 
 
 ##13 Chequeos a tiempo de ejecución
 
-Se espera que sea el menor número de verificaciones posibles
+Se espera que sea el menor número de verificaciones posibles.
+
+Las existentes hasta el momento se enumeran a continuación:
+
+1. Comprobación del índice de un arreglo.
 
 ##14 Cosas que explotan!
 
 Por ahora es díficil decirlo porque apenas hacemos los primeros chequeos.
+
+
+

@@ -15,10 +15,10 @@
 #ifndef X_MAINPROGRAM
 #define X_MAINPROGRAM
 
-#define INT_SYMBOL new Symbol("int","_type",0,0,true,0)
-#define FLOAT_SYMBOL new Symbol("float","_type",0,0,true,0)
-#define CHAR_SYMBOL new Symbol("char","_type",0,0,true,0)
-#define BOOL_SYMBOL new Symbol("bool","_type",0,0,true,0)
+#define INT_SYMBOL new Symbol("int","",0,0,1,0)
+#define FLOAT_SYMBOL new Symbol("float","",0,0,1,0)
+#define CHAR_SYMBOL new Symbol("char","",0,0,1,0)
+#define BOOL_SYMBOL new Symbol("bool","",0,0,1,0)
 
 class Program : public CompoundStatement {
 
@@ -102,6 +102,7 @@ public:
 
   void firstcheck(){
 
+    this->checktypes(table, table, NULL);
     std::list<Node *>::iterator iter;
     Statement *st;
     if (definitionList!=NULL) 
@@ -113,6 +114,21 @@ public:
     if(block!=NULL) block->firstcheck();  
     
   
+  }
+
+  void checktypes(SymTable *tb, SymTable* root, Symbol *s){
+  
+  /*  std::map<std::string, Symbol *>::iterator it;
+  
+    for(it=tb->table->begin();it!=tb->table->end();++it){
+    
+      if(s==it->second) error;
+      if(it->second->defined>1) 
+        checktypes((SymTable *) it->second->pt, root,it->second);
+    
+    
+    }
+  */
   }
 
 };

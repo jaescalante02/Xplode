@@ -23,17 +23,25 @@ class Symbol {
         int dimensions;       
         int line;
         int column;
-        bool editable;
         void *pt;
+        int defined; //use bool
         
+        /* define defined
+        0 variable
+        1 primitives
+        2 type
+        3 union 
+        4 function
+        5 proc       
+        */
 
-        Symbol(std::string n, std::string t, int l, int c, bool e, int d, void *p=NULL){
+        Symbol(std::string n, std::string t, int l, int c, int e, int d, void *p=NULL){
 
             name=n;
             ntype = t;
             line = l;
             column = c; 
-            editable = e;
+            defined = e;
             dimensions = d;
             pt = p;
 

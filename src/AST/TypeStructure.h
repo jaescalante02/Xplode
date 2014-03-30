@@ -50,7 +50,7 @@ class TypeStructure : public Statement {
 
   }
 
-  Symbol *toSymbol() { return new Symbol(name,"_type", line, column, true,0, table); }
+  Symbol *toSymbol() { return new Symbol(name,"", line, column, 2, 0, table); }
 
   void firstcheck(){
   

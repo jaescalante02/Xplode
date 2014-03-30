@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "Node.h"
 #include "NodeList.h"
+#include "Declaration.h"
 #include "../SymTable.h"
 #include "Statement.h"
 
@@ -82,8 +83,19 @@ class Block : public Node {
 
   void firstcheck(){
   
+    Declaration *decl;
     Statement *st;
     std::list<Node *>::iterator iter;
+    SymTable *root = table->getRoot();
+    
+    if(declarationList != NULL)
+          for(iter = (*declarationList).nodeList.begin();
+              iter != (*declarationList).nodeList.end(); ++iter){
+     
+                decl = (Declaration *) *iter;          
+                decl->firstcheck(root); 
+          } 
+    
     for(iter = (*statementList).nodeList.begin();
      iter != (*statementList).nodeList.end(); ++iter){
      

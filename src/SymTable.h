@@ -40,6 +40,8 @@ class SymTable {
         bool isMember(std::string variable);
 
         Symbol *findall(std::string variable);
+        
+        SymTable *getRoot();
              
 };
 
