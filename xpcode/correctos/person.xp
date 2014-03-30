@@ -1,7 +1,7 @@
 program
 
 type person{
-  char[] name;
+  char[10] name;
   int id;
   float height;
   float weight;

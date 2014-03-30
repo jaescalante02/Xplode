@@ -8,8 +8,8 @@ union charInt{
 
 begin
   let charInt ci;
-  ci.c = 'a';
-  ci.i = 3;
+  ci.c := 'a';
+  ci.i := 3;
   
   print(ci.c);
 

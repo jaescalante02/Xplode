@@ -1,7 +1,7 @@
 program
 
 type person{
-  char[] name;
+  char[10] name;
   int id;
   float height;
   float weight;
@@ -19,7 +19,7 @@ function void readPerson(var person p){
   read(p.name);
 }
 
-function void personComp(person a, person b){
+function bool personComp(person a, person b){
   return a.id < b.id;
 }
 
