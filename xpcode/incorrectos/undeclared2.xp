@@ -1,0 +1,34 @@
+program
+
+type person{
+  char[10] name;
+  int id;
+  float height;
+  float id;
+  float weight;
+}
+
+function void printPerson(person p){
+  write("Person Data is : ");
+  write(p.id," ", p.name, " ",p.height, " ");
+}
+
+function void readPerson(var person p){
+  read(p.id);
+  read(p.height);
+  read(p.weight);
+  read(p.name);
+}
+
+
+begin
+  let person[10] p;
+  let int i;
+  for (i := 0; i < 10; i:= 1+1){
+    readPerson(p[i]);
+  };
+  for (i := 0; i < 10; i:= 1+1){
+    printPerson(p[i]);
+  };
+
+end

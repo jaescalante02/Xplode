@@ -563,7 +563,7 @@ extern ErrorLog *errorlog;
  
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
 
-  errorlog->addError(2,line,column,&tok);
+  errorlog->addError(2,line,column-tok.length(),&tok);
 
 
 }

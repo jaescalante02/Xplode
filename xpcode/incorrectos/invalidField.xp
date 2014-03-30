@@ -1,0 +1,23 @@
+program
+
+type person{
+  char[10] name;
+  int id;
+  float height;
+  float weight;
+}
+
+function void print(person p){
+  write("Person Data is : ");
+  write(p.id," ", p.name, " ",p.height, " ", p.address);
+}
+
+begin
+  let person p;
+  read(p.id);
+  read(p.height);
+  read(p.weight);
+  read(p.name);
+  print(p);
+
+end

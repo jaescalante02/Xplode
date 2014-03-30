@@ -1,0 +1,40 @@
+program
+
+function void readMat(var int[][] m, int s){
+  let int i;
+  let int j;
+  let int k;
+  for (i := 0; i < s; i:= i+1){
+    for (j := 0; j < s; j:= j+1){
+      for (k := 0; k < s; k:= k+1){
+        write(m);
+        read(m[i][j][k]);
+      };
+    };
+  };
+}
+
+function void printMat(var int[][][] m, int s){
+  let int i;
+  let int j;
+  let int k;
+  for (i := 0; i < s; i:= i+1){
+    for (j := 0; j < s; j:= j+1){
+      for (k := 0; k < s; k:= k+1){
+        write(m[i][j][k]);
+      };
+      write("\n");
+    };
+  };
+}
+
+begin
+
+  let int[10][10][10] mat;
+  let int i;
+  let int j;
+  let int k;
+  readMat(mat,10);
+  printMat(mat,10);
+  
+end
