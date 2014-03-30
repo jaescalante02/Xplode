@@ -25,7 +25,7 @@ function void personComp(person a, person b){
 
 proc bool compare(person,person);
 
-function bool anotherComp(compPerson f, person a, person b){
+function bool anotherComp(compare f, person a, person b){
   return f(a,b);
 }
 

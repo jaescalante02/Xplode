@@ -18,6 +18,6 @@ begin
   read(p.height);
   read(p.weight);
   read(p.name);
-  print(person);
+  print(p);
 
 end
