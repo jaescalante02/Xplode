@@ -1,0 +1,37 @@
+program
+
+type person{
+  int id;
+  char[10] name;
+  float height;
+  float weight;
+}
+
+type employee{
+  int id;
+  char[10] name;
+  char[10] company;
+  int income;
+  person boss;
+
+}
+
+function void readPerson(var person p){
+  if (p.height > 1.50){
+    let employee p;
+    read(p.id);
+    read(p.income); //error p is now employee
+    read(p.weight);
+    read(p.name);
+    read(p.boss.name);
+  };
+  read(p.height);
+  read(p.income); //error p is person
+}
+
+
+begin
+  let person p;
+  readPerson(p);
+
+end
