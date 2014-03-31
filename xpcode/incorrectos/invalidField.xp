@@ -14,7 +14,9 @@ function void print(person p){
 
 begin
   let person p;
-  read(p.id);
+  let persona person;
+  
+  read(p.id.r);
   read(p.height);
   read(p.weight);
   read(p.name);

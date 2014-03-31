@@ -1,7 +1,8 @@
 //Pruebe los modos de xplode
-//si cambia xplodegram por program usará el lexer correcto
+//si cambia xplodegram por program usará el lexer correcto o simplemente no ponga
+//ninguna de las opciones
 //ver final de la sección 1 del manualXplode
-//xplodegram
+xplodegram
 
 function int suma(int a, int b){
 

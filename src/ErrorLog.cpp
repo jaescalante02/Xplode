@@ -51,7 +51,7 @@
         
       case 6:
       
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' es un tipo.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<< "' es una definicion y no puede ser solapada.\n";
         break;  
       
       case 7:
@@ -66,7 +66,7 @@
 
       case 9: //falta
       
-        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<<arrstr[1]<<arrstr[2]<< "' no ha sido declarada.\n";
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[1]<< "' no posee atributo '"<<arrstr[0]<<"' declarado.\n";
         break;
 
       case 10:
@@ -102,7 +102,13 @@
       case 17:
     
         buffer <<"ERROR "<< line <<":"<<column << " palabra de inicio faltante.\n";
-        break;   
+        break; 
+      
+      case 18:
+    
+        buffer <<"NOTA "<< line <<":"<<column << " probablemente quisiste usar \':=\'.\n";
+        break;  
+ 
         
       }
       

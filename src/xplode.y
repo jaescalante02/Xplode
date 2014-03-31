@@ -392,6 +392,7 @@ declaration_list
   
 statement_list
   : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
+  | statement  {errorlog->addError(14,line,column,NULL); $$ = new NodeList(); $$->add($1); }
   | error x_SEMICOLON { yyclearin; $$ = new NodeList(); }
   | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
   | statement_list statement {errorlog->addError(14,line,column,NULL); $1->add($2); $$ = $1; }
@@ -458,7 +459,7 @@ statement_else
 
 statement_assign
   : variable x_ASSIGN expression {$$ = new AssignStatement($1,$3); }
-  | variable error { yyclearin; std::cout << "Maybe you meant to use \':=\'.\n"; $$ = new Statement(); }
+  | variable error { yyclearin; errorlog->addError(18,line,column,NULL); $$ = new Statement(); }
   ;
   
 statement_read

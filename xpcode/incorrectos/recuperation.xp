@@ -1,0 +1,43 @@
+program
+
+
+function int f(int a int b){
+
+let int c;
+
+
+if(a==b){
+
+write(b);
+}
+
+
+}
+
+let int b
+let int c;
+
+let int d
+begin
+
+let int g
+let int m;
+
+b:=3;
+
+c=4
+
+if(true)
+b:=9;
+}
+
+while(true {
+let int k;
+
+k:=k**8;
+
+}
+
+end
+
+begin
