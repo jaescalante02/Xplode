@@ -11,7 +11,7 @@ begin
 
 let zona z;
 
-z.km.e := 8;
+z.km := 8;
 
 
 end

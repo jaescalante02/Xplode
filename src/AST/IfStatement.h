@@ -43,6 +43,13 @@ class IfStatement : public CompoundStatement {
 
   }
 
+  virtual void printTable() {
+
+     if (block!=NULL) block->printTable();
+     if (elseBlock!=NULL) elseBlock->printTable();
+
+  }
+
   void firstcheck(SymTable *symtb){
   
     condition->firstcheck(symtb);    

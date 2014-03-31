@@ -68,14 +68,17 @@
             if (table->empty()) return;
 
             std::map<std::string, Symbol *>::iterator pos;
-            std::cout << " -------------------------------------------------\n";
+            std::cout << " --------------------------------------------------------------------------------\n";
+            std::cout << " |        id       |    tipo    | dimensiones | linea  |  columna  | definicion |\n";
+            std::cout << " --------------------------------------------------------------------------------\n";
             for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
-                printf(" | %15s | %10s | %2d |%3d | %3d | %2d |\n",(*pos).first.c_str(), 
-                pos->second->ntype.c_str(),pos->second->dimensions, pos->second->line, 
+                printf(" | %15s | %10s |      %2d     |  %3d   |    %3d    |     %2d     |\n",
+                (*pos).first.c_str(), pos->second->ntype.c_str(),
+                pos->second->dimensions, pos->second->line, 
                 pos->second->column,pos->second->defined);
 
             }
-            std::cout << " -------------------------------------------------\n";
+            std::cout << " --------------------------------------------------------------------------------\n\n";
 
 
         }

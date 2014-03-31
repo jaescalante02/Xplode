@@ -51,9 +51,9 @@ class Declaration : public Statement {
     nvar = symtb->find(var);
     ntp = symtb->find(ntype->name);
     //falta
-    if((nvar)&&(nvar->defined)) errorlog->addError(6,0,0,&var);    
-    if(!ntp) errorlog->addError(7,0,0,&ntype->name); 
-    if((ntp)&&(!ntp->defined)) errorlog->addError(7,0,0,&ntype->name); 
+    if((nvar)&&(nvar->defined)) errorlog->addError(6,line, column,&var);    
+    if(!ntp) errorlog->addError(7,line,column,&ntype->name); 
+    if((ntp)&&(!ntp->defined)) errorlog->addError(7,line,column,&ntype->name); 
   
   }  
 
