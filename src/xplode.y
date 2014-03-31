@@ -213,6 +213,8 @@
 start
   : x_PROGRAM main { *program = new Program($2);  }
   | x_PROGRAM definition_list main { *program = new Program($2,$3); }
+  | main { errorlog->addError(17,1,1,NULL); *program = new Program($1);  }
+  | definition_list main { errorlog->addError(17,1,1,NULL); *program = new Program($1,$2); }
   ;
 
 main

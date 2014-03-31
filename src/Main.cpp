@@ -22,7 +22,7 @@ int selectLexer(char* fp){
     for( std::string line; getline(input, line); ){
 
          comment = line.find("//");  
-         progxp  =  line.find("explotion");
+         progxp  =  line.find("xplodegram");
          progcl  = line.find("program");
 
          if ((progcl!=-1)&&((comment==-1)||(progcl<comment))) 
@@ -33,7 +33,7 @@ int selectLexer(char* fp){
 
     }
 
-    return 1;
+    return 2;
 
 }
 

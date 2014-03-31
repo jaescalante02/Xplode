@@ -1,0 +1,21 @@
+//Pruebe los modos de xplode
+//si cambia xplodegram por program usará el lexer correcto
+//ver final de la sección 1 del manualXplode
+//xplodegram
+
+function int suma(int a, int b){
+
+return a+b;
+}
+
+begin
+
+let int a;
+let int b;
+
+read(a);
+read(b); 
+write(suma(a,b));
+
+end
+

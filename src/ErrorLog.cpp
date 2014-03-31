@@ -98,6 +98,11 @@
     
         buffer <<"ERROR "<< line <<":"<<column << " '{' faltante.\n";
         break;   
+      
+      case 17:
+    
+        buffer <<"ERROR "<< line <<":"<<column << " palabra de inicio faltante.\n";
+        break;   
         
       }
       
