@@ -11,6 +11,9 @@ begin
   ci.c := 'a';
   ci.i := 3;
   
+  
+  
   print(ci.c);
+  print(ci.d);
 
 end

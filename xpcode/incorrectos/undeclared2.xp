@@ -4,12 +4,13 @@ type person{
   char[10] name;
   int id;
   float height;
+  float id;
   float weight;
 }
 
 function void printPerson(person p){
   write("Person Data is : ");
-  write(p.id," ", p.name, " ",p.height, " ", p.weight);
+  write(p.id," ", p.name, " ",p.height, " ");
 }
 
 function void readPerson(var person p){

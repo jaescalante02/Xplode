@@ -19,13 +19,13 @@ function void readPerson(var person p){
   read(p.name);
 }
 
-function bool personComp(person a, person b){
+function void personComp(person a, person b){
   return a.id < b.id;
 }
 
 proc bool compare(person,person);
 
-function bool anotherComp(compare f, person a, person b){
+function bool anotherComp(compPerson f, person a, person b){
   return f(a,b);
 }
 
@@ -34,7 +34,9 @@ begin
   let person a;
   let person b;
   let person c;
-  if(anotherComp(personComp,a,b)){
+  let person a; //a being redeclared
+  //Error in function argument
+  if(anotherComp(personCom,a,b)){
     if(anotherComp(personComp,a,c)){
       printPerson(a);
     } else {

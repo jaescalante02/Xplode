@@ -260,13 +260,13 @@ def_type
   ; 
 
 attribute_list
-  : param_type x_ID x_SEMICOLON {  //puede mejorarse
+  : type x_ID x_SEMICOLON {  //puede mejorarse
     $$ = new NodeList();
     $$->push(new Declaration($1, $2));  
   }
   | error x_SEMICOLON { $$ = new NodeList(); }
   | error x_RBRACE { $$ = new NodeList(); }
-  | attribute_list param_type x_ID x_SEMICOLON {
+  | attribute_list type x_ID x_SEMICOLON {
     $1->push(new Declaration($2, $3));
     $$ = $1;
   }
@@ -565,7 +565,7 @@ function_arguments
  
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
 
-  errorlog->addError(2,line,column,&tok);
+  errorlog->addError(2,line,column-tok.length(),&tok);
 
 
 }
