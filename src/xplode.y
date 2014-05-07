@@ -14,6 +14,7 @@
   Parameter *par;
   Expression *exp;
   std::list<Expression *> *explist;
+  DeclarationMult *decl; //modificar
 }
 
 %code requires {
@@ -32,6 +33,7 @@
   #include "AST/Constant.h"
   #include "AST/ContinueStatement.h"
   #include "AST/Declaration.h"
+  #include "AST/DeclarationMult.h"
   #include "AST/Expression.h"
   #include "AST/Error.h"
   #include "AST/ExitStatement.h"
@@ -68,11 +70,13 @@
   extern std::string tok;
   extern ErrorLog *errorlog;
   
+  
 }
 
 %code {
 	// Prototype for the yylex function
 	static int yylex(Xplode::BisonParser::semantic_type * yylval, Xplode::FlexScanner &scanner);
+	Node *decTypeNode;
 }
 
 %token<tok> INTEGER
@@ -167,7 +171,10 @@
 %type <node> def_type
 %type <node> def_proc
 %type <node> def_function
-%type <node> declaration
+%type <decl> declaration
+%type <node> declaration_type
+%type <decl> declaration_id_list
+//%type <node> declaration_mult
 %type <node> statement 
 %type <node> statement_assign statement_sleep 
 %type <node> statement_read statement_write
@@ -200,6 +207,8 @@
 %type <nodelist> proc_type_list
 %type <nodelist> function_parameters
 %type <nodelist> statement_list 
+
+
 
 
 
@@ -365,10 +374,25 @@ block
   |  statement_list x_RBRACE { errorlog->addError(16,line,column,NULL); $$ = new Block($1); }
   ;
 
-declaration
-  : x_LET type x_ID { $$ = new Declaration($2, $3);  } 
+//declaration
+//  : x_LET declaration_type x_ID { $$ = new Declaration(decTypeNode, $3);  } 
+//  ;
+
+
+declaration_type
+  : type { decTypeNode = $1; $$ =  $1; }  
   ;
 
+declaration
+  : x_LET declaration_type declaration_id_list { $$ = $3;  } 
+  ;
+  
+
+declaration_id_list
+  : x_ID {$$ = new DeclarationMult(decTypeNode); $$->add($1); }
+  | declaration_id_list x_COMMA x_ID {$$ =$1; $$->add($3); }
+  ;
+    
 declaration_list
   : declaration x_SEMICOLON { 
     $$ = new NodeList();
