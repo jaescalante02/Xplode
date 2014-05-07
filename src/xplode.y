@@ -175,7 +175,9 @@
 %type <node> declaration_type
 %type <decl> declaration_id_list
 //%type <node> declaration_mult
-%type <node> statement 
+%type <node> statement
+%type <node> statement_simple
+%type <node> statement_compound
 %type <node> statement_assign statement_sleep 
 %type <node> statement_read statement_write
 %type <node> statement_while statement_for
@@ -416,19 +418,24 @@ declaration_list
   
 statement_list
   : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
-  | statement  {errorlog->addError(14,line,column,NULL); $$ = new NodeList(); $$->add($1); }
+  | statement_simple  {errorlog->addError(14,line,column,NULL); $$ = new NodeList(); $$->add($1); }
+  | statement_compound {$$ = new NodeList(); $$->add($1); }
   | error x_SEMICOLON { yyclearin; $$ = new NodeList(); }
+  | error { yyclearin; $$ = new NodeList(); }
   | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
-  | statement_list statement {errorlog->addError(14,line,column,NULL); $1->add($2); $$ = $1; }
+  | statement_list statement_simple {errorlog->addError(14,line,column,NULL); $1->add($2); $$ = $1; }
+  | statement_list statement_compound {$1->add($2); $$ = $1; }
   ;
 
 
-//statements
 statement
+  : statement_simple {$$ = $1; }
+  | statement_compound {$$ = $1; }
+  ;
+
+//statements
+statement_simple
   : statement_assign {$$ = $1; }
-  | statement_for {$$ = $1; }
-  | statement_while {$$ = $1; }
-  | statement_if {$$ = $1; }
   | statement_read {$$ = $1; }
   | statement_write {$$ = $1; }
   | statement_sleep {$$ = $1; }
@@ -438,6 +445,14 @@ statement
   | statement_return {$$ = $1; }
   | statement_exit{$$ = $1; }
   ;
+
+statement_compound
+  : statement_for {$$ = $1; }
+  | statement_while {$$ = $1; }
+  | statement_if {$$ = $1; }
+  ;
+
+
 
 statement_for
   : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block{
