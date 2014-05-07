@@ -49,15 +49,38 @@ class DeclarationMult : public Statement {
    
    std::cout << "DECLARATION\n";
    std::cout << "type: " << ntype->name << "\n";
-   std::cout << "var: " << lvar.front().var << "\n";
+   for(std::list<decl>::iterator iter = lvar.begin(); iter != lvar.end(); ++iter){
+       std::cout << "var: " << (*iter).var << "\n"; 
+    }   
   }
 
   Symbol *toSymbol(){ 
+    return NULL;
     decl d;
     d = lvar.front();
     return new Symbol(d.var,ntype->name, d.line, d.column, false,
             ntype->max_index->size()); 
   }
+
+  Symbol *toSymbol2(){ 
+    decl d;
+    d = lvar.front();
+    return new Symbol(d.var,ntype->name, d.line, d.column, false,
+            ntype->max_index->size()); 
+  }
+
+  std::list<Symbol *> toSymbols(){
+    std::list <Symbol *> symbolList;
+    decl d;
+    for(std::list<decl>::iterator iter = lvar.begin(); iter != lvar.end(); ++iter){
+       d = *iter; 
+       symbolList.push_front(new Symbol(d.var,ntype->name,d.line,d.column,false,
+            ntype->max_index->size())); 
+    }
+
+    return symbolList;
+  }
+
 
   void firstcheck(SymTable *symtb){
     

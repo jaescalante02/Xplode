@@ -1,5 +1,8 @@
 #include "SymTable.h"
 #include "AST/Variable.h"
+#include "AST/DeclarationMult.h"
+#include <list>
+#include <stdio.h>
 
 #define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
 
@@ -18,10 +21,23 @@
         }
 
         void SymTable::add(NodeList *l){
-
+           Symbol *s;
+           DeclarationMult *d;
            std::list<Node *>::iterator iter;
            for(iter = (*l).nodeList.begin(); iter != (*l).nodeList.end(); ++iter){
-                this->insert((*iter)->toSymbol()); 
+              s = (*iter)->toSymbol();
+              if (s == NULL){
+                d = (DeclarationMult *) (*iter);
+                std::list<Symbol *> symbolList;
+                std::list<Symbol *>::iterator iter2;
+                symbolList = d->toSymbols(); 
+                
+                for(iter2 = symbolList.begin(); iter2 != symbolList.end(); ++iter2){
+                  this->insert(*iter2); 
+                } 
+              } else {
+              this->insert(s); 
+              }
            } 
 
         }
