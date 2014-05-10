@@ -1,0 +1,13 @@
+program
+
+begin
+  
+  write(0e10);
+  write(43e10);
+  write(34.4e10);
+  
+  write(43e-10);
+  write(34.3243e-10);
+
+  
+end

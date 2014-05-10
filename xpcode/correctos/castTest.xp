@@ -1,0 +1,16 @@
+program
+
+begin
+  
+  let int a,b,c,x;
+  let float d, e;
+  let char ch;
+  read(a);
+  read(b);
+  read(c);
+  ch := itoc(c);
+  d := itof(a) / itof(c);
+  x := ftoi(d);
+  e := d * itof(x);
+  
+end
