@@ -11,20 +11,28 @@
 #ifndef X_SYMBOL_
 #define X_SYMBOL_
 
+#include "AST/TypeDeclaration.h"
+
+/*
+nombre 
+tipo (apuntador)
+linea
+columna
+
+*/
+
+
+
+
 class Symbol {
 
     public:
 
         std::string name;
-//valor
-        std::string ntype;
-//tamano
- 
-        int dimensions;       
+        TypeDeclaration *ntype;
         int line;
         int column;
-        void *pt;
-        int defined; //use bool
+
         
         /* define defined
         0 variable
@@ -35,15 +43,15 @@ class Symbol {
         5 proc       
         */
 
-        Symbol(std::string n, std::string t, int l, int c, int e, int d, void *p=NULL){
+        Symbol(std::string n, TypeDeclaration *t, int l, int c){
 
             name=n;
             ntype = t;
             line = l;
             column = c; 
-            defined = e;
-            dimensions = d;
-            pt = p;
+            //defined = e;
+            //dimensions = d;
+            //pt = p;
 
         }
 

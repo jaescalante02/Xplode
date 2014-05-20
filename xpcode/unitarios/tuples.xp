@@ -1,0 +1,41 @@
+program
+
+union u{
+
+int a;
+int b;
+
+}
+
+type t{
+
+int c;
+bool d;
+
+}
+
+proc int p(int,float);
+
+begin
+let int m,h;
+let bool t;
+
+m:=7;
+if(2==2){
+let float w;
+
+w:=1.2;
+
+};
+
+while(1<5){
+
+let char r,j;
+let int j,j2;
+
+r:=0;
+
+};
+
+
+end

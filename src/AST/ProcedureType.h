@@ -17,8 +17,8 @@ class ProcedureType : public Node {
   std::string name;
   
   ProcedureType(Node *n) { 
-    TypeDeclaration *tp = (TypeDeclaration *) n; 
-    name = tp->name;
+    //TypeDeclaration *tp = (TypeDeclaration *) n; 
+    //name = tp->name;
   }
   void print(){
    std::cout << "PROCEDURE TYPE\n";

@@ -22,7 +22,7 @@ class Parameter : public Node {
   std::string passtype; //Either value or reference
   
   Parameter(Node *n, Xplode::Token *v, std::string ptype = "value") { 
-      ntype = (TypeDeclaration *) n; 
+      //ntype = (TypeDeclaration *) n; 
       var = v->value; 
       line = v->line; 
       column = v->column; 
@@ -34,7 +34,7 @@ class Parameter : public Node {
    
    std::cout << "PARAMETER\n";
    std::cout << "passing by: " << passtype << "\n";
-   std::cout << "type: " << ntype->name << "\n";
+   //std::cout << "type: " << ntype->name << "\n";
    std::cout << "var: " << var << "\n";
   }
 
@@ -43,9 +43,11 @@ class Parameter : public Node {
   }
 
   Symbol *toSymbol(){ 
-  
+  /*
     return new Symbol(var,ntype->name, line, column, false,
             ntype->max_index->size()); 
+  
+  */
   }
 
 

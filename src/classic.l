@@ -31,10 +31,9 @@ CHAR     [^\n]
 
 {DIGIT}+  { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::INTEGER; }
 ({DIGIT}+).({DIGIT}+)  { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
-({DIGIT}+)e(\-?)({DIGIT}+) { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
-({DIGIT}+).({DIGIT}+)e(\-?)({DIGIT}+) { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
-
 \/\/[^\n]* {UPDATE_LOC;}
+
+
 \"[^\n]*\" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::STRING; 
              //"(\\[\x22\x5c\x6e] | [\x20-\x21\x23-\x5B\x5D-\x7E¿¡áéíóúÁÉÍÓÚñÑ])*"
              //Por discutir que tipo de string se espera
@@ -76,11 +75,6 @@ else { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ELSE; }
 
 type { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TYPE; }
 union { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_UNION; }
-
-ctoi { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CTOI; }
-itoc { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ITOC; }
-itof { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ITOF; }
-ftoi { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FTOI; }
 
 "(" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LPAR; }
 ")" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RPAR; }

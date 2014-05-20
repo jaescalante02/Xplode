@@ -48,29 +48,32 @@ class DeclarationMult : public Statement {
    std::string tab = std::string(4, ' ');
    
    std::cout << "DECLARATION\n";
-   std::cout << "type: " << ntype->name << "\n";
+   //std::cout << "type: " << ntype->name << "\n";
    for(std::list<decl>::iterator iter = lvar.begin(); iter != lvar.end(); ++iter){
        std::cout << "var: " << (*iter).var << "\n"; 
     }   
   }
 
   Symbol *toSymbol(){ 
-    return NULL;
+  /*  return NULL;
     decl d;
     d = lvar.front();
     return new Symbol(d.var,ntype->name, d.line, d.column, false,
             ntype->max_index->size()); 
+  */
   }
 
   Symbol *toSymbol2(){ 
-    decl d;
+   /* decl d;
     d = lvar.front();
     return new Symbol(d.var,ntype->name, d.line, d.column, false,
             ntype->max_index->size()); 
+  
+  */
   }
 
   std::list<Symbol *> toSymbols(){
-    std::list <Symbol *> symbolList;
+   /* std::list <Symbol *> symbolList;
     decl d;
     for(std::list<decl>::iterator iter = lvar.begin(); iter != lvar.end(); ++iter){
        d = *iter; 
@@ -79,11 +82,13 @@ class DeclarationMult : public Statement {
     }
 
     return symbolList;
+  
+  */
   }
 
 
   void firstcheck(SymTable *symtb){
-    
+   /* 
     Symbol *nvar, *ntp;
     decl d;
     d = lvar.front();
@@ -94,7 +99,7 @@ class DeclarationMult : public Statement {
     if((nvar)&&(nvar->defined)) errorlog->addError(6,d.line, d.column,&d.var);    
     if(!ntp) errorlog->addError(7,d.line,d.column,&ntype->name); 
     if((ntp)&&(!ntp->defined)) errorlog->addError(7,d.line,d.column,&ntype->name); 
-  
+  */
   }  
 
 };

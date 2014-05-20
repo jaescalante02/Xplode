@@ -22,7 +22,6 @@ class Node {
 
     virtual void print() = 0;
 
-    virtual Symbol *toSymbol(){}
 
     int line;
     int column;

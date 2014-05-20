@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "NodeList.h"
 #include "TypeDeclaration.h"
+#include "TupleType.h"
 #include "../Symbol.h"
 #include "Statement.h"
 #include "../Token.h"
@@ -21,13 +22,13 @@ class Procedure : public Statement {
   public:
   std::string name;
   std::string returnType;
-  NodeList* types;
+  TupleType* types;
   
-  Procedure(Xplode::Token *n, Node* r, NodeList* t) { 
+  Procedure(Xplode::Token *n, Node* r, Node* t) { 
       name = n->value; 
-      TypeDeclaration *tp = (TypeDeclaration *) r; 
-      returnType = tp->name; 
-      types = t; 
+    //  TypeDeclaration *tp = (TypeDeclaration *) r; 
+    //  returnType = tp->name; 
+      types = (TupleType *) t; 
       line = n->line;
       column = n->column;
   }
@@ -41,7 +42,7 @@ class Procedure : public Statement {
 
   }
 
-  Symbol *toSymbol() {return new Symbol(name,returnType, line, column, 5, 0); }
+  Symbol *toSymbol() {return new Symbol(name,NULL, line, column); }
 
   void firstcheck(){ }
 

@@ -24,12 +24,12 @@
 		class FlexScanner;
 	}
 	#include <stdio.h>
+	#include <stack>
 	#include "Token.h"
 	#include "AST/AssignStatement.h"
   #include "AST/BinaryExpression.h"
   #include "AST/Block.h"
   #include "AST/BreakStatement.h"
-  #include "AST/CastedExpression.h"
   #include "AST/CompoundStatement.h"
   #include "AST/Constant.h"
   #include "AST/ContinueStatement.h"
@@ -56,6 +56,9 @@
   #include "AST/SleepStatement.h"
   #include "AST/Statement.h"
   #include "AST/TypeDeclaration.h"
+  #include "AST/ArrayType.h"  
+  #include "AST/TupleType.h"  
+  #include "AST/FunctionType.h"      
   #include "AST/TypeStructure.h"
   #include "AST/UnaryExpression.h"
   #include "AST/UnaryOp.h"
@@ -70,6 +73,7 @@
   extern int line,column;  
   extern std::string tok;
   extern ErrorLog *errorlog;
+
   
   
 }
@@ -78,6 +82,8 @@
 	// Prototype for the yylex function
 	static int yylex(Xplode::BisonParser::semantic_type * yylval, Xplode::FlexScanner &scanner);
 	Node *decTypeNode;
+	SymTable *actual, *root;
+	std::stack<SymTable *> pila;
 }
 
 %token<tok> INTEGER
@@ -116,12 +122,6 @@
 
 %token<tok> x_TYPE
 %token<tok> x_UNION
-
-//Type casting
-%token<tok> x_CTOI
-%token<tok> x_ITOC
-%token<tok> x_ITOF
-%token<tok> x_FTOI
 
 //Single characters
 %token<tok> x_LPAR
@@ -195,17 +195,16 @@
 %type <node> for_init for_increment
 
 %type <node> block
+%type <node> init_block
 %type <node> main
 %type <node> start
-
-%type <par> parameter
+%type <node> init
 
 //expressions
 
 %type <var> variable
 %type <var> variable_id
 %type <exp> constant
-%type <exp> expression_cast
 %type <exp> expression expression_unary function
 %type <explist> function_arguments write_list
 %type <exp> while_condition for_condition if_condition
@@ -213,9 +212,10 @@
 
 %type <nodelist> definition_list
 %type <nodelist> declaration_list
-%type <nodelist> attribute_list
-%type <nodelist> proc_type_list
-%type <nodelist> function_parameters
+%type <node> attribute_list
+%type <node> proc_type_list
+%type <node> function_parameters
+%type <node> function_pars
 %type <nodelist> statement_list 
 
 
@@ -230,15 +230,47 @@
 
 // Grammar for classic version
 start
-  : x_PROGRAM main { *program = new Program($2);  }
-  | x_PROGRAM definition_list main { *program = new Program($2,$3); }
-  | main { errorlog->addError(17,1,1,NULL); *program = new Program($1);  }
-  | definition_list main { errorlog->addError(17,1,1,NULL); *program = new Program($1,$2); }
+  : init x_PROGRAM main { 
+   
+    *program = new Program(actual, $3);  
+  }
+  | init x_PROGRAM definition_list main { 
+  
+    *program = new Program(actual, $3, $4); 
+  }
+  | init main { 
+  
+    errorlog->addError(17,1,1,NULL); 
+    *program = new Program(actual, $2);  
+  }
+  | init definition_list main { 
+  
+    errorlog->addError(17,1,1,NULL); 
+    *program = new Program(actual, $2, $3); 
+  }
   ;
+  
+init: {    
+
+    //std::cout <<"INITTTTT\n";
+    root = new SymTable();
+    actual = root; 
+    pila.push(actual);
+   }
+   ;  
 
 main
-  : x_BEGIN statement_list x_END {$$ = new Block($2); } 
-  | x_BEGIN declaration_list statement_list x_END {$$ = new Block($2,$3);}
+  : init_block x_BEGIN statement_list x_END { 
+    $$ = new Block(actual, $3);
+    pila.pop();
+    actual = pila.top();
+     
+  } 
+  | init_block x_BEGIN declaration_list statement_list x_END {
+    $$ = new Block(actual, $3, $4);
+    pila.pop();
+    actual = pila.top();
+  }
   ;
   
 
@@ -270,45 +302,59 @@ definition
 
 def_union
   : x_UNION x_ID x_LBRACE attribute_list x_RBRACE { 
+    TupleType *t = (TupleType *) $4;
+    root->insert(t->toSymbol($2));    
+    //root->print();    
     $$ = new Union($2, $4);
   }
   ;
 
 def_type 
-  :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE { 
+  :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE {
+    TupleType *t = (TupleType *) $4;
+    root->insert(t->toSymbol($2));
+    //root->print();
     $$ = new TypeStructure($2, $4);
   }
   ; 
 
 attribute_list
   : type x_ID x_SEMICOLON {  //puede mejorarse
-    $$ = new NodeList();
-    $$->push(new Declaration($1, $2));  
+    TupleType *t = new TupleType();
+    t->add($1, $2->value);
+    $$ = t;  
   }
-  | error x_SEMICOLON { $$ = new NodeList(); }
-  | error x_RBRACE { $$ = new NodeList(); }
+  | error x_SEMICOLON { $$ = new TupleType(); }
+  | error x_RBRACE { $$ = new TupleType(); }
   | attribute_list type x_ID x_SEMICOLON {
-    $1->push(new Declaration($2, $3));
-    $$ = $1;
+    TupleType *t = (TupleType *) $1;
+    t->add($2, $3->value);
+    $$ = t;
   }
   ;
 
 //Used for second class functions
 def_proc
   : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR {
+    TupleType *t = (TupleType *) $5;
+    root->insert(t->toSymbol($3));
+    //root->print();    
     $$ = new Procedure($3, $2, $5);
   }
   ;
 
 proc_type_list
   : type {
-    $$ = new NodeList();
-    $$->add(new ProcedureType($1));
+    TupleType *t;
+    t = new TupleType();
+    t->addType($1);
+    $$ = t;
   }
-  | error type { $$ = new NodeList(); }
+  | error type { $$ = new TupleType(); }
   | proc_type_list x_COMMA type { 
-    $1->add(new ProcedureType($3));
-    $$ = $1;
+    TupleType *t = (TupleType *) $1;  
+    t->addType($3);
+    $$ = t;
   }   
   ;
 
@@ -323,66 +369,129 @@ def_function
 
 function_type
   : primitive_type {$$ = $1; }
-  | x_VOID {$$ = new TypeDeclaration($1->value); }
+  | x_VOID {$$ = new TypeDeclaration(TYPE_VOID); }
   ;
   
 function_parameters 
-  : parameter {
-    $$ = new NodeList();
-    $$->push($1); 
+  : function_pars param_type x_ID x_COMMA x_EXTEND { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($2,$3->value);
+    $$ = t;
+  
+  } //falta var
+  | function_pars param_type x_ID { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($2,$3->value);
+    $$ = t;
+  
   }
-  | error  { $$ = new NodeList(); }
-  | parameter x_COMMA x_EXTEND {
-    $$ = new NodeList();
-    $$->push(new Extends($1->ntype));
-    $$->push($1);
+  | function_pars x_VAR param_type x_ID x_COMMA x_EXTEND { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($3,$4->value);
+    $$ = t;
+  
+  }
+  | function_pars x_VAR param_type x_ID { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($3,$4->value);
+    $$ = t;
+  
+  }
+  ;
+  
+function_pars
+  : param_type x_ID x_COMMA { 
+    TupleType *t = new TupleType(); 
+    t->add($1,$2->value);
+    $$ = t;
+    }
+  | x_VAR param_type x_ID x_COMMA { 
+  
+    TupleType *t = new TupleType(); 
+    t->add($2,$3->value);
+    $$ = t;
+    } //falta var
     
+  | function_pars param_type x_ID x_COMMA { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($2,$3->value);
+    $$ = t;
+  
   }
-  | parameter x_COMMA function_parameters {
-    $3->push($1);
-    $$ = $3;  
-  }
-  ;
-
-parameter
-  : param_type x_ID {$$ = new Parameter($1,$2);} 
-  | x_VAR param_type x_ID {$$ = new Parameter($2,$3,"ref");} 
-  ;
+  | function_pars x_VAR param_type x_ID x_COMMA { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($3,$4->value);
+    $$ = t;
+  
+  } //falta var
+  | error  { $$ = new TupleType(); }
+  
 
 param_type 
   : primitive_type {$$ = $1; }
-  | x_ID {$$ = new TypeDeclaration($1->value); }
+  | x_ID {$$ = new TypeDeclaration(TYPE_VOID); }
   | param_type x_LBRACKET x_RBRACKET {      
-     TypeDeclaration *tp = (TypeDeclaration *) $1; 
-     tp->addDimension("-1"); //NO TIENE VALOR POR AHORA
-     $$ = tp;
+     $$ = new ArrayType($1,-1);
    } 
   ;
   
 primitive_type
-  :  x_INT {$$ = new TypeDeclaration($1->value); }
-  | x_CHAR {$$ = new TypeDeclaration($1->value); } 
-  | x_BOOL {$$ = new TypeDeclaration($1->value); } 
-  | x_FLOAT {$$ = new TypeDeclaration($1->value); }
+  :  x_INT {$$ = new TypeDeclaration(TYPE_INT); }
+  | x_CHAR {$$ = new TypeDeclaration(TYPE_CHAR); } 
+  | x_BOOL {$$ = new TypeDeclaration(TYPE_BOOL); } 
+  | x_FLOAT {$$ = new TypeDeclaration(TYPE_FLOAT); }
   ;
 
 type 
   : primitive_type {$$ = $1; }
-  | x_ID {$$ = new TypeDeclaration($1->value); }
+  | x_ID {$$ = new TypeDeclaration(TYPE_VOID); }
   | type x_LBRACKET INTEGER x_RBRACKET { 
-    TypeDeclaration *tp = (TypeDeclaration *) $1; 
-     tp->addDimension($3->value);
-     $$ = tp;
+     $$ = new ArrayType($1,atoi($3->value.c_str()));
     }
   ;     
 
 
 block  
-  : x_LBRACE declaration_list statement_list x_RBRACE {$$ = new Block($2,$3); }
-  | x_LBRACE statement_list x_RBRACE {$$ = new Block($2); }
-  |  declaration_list statement_list x_RBRACE { errorlog->addError(16,line,column,NULL); $$ = new Block($1,$2); }
-  |  statement_list x_RBRACE { errorlog->addError(16,line,column,NULL); $$ = new Block($1); }
+  : init_block x_LBRACE declaration_list statement_list x_RBRACE {
+    $$ = new Block(actual,$3,$4); 
+    pila.pop();
+    actual = pila.top();
+  }
+  | init_block x_LBRACE statement_list x_RBRACE {
+    $$ = new Block(actual, $3); 
+    pila.pop();
+    actual = pila.top();
+  }
+  | init_block declaration_list statement_list x_RBRACE { 
+    errorlog->addError(16,line,column,NULL); 
+    $$ = new Block(actual,$2,$3); 
+    pila.pop();
+    actual = pila.top();    
+  }
+  | init_block statement_list x_RBRACE { 
+    pila.pop();
+    actual = pila.top();  
+    errorlog->addError(16,line,column,NULL); 
+    $$ = new Block(actual,$2); 
+  }
   ;
+
+init_block 
+  : {  
+  
+    SymTable *aux = new SymTable();
+    aux->setFather(actual);
+    actual = aux;
+    pila.push(actual);
+  }
+  ;
+
 
 //declaration
 //  : x_LET declaration_type x_ID { $$ = new Declaration(decTypeNode, $3);  } 
@@ -399,8 +508,19 @@ declaration
   
 
 declaration_id_list
-  : x_ID {$$ = new DeclarationMult(decTypeNode); $$->add($1); }
-  | declaration_id_list x_COMMA x_ID {$$ =$1; $$->add($3); }
+  : x_ID {
+    
+    $$ = new DeclarationMult(decTypeNode); 
+    $$->add($1); 
+    actual->insert(new Symbol($1->value,(TypeDeclaration *) decTypeNode,$1->line,$1->column));
+    //actual->print();
+  } 
+  | declaration_id_list x_COMMA x_ID {
+    $$ = $1; 
+    $$->add($3);
+    actual->insert(new Symbol($3->value,(TypeDeclaration *) decTypeNode,$3->line,$3->column));
+    //actual->print();
+  }
   ;
     
 declaration_list
@@ -573,19 +693,10 @@ expression_unary
   : constant { $$ = $1; }
   | variable { $$ = $1; }
   | function { $$ = $1; }
-  | expression_cast {$$ = $1; }
   | x_MINUS expression %prec x_UMINUS { $$ = new UnaryOp($1->value,$2); }
   | x_NOT expression { $$ = new UnaryOp($1->value,$2); }
   | x_LPAR expression x_RPAR { $$ = new UnaryExpression($2); }
   ;
- 
-expression_cast
-  : x_CTOI x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  | x_ITOC x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  | x_ITOF x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  | x_FTOI x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  ;
- 
  
 constant
   : INTEGER { $$ = new Constant($1->value);}

@@ -21,7 +21,7 @@
         }
 
         void SymTable::add(NodeList *l){
-           Symbol *s;
+          /* Symbol *s;
            DeclarationMult *d;
            std::list<Node *>::iterator iter;
            for(iter = (*l).nodeList.begin(); iter != (*l).nodeList.end(); ++iter){
@@ -39,7 +39,7 @@
               this->insert(s); 
               }
            } 
-
+*/
         }
 
         void SymTable::insert(Symbol *s){
@@ -84,17 +84,18 @@
             if (table->empty()) return;
 
             std::map<std::string, Symbol *>::iterator pos;
-            std::cout << " --------------------------------------------------------------------------------\n";
-            std::cout << " |        id       |    tipo    | dimensiones | linea  |  columna  | definicion |\n";
-            std::cout << " --------------------------------------------------------------------------------\n";
+            std::cout << " -------------------------------------------------------------------\n";
+            std::cout << " |        id       |    tipo    | dimensiones | linea  |  columna  |\n";
+            std::cout << " -------------------------------------------------------------------\n";
             for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
-                printf(" | %15s | %10s |      %2d     |  %3d   |    %3d    |     %2d     |\n",
-                (*pos).first.c_str(), pos->second->ntype.c_str(),
-                pos->second->dimensions, pos->second->line, 
-                pos->second->column,pos->second->defined);
+                printf(" | %15s | %10ld |      %2d     |  %3d   |    %3d    |\n",
+                (*pos).first.c_str(), (long int) pos->second->ntype,
+                0, pos->second->line, 
+                pos->second->column);
 
             }
-            std::cout << " --------------------------------------------------------------------------------\n\n";
+            //if(this->father) this->father->print();
+            std::cout << " -------------------------------------------------------------------\n\n";
 
 
         }

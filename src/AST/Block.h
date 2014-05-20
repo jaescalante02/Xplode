@@ -22,17 +22,17 @@ class Block : public Node {
   NodeList *statementList; 
   SymTable *table;
 
-  Block(NodeList *s){ 
+  Block(SymTable *stb, NodeList *s){ 
 
-    table= new SymTable(); 
+    table= stb; //new SymTable(); 
     declarationList = 0; 
     statementList = s; 
     this->setFathers();
   }
 
-  Block(NodeList *d, NodeList *s) { 
+  Block(SymTable *stb, NodeList *d, NodeList *s) { 
 
-    table = new SymTable(d); 
+    table = stb; //new SymTable(); 
     declarationList = d; 
     statementList = s; 
     this->setFathers();

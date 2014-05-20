@@ -1,0 +1,4079 @@
+Gramática
+
+    0 $accept: start $end
+
+    1 start: init x_PROGRAM main
+    2      | init x_PROGRAM definition_list main
+    3      | init main
+    4      | init definition_list main
+
+    5 init: /* vacío */
+
+    6 main: init_block x_BEGIN statement_list x_END
+    7     | init_block x_BEGIN declaration_list statement_list x_END
+
+    8 definition_list: definition
+    9                | definition_list definition
+   10                | definition_list error
+
+   11 definition: def_union
+   12           | def_proc x_SEMICOLON
+   13           | def_type
+   14           | def_function
+   15           | declaration x_SEMICOLON
+   16           | error x_SEMICOLON
+   17           | error x_LBRACE attribute_list x_RBRACE
+
+   18 def_union: x_UNION x_ID x_LBRACE attribute_list x_RBRACE
+
+   19 def_type: x_TYPE x_ID x_LBRACE attribute_list x_RBRACE
+
+   20 attribute_list: type x_ID x_SEMICOLON
+   21               | error x_SEMICOLON
+   22               | error x_RBRACE
+   23               | attribute_list type x_ID x_SEMICOLON
+
+   24 def_proc: x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR
+
+   25 proc_type_list: type
+   26               | error type
+   27               | proc_type_list x_COMMA type
+
+   28 def_function: x_FUNCTION function_type x_ID x_LPAR x_RPAR block
+   29             | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block
+
+   30 function_type: primitive_type
+   31              | x_VOID
+
+   32 function_parameters: function_pars param_type x_ID x_COMMA x_EXTEND
+   33                    | function_pars param_type x_ID
+   34                    | function_pars x_VAR param_type x_ID x_COMMA x_EXTEND
+   35                    | function_pars x_VAR param_type x_ID
+
+   36 function_pars: param_type x_ID x_COMMA
+   37              | x_VAR param_type x_ID x_COMMA
+   38              | function_pars param_type x_ID x_COMMA
+   39              | function_pars x_VAR param_type x_ID x_COMMA
+   40              | error
+
+   41 param_type: primitive_type
+   42           | x_ID
+   43           | param_type x_LBRACKET x_RBRACKET
+
+   44 primitive_type: x_INT
+   45               | x_CHAR
+   46               | x_BOOL
+   47               | x_FLOAT
+
+   48 type: primitive_type
+   49     | x_ID
+   50     | type x_LBRACKET INTEGER x_RBRACKET
+
+   51 block: init_block x_LBRACE declaration_list statement_list x_RBRACE
+   52      | init_block x_LBRACE statement_list x_RBRACE
+   53      | init_block declaration_list statement_list x_RBRACE
+   54      | init_block statement_list x_RBRACE
+
+   55 init_block: /* vacío */
+
+   56 declaration_type: type
+
+   57 declaration: x_LET declaration_type declaration_id_list
+
+   58 declaration_id_list: x_ID
+   59                    | declaration_id_list x_COMMA x_ID
+
+   60 declaration_list: declaration x_SEMICOLON
+   61                 | declaration
+   62                 | declaration_list declaration x_SEMICOLON
+   63                 | declaration_list declaration
+
+   64 statement_list: statement x_SEMICOLON
+   65               | statement_simple
+   66               | statement_compound
+   67               | error x_SEMICOLON
+   68               | error
+   69               | statement_list statement x_SEMICOLON
+   70               | statement_list statement_simple
+   71               | statement_list statement_compound
+
+   72 statement: statement_simple
+   73          | statement_compound
+
+   74 statement_simple: statement_assign
+   75                 | statement_read
+   76                 | statement_write
+   77                 | statement_sleep
+   78                 | statement_function
+   79                 | statement_break
+   80                 | statement_continue
+   81                 | statement_return
+   82                 | statement_exit
+
+   83 statement_compound: statement_for
+   84                   | statement_while
+   85                   | statement_if
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block
+   87              | x_FOR error block
+
+   88 for_init: statement_assign
+
+   89 for_condition: expression
+
+   90 for_increment: statement_assign
+
+   91 statement_while: x_WHILE x_LPAR while_condition x_RPAR block
+   92                | x_WHILE error block
+
+   93 while_condition: expression
+
+   94 statement_if: x_IF x_LPAR if_condition x_RPAR block
+   95             | x_IF x_LPAR if_condition x_RPAR block statement_else
+   96             | x_IF error block
+
+   97 if_condition: expression
+
+   98 statement_else: x_ELSE block
+
+   99 statement_assign: variable x_ASSIGN expression
+  100                 | variable error
+
+  101 statement_read: x_READ x_LPAR variable x_RPAR
+
+  102 statement_write: x_WRITE x_LPAR write_list x_RPAR
+
+  103 write_list: expression
+  104           | write_list x_COMMA expression
+
+  105 statement_sleep: x_SLEEP x_LPAR variable x_RPAR
+
+  106 statement_function: function
+
+  107 statement_break: x_BREAK
+
+  108 statement_continue: x_CONTINUE
+
+  109 statement_return: x_RETURN expression
+
+  110 statement_exit: x_EXIT x_LPAR x_RPAR
+
+  111 expression: expression_unary
+  112           | expression x_PLUS expression
+  113           | expression x_MINUS expression
+  114           | expression x_MULT expression
+  115           | expression x_DIV expression
+  116           | expression x_POWER expression
+  117           | expression x_AND expression
+  118           | expression x_OR expression
+  119           | expression x_LESS expression
+  120           | expression x_LESSEQ expression
+  121           | expression x_GREATER expression
+  122           | expression x_GREATEREQ expression
+  123           | expression x_EQ expression
+  124           | expression x_NEQ expression
+
+  125 expression_unary: constant
+  126                 | variable
+  127                 | function
+  128                 | x_MINUS expression
+  129                 | x_NOT expression
+  130                 | x_LPAR expression x_RPAR
+
+  131 constant: INTEGER
+  132         | FLOAT
+  133         | STRING
+  134         | CHAR
+  135         | x_TRUE
+  136         | x_FALSE
+
+  137 variable: variable_id
+  138         | variable x_DOT variable_id
+
+  139 variable_id: x_ID
+  140            | variable_id x_LBRACKET expression x_RBRACKET
+
+  141 function: x_ID x_LPAR function_arguments x_RPAR
+  142         | x_ID x_LPAR x_RPAR
+
+  143 function_arguments: expression
+  144                   | function_arguments x_COMMA expression
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256) 10 16 17 21 22 26 40 67 68 87 92 96 100
+INTEGER (258) 50 131
+FLOAT (259) 132
+STRING (260) 133
+CHAR (261) 134
+x_PROGRAM (262) 1 2
+x_BEGIN (263) 6 7
+x_END (264) 6 7
+x_FUNCTION (265) 28 29
+x_RETURN (266) 109
+x_BREAK (267) 107
+x_CONTINUE (268) 108
+x_EXIT (269) 110
+x_ID (270) 18 19 20 23 24 28 29 32 33 34 35 36 37 38 39 42 49 58 59
+    139 141 142
+x_INT (271) 44
+x_CHAR (272) 45
+x_BOOL (273) 46
+x_FLOAT (274) 47
+x_VOID (275) 31
+x_VAR (276) 34 35 37 39
+x_TRUE (277) 135
+x_FALSE (278) 136
+x_WRITE (279) 102
+x_READ (280) 101
+x_FOR (281) 86 87
+x_WHILE (282) 91 92
+x_IF (283) 94 95 96
+x_ELSE (284) 98
+x_TYPE (285) 19
+x_UNION (286) 18
+x_LPAR (287) 24 28 29 86 91 94 95 101 102 105 110 130 141 142
+x_RPAR (288) 24 28 29 86 91 94 95 101 102 105 110 130 141 142
+x_LBRACKET (289) 43 50 140
+x_RBRACKET (290) 43 50 140
+x_LBRACE (291) 17 18 19 51 52
+x_RBRACE (292) 17 18 19 22 51 52 53 54
+x_SEMICOLON (293) 12 15 16 20 21 23 60 62 64 67 69 86
+x_COMMA (294) 27 32 34 36 37 38 39 59 104 144
+x_DOT (295) 138
+x_PLUS (296) 112
+x_MINUS (297) 113 128
+x_MULT (298) 114
+x_DIV (299) 115
+x_POWER (300) 116
+x_ASSIGN (301) 99
+x_EQ (302) 123
+x_NEQ (303) 124
+x_AND (304) 117
+x_OR (305) 118
+x_NOT (306) 129
+x_LESS (307) 119
+x_LESSEQ (308) 120
+x_GREATER (309) 121
+x_GREATEREQ (310) 122
+x_EXTEND (311) 32 34
+x_PROC (312) 24
+x_SLEEP (313) 105
+x_LET (314) 57
+x_UMINUS (315)
+
+
+No terminales con las reglas donde aparecen
+
+$accept (61)
+    en la izquierda: 0
+start (62)
+    en la izquierda: 1 2 3 4, en la derecha: 0
+init (63)
+    en la izquierda: 5, en la derecha: 1 2 3 4
+main (64)
+    en la izquierda: 6 7, en la derecha: 1 2 3 4
+definition_list (65)
+    en la izquierda: 8 9 10, en la derecha: 2 4 9 10
+definition (66)
+    en la izquierda: 11 12 13 14 15 16 17, en la derecha: 8 9
+def_union (67)
+    en la izquierda: 18, en la derecha: 11
+def_type (68)
+    en la izquierda: 19, en la derecha: 13
+attribute_list (69)
+    en la izquierda: 20 21 22 23, en la derecha: 17 18 19 23
+def_proc (70)
+    en la izquierda: 24, en la derecha: 12
+proc_type_list (71)
+    en la izquierda: 25 26 27, en la derecha: 24 27
+def_function (72)
+    en la izquierda: 28 29, en la derecha: 14
+function_type (73)
+    en la izquierda: 30 31, en la derecha: 24 28 29
+function_parameters (74)
+    en la izquierda: 32 33 34 35, en la derecha: 29
+function_pars (75)
+    en la izquierda: 36 37 38 39 40, en la derecha: 32 33 34 35 38
+    39
+param_type (76)
+    en la izquierda: 41 42 43, en la derecha: 32 33 34 35 36 37 38
+    39 43
+primitive_type (77)
+    en la izquierda: 44 45 46 47, en la derecha: 30 41 48
+type (78)
+    en la izquierda: 48 49 50, en la derecha: 20 23 25 26 27 50 56
+block (79)
+    en la izquierda: 51 52 53 54, en la derecha: 28 29 86 87 91 92
+    94 95 96 98
+init_block (80)
+    en la izquierda: 55, en la derecha: 6 7 51 52 53 54
+declaration_type (81)
+    en la izquierda: 56, en la derecha: 57
+declaration (82)
+    en la izquierda: 57, en la derecha: 15 60 61 62 63
+declaration_id_list (83)
+    en la izquierda: 58 59, en la derecha: 57 59
+declaration_list (84)
+    en la izquierda: 60 61 62 63, en la derecha: 7 51 53 62 63
+statement_list (85)
+    en la izquierda: 64 65 66 67 68 69 70 71, en la derecha: 6 7 51
+    52 53 54 69 70 71
+statement (86)
+    en la izquierda: 72 73, en la derecha: 64 69
+statement_simple (87)
+    en la izquierda: 74 75 76 77 78 79 80 81 82, en la derecha: 65
+    70 72
+statement_compound (88)
+    en la izquierda: 83 84 85, en la derecha: 66 71 73
+statement_for (89)
+    en la izquierda: 86 87, en la derecha: 83
+for_init (90)
+    en la izquierda: 88, en la derecha: 86
+for_condition (91)
+    en la izquierda: 89, en la derecha: 86
+for_increment (92)
+    en la izquierda: 90, en la derecha: 86
+statement_while (93)
+    en la izquierda: 91 92, en la derecha: 84
+while_condition (94)
+    en la izquierda: 93, en la derecha: 91
+statement_if (95)
+    en la izquierda: 94 95 96, en la derecha: 85
+if_condition (96)
+    en la izquierda: 97, en la derecha: 94 95
+statement_else (97)
+    en la izquierda: 98, en la derecha: 95
+statement_assign (98)
+    en la izquierda: 99 100, en la derecha: 74 88 90
+statement_read (99)
+    en la izquierda: 101, en la derecha: 75
+statement_write (100)
+    en la izquierda: 102, en la derecha: 76
+write_list (101)
+    en la izquierda: 103 104, en la derecha: 102 104
+statement_sleep (102)
+    en la izquierda: 105, en la derecha: 77
+statement_function (103)
+    en la izquierda: 106, en la derecha: 78
+statement_break (104)
+    en la izquierda: 107, en la derecha: 79
+statement_continue (105)
+    en la izquierda: 108, en la derecha: 80
+statement_return (106)
+    en la izquierda: 109, en la derecha: 81
+statement_exit (107)
+    en la izquierda: 110, en la derecha: 82
+expression (108)
+    en la izquierda: 111 112 113 114 115 116 117 118 119 120 121 122
+    123 124, en la derecha: 89 93 97 99 103 104 109 112 113 114 115
+    116 117 118 119 120 121 122 123 124 128 129 130 140 143 144
+expression_unary (109)
+    en la izquierda: 125 126 127 128 129 130, en la derecha: 111
+constant (110)
+    en la izquierda: 131 132 133 134 135 136, en la derecha: 125
+variable (111)
+    en la izquierda: 137 138, en la derecha: 99 100 101 105 126 138
+variable_id (112)
+    en la izquierda: 139 140, en la derecha: 137 138 140
+function (113)
+    en la izquierda: 141 142, en la derecha: 106 127
+function_arguments (114)
+    en la izquierda: 143 144, en la derecha: 141 144
+
+
+estado 0
+
+    0 $accept: . start $end
+
+    $default  reduce usando la regla 5 (init)
+
+    start  ir al estado 1
+    init   ir al estado 2
+
+
+estado 1
+
+    0 $accept: start . $end
+
+    $end  desplazar e ir al estado 3
+
+
+estado 2
+
+    1 start: init . x_PROGRAM main
+    2      | init . x_PROGRAM definition_list main
+    3      | init . main
+    4      | init . definition_list main
+
+    error       desplazar e ir al estado 4
+    x_PROGRAM   desplazar e ir al estado 5
+    x_FUNCTION  desplazar e ir al estado 6
+    x_TYPE      desplazar e ir al estado 7
+    x_UNION     desplazar e ir al estado 8
+    x_PROC      desplazar e ir al estado 9
+    x_LET       desplazar e ir al estado 10
+
+    x_BEGIN  reduce usando la regla 55 (init_block)
+
+    main             ir al estado 11
+    definition_list  ir al estado 12
+    definition       ir al estado 13
+    def_union        ir al estado 14
+    def_type         ir al estado 15
+    def_proc         ir al estado 16
+    def_function     ir al estado 17
+    init_block       ir al estado 18
+    declaration      ir al estado 19
+
+
+estado 3
+
+    0 $accept: start $end .
+
+    $default  aceptar
+
+
+estado 4
+
+   16 definition: error . x_SEMICOLON
+   17           | error . x_LBRACE attribute_list x_RBRACE
+
+    x_LBRACE     desplazar e ir al estado 20
+    x_SEMICOLON  desplazar e ir al estado 21
+
+
+estado 5
+
+    1 start: init x_PROGRAM . main
+    2      | init x_PROGRAM . definition_list main
+
+    error       desplazar e ir al estado 4
+    x_FUNCTION  desplazar e ir al estado 6
+    x_TYPE      desplazar e ir al estado 7
+    x_UNION     desplazar e ir al estado 8
+    x_PROC      desplazar e ir al estado 9
+    x_LET       desplazar e ir al estado 10
+
+    x_BEGIN  reduce usando la regla 55 (init_block)
+
+    main             ir al estado 22
+    definition_list  ir al estado 23
+    definition       ir al estado 13
+    def_union        ir al estado 14
+    def_type         ir al estado 15
+    def_proc         ir al estado 16
+    def_function     ir al estado 17
+    init_block       ir al estado 18
+    declaration      ir al estado 19
+
+
+estado 6
+
+   28 def_function: x_FUNCTION . function_type x_ID x_LPAR x_RPAR block
+   29             | x_FUNCTION . function_type x_ID x_LPAR function_parameters x_RPAR block
+
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+    x_VOID   desplazar e ir al estado 28
+
+    function_type   ir al estado 29
+    primitive_type  ir al estado 30
+
+
+estado 7
+
+   19 def_type: x_TYPE . x_ID x_LBRACE attribute_list x_RBRACE
+
+    x_ID  desplazar e ir al estado 31
+
+
+estado 8
+
+   18 def_union: x_UNION . x_ID x_LBRACE attribute_list x_RBRACE
+
+    x_ID  desplazar e ir al estado 32
+
+
+estado 9
+
+   24 def_proc: x_PROC . function_type x_ID x_LPAR proc_type_list x_RPAR
+
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+    x_VOID   desplazar e ir al estado 28
+
+    function_type   ir al estado 33
+    primitive_type  ir al estado 30
+
+
+estado 10
+
+   57 declaration: x_LET . declaration_type declaration_id_list
+
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    primitive_type    ir al estado 35
+    type              ir al estado 36
+    declaration_type  ir al estado 37
+
+
+estado 11
+
+    3 start: init main .
+
+    $default  reduce usando la regla 3 (start)
+
+
+estado 12
+
+    4 start: init definition_list . main
+    9 definition_list: definition_list . definition
+   10                | definition_list . error
+
+    error       desplazar e ir al estado 38
+    x_FUNCTION  desplazar e ir al estado 6
+    x_TYPE      desplazar e ir al estado 7
+    x_UNION     desplazar e ir al estado 8
+    x_PROC      desplazar e ir al estado 9
+    x_LET       desplazar e ir al estado 10
+
+    x_BEGIN  reduce usando la regla 55 (init_block)
+
+    main          ir al estado 39
+    definition    ir al estado 40
+    def_union     ir al estado 14
+    def_type      ir al estado 15
+    def_proc      ir al estado 16
+    def_function  ir al estado 17
+    init_block    ir al estado 18
+    declaration   ir al estado 19
+
+
+estado 13
+
+    8 definition_list: definition .
+
+    $default  reduce usando la regla 8 (definition_list)
+
+
+estado 14
+
+   11 definition: def_union .
+
+    $default  reduce usando la regla 11 (definition)
+
+
+estado 15
+
+   13 definition: def_type .
+
+    $default  reduce usando la regla 13 (definition)
+
+
+estado 16
+
+   12 definition: def_proc . x_SEMICOLON
+
+    x_SEMICOLON  desplazar e ir al estado 41
+
+
+estado 17
+
+   14 definition: def_function .
+
+    $default  reduce usando la regla 14 (definition)
+
+
+estado 18
+
+    6 main: init_block . x_BEGIN statement_list x_END
+    7     | init_block . x_BEGIN declaration_list statement_list x_END
+
+    x_BEGIN  desplazar e ir al estado 42
+
+
+estado 19
+
+   15 definition: declaration . x_SEMICOLON
+
+    x_SEMICOLON  desplazar e ir al estado 43
+
+
+estado 20
+
+   17 definition: error x_LBRACE . attribute_list x_RBRACE
+
+    error    desplazar e ir al estado 44
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    attribute_list  ir al estado 45
+    primitive_type  ir al estado 35
+    type            ir al estado 46
+
+
+estado 21
+
+   16 definition: error x_SEMICOLON .
+
+    $default  reduce usando la regla 16 (definition)
+
+
+estado 22
+
+    1 start: init x_PROGRAM main .
+
+    $default  reduce usando la regla 1 (start)
+
+
+estado 23
+
+    2 start: init x_PROGRAM definition_list . main
+    9 definition_list: definition_list . definition
+   10                | definition_list . error
+
+    error       desplazar e ir al estado 38
+    x_FUNCTION  desplazar e ir al estado 6
+    x_TYPE      desplazar e ir al estado 7
+    x_UNION     desplazar e ir al estado 8
+    x_PROC      desplazar e ir al estado 9
+    x_LET       desplazar e ir al estado 10
+
+    x_BEGIN  reduce usando la regla 55 (init_block)
+
+    main          ir al estado 47
+    definition    ir al estado 40
+    def_union     ir al estado 14
+    def_type      ir al estado 15
+    def_proc      ir al estado 16
+    def_function  ir al estado 17
+    init_block    ir al estado 18
+    declaration   ir al estado 19
+
+
+estado 24
+
+   44 primitive_type: x_INT .
+
+    $default  reduce usando la regla 44 (primitive_type)
+
+
+estado 25
+
+   45 primitive_type: x_CHAR .
+
+    $default  reduce usando la regla 45 (primitive_type)
+
+
+estado 26
+
+   46 primitive_type: x_BOOL .
+
+    $default  reduce usando la regla 46 (primitive_type)
+
+
+estado 27
+
+   47 primitive_type: x_FLOAT .
+
+    $default  reduce usando la regla 47 (primitive_type)
+
+
+estado 28
+
+   31 function_type: x_VOID .
+
+    $default  reduce usando la regla 31 (function_type)
+
+
+estado 29
+
+   28 def_function: x_FUNCTION function_type . x_ID x_LPAR x_RPAR block
+   29             | x_FUNCTION function_type . x_ID x_LPAR function_parameters x_RPAR block
+
+    x_ID  desplazar e ir al estado 48
+
+
+estado 30
+
+   30 function_type: primitive_type .
+
+    $default  reduce usando la regla 30 (function_type)
+
+
+estado 31
+
+   19 def_type: x_TYPE x_ID . x_LBRACE attribute_list x_RBRACE
+
+    x_LBRACE  desplazar e ir al estado 49
+
+
+estado 32
+
+   18 def_union: x_UNION x_ID . x_LBRACE attribute_list x_RBRACE
+
+    x_LBRACE  desplazar e ir al estado 50
+
+
+estado 33
+
+   24 def_proc: x_PROC function_type . x_ID x_LPAR proc_type_list x_RPAR
+
+    x_ID  desplazar e ir al estado 51
+
+
+estado 34
+
+   49 type: x_ID .
+
+    $default  reduce usando la regla 49 (type)
+
+
+estado 35
+
+   48 type: primitive_type .
+
+    $default  reduce usando la regla 48 (type)
+
+
+estado 36
+
+   50 type: type . x_LBRACKET INTEGER x_RBRACKET
+   56 declaration_type: type .
+
+    x_LBRACKET  desplazar e ir al estado 52
+
+    $default  reduce usando la regla 56 (declaration_type)
+
+
+estado 37
+
+   57 declaration: x_LET declaration_type . declaration_id_list
+
+    x_ID  desplazar e ir al estado 53
+
+    declaration_id_list  ir al estado 54
+
+
+estado 38
+
+   10 definition_list: definition_list error .
+   16 definition: error . x_SEMICOLON
+   17           | error . x_LBRACE attribute_list x_RBRACE
+
+    x_LBRACE     desplazar e ir al estado 20
+    x_SEMICOLON  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 10 (definition_list)
+
+
+estado 39
+
+    4 start: init definition_list main .
+
+    $default  reduce usando la regla 4 (start)
+
+
+estado 40
+
+    9 definition_list: definition_list definition .
+
+    $default  reduce usando la regla 9 (definition_list)
+
+
+estado 41
+
+   12 definition: def_proc x_SEMICOLON .
+
+    $default  reduce usando la regla 12 (definition)
+
+
+estado 42
+
+    6 main: init_block x_BEGIN . statement_list x_END
+    7     | init_block x_BEGIN . declaration_list statement_list x_END
+
+    error       desplazar e ir al estado 55
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+    x_LET       desplazar e ir al estado 10
+
+    declaration         ir al estado 67
+    declaration_list    ir al estado 68
+    statement_list      ir al estado 69
+    statement           ir al estado 70
+    statement_simple    ir al estado 71
+    statement_compound  ir al estado 72
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 43
+
+   15 definition: declaration x_SEMICOLON .
+
+    $default  reduce usando la regla 15 (definition)
+
+
+estado 44
+
+   21 attribute_list: error . x_SEMICOLON
+   22               | error . x_RBRACE
+
+    x_RBRACE     desplazar e ir al estado 88
+    x_SEMICOLON  desplazar e ir al estado 89
+
+
+estado 45
+
+   17 definition: error x_LBRACE attribute_list . x_RBRACE
+   23 attribute_list: attribute_list . type x_ID x_SEMICOLON
+
+    x_ID      desplazar e ir al estado 34
+    x_INT     desplazar e ir al estado 24
+    x_CHAR    desplazar e ir al estado 25
+    x_BOOL    desplazar e ir al estado 26
+    x_FLOAT   desplazar e ir al estado 27
+    x_RBRACE  desplazar e ir al estado 90
+
+    primitive_type  ir al estado 35
+    type            ir al estado 91
+
+
+estado 46
+
+   20 attribute_list: type . x_ID x_SEMICOLON
+   50 type: type . x_LBRACKET INTEGER x_RBRACKET
+
+    x_ID        desplazar e ir al estado 92
+    x_LBRACKET  desplazar e ir al estado 52
+
+
+estado 47
+
+    2 start: init x_PROGRAM definition_list main .
+
+    $default  reduce usando la regla 2 (start)
+
+
+estado 48
+
+   28 def_function: x_FUNCTION function_type x_ID . x_LPAR x_RPAR block
+   29             | x_FUNCTION function_type x_ID . x_LPAR function_parameters x_RPAR block
+
+    x_LPAR  desplazar e ir al estado 93
+
+
+estado 49
+
+   19 def_type: x_TYPE x_ID x_LBRACE . attribute_list x_RBRACE
+
+    error    desplazar e ir al estado 44
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    attribute_list  ir al estado 94
+    primitive_type  ir al estado 35
+    type            ir al estado 46
+
+
+estado 50
+
+   18 def_union: x_UNION x_ID x_LBRACE . attribute_list x_RBRACE
+
+    error    desplazar e ir al estado 44
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    attribute_list  ir al estado 95
+    primitive_type  ir al estado 35
+    type            ir al estado 46
+
+
+estado 51
+
+   24 def_proc: x_PROC function_type x_ID . x_LPAR proc_type_list x_RPAR
+
+    x_LPAR  desplazar e ir al estado 96
+
+
+estado 52
+
+   50 type: type x_LBRACKET . INTEGER x_RBRACKET
+
+    INTEGER  desplazar e ir al estado 97
+
+
+estado 53
+
+   58 declaration_id_list: x_ID .
+
+    $default  reduce usando la regla 58 (declaration_id_list)
+
+
+estado 54
+
+   57 declaration: x_LET declaration_type declaration_id_list .
+   59 declaration_id_list: declaration_id_list . x_COMMA x_ID
+
+    x_COMMA  desplazar e ir al estado 98
+
+    $default  reduce usando la regla 57 (declaration)
+
+
+estado 55
+
+   67 statement_list: error . x_SEMICOLON
+   68               | error .
+
+    x_SEMICOLON  desplazar e ir al estado 99
+
+    $default  reduce usando la regla 68 (statement_list)
+
+
+estado 56
+
+  109 statement_return: x_RETURN . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 109
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 57
+
+  107 statement_break: x_BREAK .
+
+    $default  reduce usando la regla 107 (statement_break)
+
+
+estado 58
+
+  108 statement_continue: x_CONTINUE .
+
+    $default  reduce usando la regla 108 (statement_continue)
+
+
+estado 59
+
+  110 statement_exit: x_EXIT . x_LPAR x_RPAR
+
+    x_LPAR  desplazar e ir al estado 114
+
+
+estado 60
+
+  139 variable_id: x_ID .
+  141 function: x_ID . x_LPAR function_arguments x_RPAR
+  142         | x_ID . x_LPAR x_RPAR
+
+    x_LPAR  desplazar e ir al estado 115
+
+    $default  reduce usando la regla 139 (variable_id)
+
+
+estado 61
+
+  102 statement_write: x_WRITE . x_LPAR write_list x_RPAR
+
+    x_LPAR  desplazar e ir al estado 116
+
+
+estado 62
+
+  101 statement_read: x_READ . x_LPAR variable x_RPAR
+
+    x_LPAR  desplazar e ir al estado 117
+
+
+estado 63
+
+   86 statement_for: x_FOR . x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block
+   87              | x_FOR . error block
+
+    error   desplazar e ir al estado 118
+    x_LPAR  desplazar e ir al estado 119
+
+
+estado 64
+
+   91 statement_while: x_WHILE . x_LPAR while_condition x_RPAR block
+   92                | x_WHILE . error block
+
+    error   desplazar e ir al estado 120
+    x_LPAR  desplazar e ir al estado 121
+
+
+estado 65
+
+   94 statement_if: x_IF . x_LPAR if_condition x_RPAR block
+   95             | x_IF . x_LPAR if_condition x_RPAR block statement_else
+   96             | x_IF . error block
+
+    error   desplazar e ir al estado 122
+    x_LPAR  desplazar e ir al estado 123
+
+
+estado 66
+
+  105 statement_sleep: x_SLEEP . x_LPAR variable x_RPAR
+
+    x_LPAR  desplazar e ir al estado 124
+
+
+estado 67
+
+   60 declaration_list: declaration . x_SEMICOLON
+   61                 | declaration .
+
+    x_SEMICOLON  desplazar e ir al estado 125
+
+    $default  reduce usando la regla 61 (declaration_list)
+
+
+estado 68
+
+    7 main: init_block x_BEGIN declaration_list . statement_list x_END
+   62 declaration_list: declaration_list . declaration x_SEMICOLON
+   63                 | declaration_list . declaration
+
+    error       desplazar e ir al estado 55
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+    x_LET       desplazar e ir al estado 10
+
+    declaration         ir al estado 126
+    statement_list      ir al estado 127
+    statement           ir al estado 70
+    statement_simple    ir al estado 71
+    statement_compound  ir al estado 72
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 69
+
+    6 main: init_block x_BEGIN statement_list . x_END
+   69 statement_list: statement_list . statement x_SEMICOLON
+   70               | statement_list . statement_simple
+   71               | statement_list . statement_compound
+
+    x_END       desplazar e ir al estado 128
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+
+    statement           ir al estado 129
+    statement_simple    ir al estado 130
+    statement_compound  ir al estado 131
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 70
+
+   64 statement_list: statement . x_SEMICOLON
+
+    x_SEMICOLON  desplazar e ir al estado 132
+
+
+estado 71
+
+   65 statement_list: statement_simple .
+   72 statement: statement_simple .
+
+    x_SEMICOLON  reduce usando la regla 72 (statement)
+    $default     reduce usando la regla 65 (statement_list)
+
+
+estado 72
+
+   66 statement_list: statement_compound .
+   73 statement: statement_compound .
+
+    x_SEMICOLON  reduce usando la regla 73 (statement)
+    $default     reduce usando la regla 66 (statement_list)
+
+
+estado 73
+
+   83 statement_compound: statement_for .
+
+    $default  reduce usando la regla 83 (statement_compound)
+
+
+estado 74
+
+   84 statement_compound: statement_while .
+
+    $default  reduce usando la regla 84 (statement_compound)
+
+
+estado 75
+
+   85 statement_compound: statement_if .
+
+    $default  reduce usando la regla 85 (statement_compound)
+
+
+estado 76
+
+   74 statement_simple: statement_assign .
+
+    $default  reduce usando la regla 74 (statement_simple)
+
+
+estado 77
+
+   75 statement_simple: statement_read .
+
+    $default  reduce usando la regla 75 (statement_simple)
+
+
+estado 78
+
+   76 statement_simple: statement_write .
+
+    $default  reduce usando la regla 76 (statement_simple)
+
+
+estado 79
+
+   77 statement_simple: statement_sleep .
+
+    $default  reduce usando la regla 77 (statement_simple)
+
+
+estado 80
+
+   78 statement_simple: statement_function .
+
+    $default  reduce usando la regla 78 (statement_simple)
+
+
+estado 81
+
+   79 statement_simple: statement_break .
+
+    $default  reduce usando la regla 79 (statement_simple)
+
+
+estado 82
+
+   80 statement_simple: statement_continue .
+
+    $default  reduce usando la regla 80 (statement_simple)
+
+
+estado 83
+
+   81 statement_simple: statement_return .
+
+    $default  reduce usando la regla 81 (statement_simple)
+
+
+estado 84
+
+   82 statement_simple: statement_exit .
+
+    $default  reduce usando la regla 82 (statement_simple)
+
+
+estado 85
+
+   99 statement_assign: variable . x_ASSIGN expression
+  100                 | variable . error
+  138 variable: variable . x_DOT variable_id
+
+    error     desplazar e ir al estado 133
+    x_DOT     desplazar e ir al estado 134
+    x_ASSIGN  desplazar e ir al estado 135
+
+
+estado 86
+
+  137 variable: variable_id .
+  140 variable_id: variable_id . x_LBRACKET expression x_RBRACKET
+
+    x_LBRACKET  desplazar e ir al estado 136
+
+    $default  reduce usando la regla 137 (variable)
+
+
+estado 87
+
+  106 statement_function: function .
+
+    $default  reduce usando la regla 106 (statement_function)
+
+
+estado 88
+
+   22 attribute_list: error x_RBRACE .
+
+    $default  reduce usando la regla 22 (attribute_list)
+
+
+estado 89
+
+   21 attribute_list: error x_SEMICOLON .
+
+    $default  reduce usando la regla 21 (attribute_list)
+
+
+estado 90
+
+   17 definition: error x_LBRACE attribute_list x_RBRACE .
+
+    $default  reduce usando la regla 17 (definition)
+
+
+estado 91
+
+   23 attribute_list: attribute_list type . x_ID x_SEMICOLON
+   50 type: type . x_LBRACKET INTEGER x_RBRACKET
+
+    x_ID        desplazar e ir al estado 137
+    x_LBRACKET  desplazar e ir al estado 52
+
+
+estado 92
+
+   20 attribute_list: type x_ID . x_SEMICOLON
+
+    x_SEMICOLON  desplazar e ir al estado 138
+
+
+estado 93
+
+   28 def_function: x_FUNCTION function_type x_ID x_LPAR . x_RPAR block
+   29             | x_FUNCTION function_type x_ID x_LPAR . function_parameters x_RPAR block
+
+    error    desplazar e ir al estado 139
+    x_ID     desplazar e ir al estado 140
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+    x_VAR    desplazar e ir al estado 141
+    x_RPAR   desplazar e ir al estado 142
+
+    function_parameters  ir al estado 143
+    function_pars        ir al estado 144
+    param_type           ir al estado 145
+    primitive_type       ir al estado 146
+
+
+estado 94
+
+   19 def_type: x_TYPE x_ID x_LBRACE attribute_list . x_RBRACE
+   23 attribute_list: attribute_list . type x_ID x_SEMICOLON
+
+    x_ID      desplazar e ir al estado 34
+    x_INT     desplazar e ir al estado 24
+    x_CHAR    desplazar e ir al estado 25
+    x_BOOL    desplazar e ir al estado 26
+    x_FLOAT   desplazar e ir al estado 27
+    x_RBRACE  desplazar e ir al estado 147
+
+    primitive_type  ir al estado 35
+    type            ir al estado 91
+
+
+estado 95
+
+   18 def_union: x_UNION x_ID x_LBRACE attribute_list . x_RBRACE
+   23 attribute_list: attribute_list . type x_ID x_SEMICOLON
+
+    x_ID      desplazar e ir al estado 34
+    x_INT     desplazar e ir al estado 24
+    x_CHAR    desplazar e ir al estado 25
+    x_BOOL    desplazar e ir al estado 26
+    x_FLOAT   desplazar e ir al estado 27
+    x_RBRACE  desplazar e ir al estado 148
+
+    primitive_type  ir al estado 35
+    type            ir al estado 91
+
+
+estado 96
+
+   24 def_proc: x_PROC function_type x_ID x_LPAR . proc_type_list x_RPAR
+
+    error    desplazar e ir al estado 149
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    proc_type_list  ir al estado 150
+    primitive_type  ir al estado 35
+    type            ir al estado 151
+
+
+estado 97
+
+   50 type: type x_LBRACKET INTEGER . x_RBRACKET
+
+    x_RBRACKET  desplazar e ir al estado 152
+
+
+estado 98
+
+   59 declaration_id_list: declaration_id_list x_COMMA . x_ID
+
+    x_ID  desplazar e ir al estado 153
+
+
+estado 99
+
+   67 statement_list: error x_SEMICOLON .
+
+    $default  reduce usando la regla 67 (statement_list)
+
+
+estado 100
+
+  131 constant: INTEGER .
+
+    $default  reduce usando la regla 131 (constant)
+
+
+estado 101
+
+  132 constant: FLOAT .
+
+    $default  reduce usando la regla 132 (constant)
+
+
+estado 102
+
+  133 constant: STRING .
+
+    $default  reduce usando la regla 133 (constant)
+
+
+estado 103
+
+  134 constant: CHAR .
+
+    $default  reduce usando la regla 134 (constant)
+
+
+estado 104
+
+  135 constant: x_TRUE .
+
+    $default  reduce usando la regla 135 (constant)
+
+
+estado 105
+
+  136 constant: x_FALSE .
+
+    $default  reduce usando la regla 136 (constant)
+
+
+estado 106
+
+  130 expression_unary: x_LPAR . expression x_RPAR
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 154
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 107
+
+  128 expression_unary: x_MINUS . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 155
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 108
+
+  129 expression_unary: x_NOT . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 156
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 109
+
+  109 statement_return: x_RETURN expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 109 (statement_return)
+
+
+estado 110
+
+  111 expression: expression_unary .
+
+    $default  reduce usando la regla 111 (expression)
+
+
+estado 111
+
+  125 expression_unary: constant .
+
+    $default  reduce usando la regla 125 (expression_unary)
+
+
+estado 112
+
+  126 expression_unary: variable .
+  138 variable: variable . x_DOT variable_id
+
+    x_DOT  desplazar e ir al estado 134
+
+    $default  reduce usando la regla 126 (expression_unary)
+
+
+estado 113
+
+  127 expression_unary: function .
+
+    $default  reduce usando la regla 127 (expression_unary)
+
+
+estado 114
+
+  110 statement_exit: x_EXIT x_LPAR . x_RPAR
+
+    x_RPAR  desplazar e ir al estado 170
+
+
+estado 115
+
+  141 function: x_ID x_LPAR . function_arguments x_RPAR
+  142         | x_ID x_LPAR . x_RPAR
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_RPAR   desplazar e ir al estado 171
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression          ir al estado 172
+    expression_unary    ir al estado 110
+    constant            ir al estado 111
+    variable            ir al estado 112
+    variable_id         ir al estado 86
+    function            ir al estado 113
+    function_arguments  ir al estado 173
+
+
+estado 116
+
+  102 statement_write: x_WRITE x_LPAR . write_list x_RPAR
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    write_list        ir al estado 174
+    expression        ir al estado 175
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 117
+
+  101 statement_read: x_READ x_LPAR . variable x_RPAR
+
+    x_ID  desplazar e ir al estado 176
+
+    variable     ir al estado 177
+    variable_id  ir al estado 86
+
+
+estado 118
+
+   87 statement_for: x_FOR error . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 178
+    init_block  ir al estado 179
+
+
+estado 119
+
+   86 statement_for: x_FOR x_LPAR . for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block
+
+    x_ID  desplazar e ir al estado 176
+
+    for_init          ir al estado 180
+    statement_assign  ir al estado 181
+    variable          ir al estado 85
+    variable_id       ir al estado 86
+
+
+estado 120
+
+   92 statement_while: x_WHILE error . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 182
+    init_block  ir al estado 179
+
+
+estado 121
+
+   91 statement_while: x_WHILE x_LPAR . while_condition x_RPAR block
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    while_condition   ir al estado 183
+    expression        ir al estado 184
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 122
+
+   96 statement_if: x_IF error . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 185
+    init_block  ir al estado 179
+
+
+estado 123
+
+   94 statement_if: x_IF x_LPAR . if_condition x_RPAR block
+   95             | x_IF x_LPAR . if_condition x_RPAR block statement_else
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    if_condition      ir al estado 186
+    expression        ir al estado 187
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 124
+
+  105 statement_sleep: x_SLEEP x_LPAR . variable x_RPAR
+
+    x_ID  desplazar e ir al estado 176
+
+    variable     ir al estado 188
+    variable_id  ir al estado 86
+
+
+estado 125
+
+   60 declaration_list: declaration x_SEMICOLON .
+
+    $default  reduce usando la regla 60 (declaration_list)
+
+
+estado 126
+
+   62 declaration_list: declaration_list declaration . x_SEMICOLON
+   63                 | declaration_list declaration .
+
+    x_SEMICOLON  desplazar e ir al estado 189
+
+    $default  reduce usando la regla 63 (declaration_list)
+
+
+estado 127
+
+    7 main: init_block x_BEGIN declaration_list statement_list . x_END
+   69 statement_list: statement_list . statement x_SEMICOLON
+   70               | statement_list . statement_simple
+   71               | statement_list . statement_compound
+
+    x_END       desplazar e ir al estado 190
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+
+    statement           ir al estado 129
+    statement_simple    ir al estado 130
+    statement_compound  ir al estado 131
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 128
+
+    6 main: init_block x_BEGIN statement_list x_END .
+
+    $default  reduce usando la regla 6 (main)
+
+
+estado 129
+
+   69 statement_list: statement_list statement . x_SEMICOLON
+
+    x_SEMICOLON  desplazar e ir al estado 191
+
+
+estado 130
+
+   70 statement_list: statement_list statement_simple .
+   72 statement: statement_simple .
+
+    x_SEMICOLON  reduce usando la regla 72 (statement)
+    $default     reduce usando la regla 70 (statement_list)
+
+
+estado 131
+
+   71 statement_list: statement_list statement_compound .
+   73 statement: statement_compound .
+
+    x_SEMICOLON  reduce usando la regla 73 (statement)
+    $default     reduce usando la regla 71 (statement_list)
+
+
+estado 132
+
+   64 statement_list: statement x_SEMICOLON .
+
+    $default  reduce usando la regla 64 (statement_list)
+
+
+estado 133
+
+  100 statement_assign: variable error .
+
+    $default  reduce usando la regla 100 (statement_assign)
+
+
+estado 134
+
+  138 variable: variable x_DOT . variable_id
+
+    x_ID  desplazar e ir al estado 176
+
+    variable_id  ir al estado 192
+
+
+estado 135
+
+   99 statement_assign: variable x_ASSIGN . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 193
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 136
+
+  140 variable_id: variable_id x_LBRACKET . expression x_RBRACKET
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 194
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 137
+
+   23 attribute_list: attribute_list type x_ID . x_SEMICOLON
+
+    x_SEMICOLON  desplazar e ir al estado 195
+
+
+estado 138
+
+   20 attribute_list: type x_ID x_SEMICOLON .
+
+    $default  reduce usando la regla 20 (attribute_list)
+
+
+estado 139
+
+   40 function_pars: error .
+
+    $default  reduce usando la regla 40 (function_pars)
+
+
+estado 140
+
+   42 param_type: x_ID .
+
+    $default  reduce usando la regla 42 (param_type)
+
+
+estado 141
+
+   37 function_pars: x_VAR . param_type x_ID x_COMMA
+
+    x_ID     desplazar e ir al estado 140
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    param_type      ir al estado 196
+    primitive_type  ir al estado 146
+
+
+estado 142
+
+   28 def_function: x_FUNCTION function_type x_ID x_LPAR x_RPAR . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 197
+    init_block  ir al estado 179
+
+
+estado 143
+
+   29 def_function: x_FUNCTION function_type x_ID x_LPAR function_parameters . x_RPAR block
+
+    x_RPAR  desplazar e ir al estado 198
+
+
+estado 144
+
+   32 function_parameters: function_pars . param_type x_ID x_COMMA x_EXTEND
+   33                    | function_pars . param_type x_ID
+   34                    | function_pars . x_VAR param_type x_ID x_COMMA x_EXTEND
+   35                    | function_pars . x_VAR param_type x_ID
+   38 function_pars: function_pars . param_type x_ID x_COMMA
+   39              | function_pars . x_VAR param_type x_ID x_COMMA
+
+    x_ID     desplazar e ir al estado 140
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+    x_VAR    desplazar e ir al estado 199
+
+    param_type      ir al estado 200
+    primitive_type  ir al estado 146
+
+
+estado 145
+
+   36 function_pars: param_type . x_ID x_COMMA
+   43 param_type: param_type . x_LBRACKET x_RBRACKET
+
+    x_ID        desplazar e ir al estado 201
+    x_LBRACKET  desplazar e ir al estado 202
+
+
+estado 146
+
+   41 param_type: primitive_type .
+
+    $default  reduce usando la regla 41 (param_type)
+
+
+estado 147
+
+   19 def_type: x_TYPE x_ID x_LBRACE attribute_list x_RBRACE .
+
+    $default  reduce usando la regla 19 (def_type)
+
+
+estado 148
+
+   18 def_union: x_UNION x_ID x_LBRACE attribute_list x_RBRACE .
+
+    $default  reduce usando la regla 18 (def_union)
+
+
+estado 149
+
+   26 proc_type_list: error . type
+
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    primitive_type  ir al estado 35
+    type            ir al estado 203
+
+
+estado 150
+
+   24 def_proc: x_PROC function_type x_ID x_LPAR proc_type_list . x_RPAR
+   27 proc_type_list: proc_type_list . x_COMMA type
+
+    x_RPAR   desplazar e ir al estado 204
+    x_COMMA  desplazar e ir al estado 205
+
+
+estado 151
+
+   25 proc_type_list: type .
+   50 type: type . x_LBRACKET INTEGER x_RBRACKET
+
+    x_LBRACKET  desplazar e ir al estado 52
+
+    $default  reduce usando la regla 25 (proc_type_list)
+
+
+estado 152
+
+   50 type: type x_LBRACKET INTEGER x_RBRACKET .
+
+    $default  reduce usando la regla 50 (type)
+
+
+estado 153
+
+   59 declaration_id_list: declaration_id_list x_COMMA x_ID .
+
+    $default  reduce usando la regla 59 (declaration_id_list)
+
+
+estado 154
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  130 expression_unary: x_LPAR expression . x_RPAR
+
+    x_RPAR       desplazar e ir al estado 206
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+
+estado 155
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  128 expression_unary: x_MINUS expression .
+
+    $default  reduce usando la regla 128 (expression_unary)
+
+
+estado 156
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  129 expression_unary: x_NOT expression .
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 129 (expression_unary)
+
+
+estado 157
+
+  112 expression: expression x_PLUS . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 207
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 158
+
+  113 expression: expression x_MINUS . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 208
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 159
+
+  114 expression: expression x_MULT . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 209
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 160
+
+  115 expression: expression x_DIV . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 210
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 161
+
+  116 expression: expression x_POWER . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 211
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 162
+
+  123 expression: expression x_EQ . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 212
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 163
+
+  124 expression: expression x_NEQ . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 213
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 164
+
+  117 expression: expression x_AND . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 214
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 165
+
+  118 expression: expression x_OR . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 215
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 166
+
+  119 expression: expression x_LESS . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 216
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 167
+
+  120 expression: expression x_LESSEQ . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 217
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 168
+
+  121 expression: expression x_GREATER . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 218
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 169
+
+  122 expression: expression x_GREATEREQ . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 219
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 170
+
+  110 statement_exit: x_EXIT x_LPAR x_RPAR .
+
+    $default  reduce usando la regla 110 (statement_exit)
+
+
+estado 171
+
+  142 function: x_ID x_LPAR x_RPAR .
+
+    $default  reduce usando la regla 142 (function)
+
+
+estado 172
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  143 function_arguments: expression .
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 143 (function_arguments)
+
+
+estado 173
+
+  141 function: x_ID x_LPAR function_arguments . x_RPAR
+  144 function_arguments: function_arguments . x_COMMA expression
+
+    x_RPAR   desplazar e ir al estado 220
+    x_COMMA  desplazar e ir al estado 221
+
+
+estado 174
+
+  102 statement_write: x_WRITE x_LPAR write_list . x_RPAR
+  104 write_list: write_list . x_COMMA expression
+
+    x_RPAR   desplazar e ir al estado 222
+    x_COMMA  desplazar e ir al estado 223
+
+
+estado 175
+
+  103 write_list: expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 103 (write_list)
+
+
+estado 176
+
+  139 variable_id: x_ID .
+
+    $default  reduce usando la regla 139 (variable_id)
+
+
+estado 177
+
+  101 statement_read: x_READ x_LPAR variable . x_RPAR
+  138 variable: variable . x_DOT variable_id
+
+    x_RPAR  desplazar e ir al estado 224
+    x_DOT   desplazar e ir al estado 134
+
+
+estado 178
+
+   87 statement_for: x_FOR error block .
+
+    $default  reduce usando la regla 87 (statement_for)
+
+
+estado 179
+
+   51 block: init_block . x_LBRACE declaration_list statement_list x_RBRACE
+   52      | init_block . x_LBRACE statement_list x_RBRACE
+   53      | init_block . declaration_list statement_list x_RBRACE
+   54      | init_block . statement_list x_RBRACE
+
+    error       desplazar e ir al estado 55
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_LBRACE    desplazar e ir al estado 225
+    x_SLEEP     desplazar e ir al estado 66
+    x_LET       desplazar e ir al estado 10
+
+    declaration         ir al estado 67
+    declaration_list    ir al estado 226
+    statement_list      ir al estado 227
+    statement           ir al estado 70
+    statement_simple    ir al estado 71
+    statement_compound  ir al estado 72
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 180
+
+   86 statement_for: x_FOR x_LPAR for_init . x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block
+
+    x_SEMICOLON  desplazar e ir al estado 228
+
+
+estado 181
+
+   88 for_init: statement_assign .
+
+    $default  reduce usando la regla 88 (for_init)
+
+
+estado 182
+
+   92 statement_while: x_WHILE error block .
+
+    $default  reduce usando la regla 92 (statement_while)
+
+
+estado 183
+
+   91 statement_while: x_WHILE x_LPAR while_condition . x_RPAR block
+
+    x_RPAR  desplazar e ir al estado 229
+
+
+estado 184
+
+   93 while_condition: expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 93 (while_condition)
+
+
+estado 185
+
+   96 statement_if: x_IF error block .
+
+    $default  reduce usando la regla 96 (statement_if)
+
+
+estado 186
+
+   94 statement_if: x_IF x_LPAR if_condition . x_RPAR block
+   95             | x_IF x_LPAR if_condition . x_RPAR block statement_else
+
+    x_RPAR  desplazar e ir al estado 230
+
+
+estado 187
+
+   97 if_condition: expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 97 (if_condition)
+
+
+estado 188
+
+  105 statement_sleep: x_SLEEP x_LPAR variable . x_RPAR
+  138 variable: variable . x_DOT variable_id
+
+    x_RPAR  desplazar e ir al estado 231
+    x_DOT   desplazar e ir al estado 134
+
+
+estado 189
+
+   62 declaration_list: declaration_list declaration x_SEMICOLON .
+
+    $default  reduce usando la regla 62 (declaration_list)
+
+
+estado 190
+
+    7 main: init_block x_BEGIN declaration_list statement_list x_END .
+
+    $default  reduce usando la regla 7 (main)
+
+
+estado 191
+
+   69 statement_list: statement_list statement x_SEMICOLON .
+
+    $default  reduce usando la regla 69 (statement_list)
+
+
+estado 192
+
+  138 variable: variable x_DOT variable_id .
+  140 variable_id: variable_id . x_LBRACKET expression x_RBRACKET
+
+    x_LBRACKET  desplazar e ir al estado 136
+
+    $default  reduce usando la regla 138 (variable)
+
+
+estado 193
+
+   99 statement_assign: variable x_ASSIGN expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 99 (statement_assign)
+
+
+estado 194
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  140 variable_id: variable_id x_LBRACKET expression . x_RBRACKET
+
+    x_RBRACKET   desplazar e ir al estado 232
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+
+estado 195
+
+   23 attribute_list: attribute_list type x_ID x_SEMICOLON .
+
+    $default  reduce usando la regla 23 (attribute_list)
+
+
+estado 196
+
+   37 function_pars: x_VAR param_type . x_ID x_COMMA
+   43 param_type: param_type . x_LBRACKET x_RBRACKET
+
+    x_ID        desplazar e ir al estado 233
+    x_LBRACKET  desplazar e ir al estado 202
+
+
+estado 197
+
+   28 def_function: x_FUNCTION function_type x_ID x_LPAR x_RPAR block .
+
+    $default  reduce usando la regla 28 (def_function)
+
+
+estado 198
+
+   29 def_function: x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 234
+    init_block  ir al estado 179
+
+
+estado 199
+
+   34 function_parameters: function_pars x_VAR . param_type x_ID x_COMMA x_EXTEND
+   35                    | function_pars x_VAR . param_type x_ID
+   39 function_pars: function_pars x_VAR . param_type x_ID x_COMMA
+
+    x_ID     desplazar e ir al estado 140
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    param_type      ir al estado 235
+    primitive_type  ir al estado 146
+
+
+estado 200
+
+   32 function_parameters: function_pars param_type . x_ID x_COMMA x_EXTEND
+   33                    | function_pars param_type . x_ID
+   38 function_pars: function_pars param_type . x_ID x_COMMA
+   43 param_type: param_type . x_LBRACKET x_RBRACKET
+
+    x_ID        desplazar e ir al estado 236
+    x_LBRACKET  desplazar e ir al estado 202
+
+
+estado 201
+
+   36 function_pars: param_type x_ID . x_COMMA
+
+    x_COMMA  desplazar e ir al estado 237
+
+
+estado 202
+
+   43 param_type: param_type x_LBRACKET . x_RBRACKET
+
+    x_RBRACKET  desplazar e ir al estado 238
+
+
+estado 203
+
+   26 proc_type_list: error type .
+   50 type: type . x_LBRACKET INTEGER x_RBRACKET
+
+    x_LBRACKET  desplazar e ir al estado 52
+
+    $default  reduce usando la regla 26 (proc_type_list)
+
+
+estado 204
+
+   24 def_proc: x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR .
+
+    $default  reduce usando la regla 24 (def_proc)
+
+
+estado 205
+
+   27 proc_type_list: proc_type_list x_COMMA . type
+
+    x_ID     desplazar e ir al estado 34
+    x_INT    desplazar e ir al estado 24
+    x_CHAR   desplazar e ir al estado 25
+    x_BOOL   desplazar e ir al estado 26
+    x_FLOAT  desplazar e ir al estado 27
+
+    primitive_type  ir al estado 35
+    type            ir al estado 239
+
+
+estado 206
+
+  130 expression_unary: x_LPAR expression x_RPAR .
+
+    $default  reduce usando la regla 130 (expression_unary)
+
+
+estado 207
+
+  112 expression: expression . x_PLUS expression
+  112           | expression x_PLUS expression .
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 112 (expression)
+
+
+estado 208
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  113           | expression x_MINUS expression .
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 113 (expression)
+
+
+estado 209
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  114           | expression x_MULT expression .
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 114 (expression)
+
+
+estado 210
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  115           | expression x_DIV expression .
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 115 (expression)
+
+
+estado 211
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  116           | expression x_POWER expression .
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    $default  reduce usando la regla 116 (expression)
+
+
+estado 212
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  123           | expression x_EQ expression .
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    x_EQ   error (no asociativo)
+    x_NEQ  error (no asociativo)
+
+    $default  reduce usando la regla 123 (expression)
+
+
+estado 213
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  124           | expression x_NEQ expression .
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    x_EQ   error (no asociativo)
+    x_NEQ  error (no asociativo)
+
+    $default  reduce usando la regla 124 (expression)
+
+
+estado 214
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  117           | expression x_AND expression .
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 117 (expression)
+
+
+estado 215
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  118           | expression x_OR expression .
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+
+    $default  reduce usando la regla 118 (expression)
+
+
+estado 216
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  119           | expression x_LESS expression .
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+    x_AND    desplazar e ir al estado 164
+    x_OR     desplazar e ir al estado 165
+
+    x_LESS       error (no asociativo)
+    x_LESSEQ     error (no asociativo)
+    x_GREATER    error (no asociativo)
+    x_GREATEREQ  error (no asociativo)
+
+    $default  reduce usando la regla 119 (expression)
+
+
+estado 217
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  120           | expression x_LESSEQ expression .
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+    x_AND    desplazar e ir al estado 164
+    x_OR     desplazar e ir al estado 165
+
+    x_LESS       error (no asociativo)
+    x_LESSEQ     error (no asociativo)
+    x_GREATER    error (no asociativo)
+    x_GREATEREQ  error (no asociativo)
+
+    $default  reduce usando la regla 120 (expression)
+
+
+estado 218
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  121           | expression x_GREATER expression .
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+    x_AND    desplazar e ir al estado 164
+    x_OR     desplazar e ir al estado 165
+
+    x_LESS       error (no asociativo)
+    x_LESSEQ     error (no asociativo)
+    x_GREATER    error (no asociativo)
+    x_GREATEREQ  error (no asociativo)
+
+    $default  reduce usando la regla 121 (expression)
+
+
+estado 219
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  122           | expression x_GREATEREQ expression .
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS   desplazar e ir al estado 157
+    x_MINUS  desplazar e ir al estado 158
+    x_MULT   desplazar e ir al estado 159
+    x_DIV    desplazar e ir al estado 160
+    x_POWER  desplazar e ir al estado 161
+    x_AND    desplazar e ir al estado 164
+    x_OR     desplazar e ir al estado 165
+
+    x_LESS       error (no asociativo)
+    x_LESSEQ     error (no asociativo)
+    x_GREATER    error (no asociativo)
+    x_GREATEREQ  error (no asociativo)
+
+    $default  reduce usando la regla 122 (expression)
+
+
+estado 220
+
+  141 function: x_ID x_LPAR function_arguments x_RPAR .
+
+    $default  reduce usando la regla 141 (function)
+
+
+estado 221
+
+  144 function_arguments: function_arguments x_COMMA . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 240
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 222
+
+  102 statement_write: x_WRITE x_LPAR write_list x_RPAR .
+
+    $default  reduce usando la regla 102 (statement_write)
+
+
+estado 223
+
+  104 write_list: write_list x_COMMA . expression
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    expression        ir al estado 241
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 224
+
+  101 statement_read: x_READ x_LPAR variable x_RPAR .
+
+    $default  reduce usando la regla 101 (statement_read)
+
+
+estado 225
+
+   51 block: init_block x_LBRACE . declaration_list statement_list x_RBRACE
+   52      | init_block x_LBRACE . statement_list x_RBRACE
+
+    error       desplazar e ir al estado 55
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+    x_LET       desplazar e ir al estado 10
+
+    declaration         ir al estado 67
+    declaration_list    ir al estado 242
+    statement_list      ir al estado 243
+    statement           ir al estado 70
+    statement_simple    ir al estado 71
+    statement_compound  ir al estado 72
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 226
+
+   53 block: init_block declaration_list . statement_list x_RBRACE
+   62 declaration_list: declaration_list . declaration x_SEMICOLON
+   63                 | declaration_list . declaration
+
+    error       desplazar e ir al estado 55
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+    x_LET       desplazar e ir al estado 10
+
+    declaration         ir al estado 126
+    statement_list      ir al estado 244
+    statement           ir al estado 70
+    statement_simple    ir al estado 71
+    statement_compound  ir al estado 72
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 227
+
+   54 block: init_block statement_list . x_RBRACE
+   69 statement_list: statement_list . statement x_SEMICOLON
+   70               | statement_list . statement_simple
+   71               | statement_list . statement_compound
+
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_RBRACE    desplazar e ir al estado 245
+    x_SLEEP     desplazar e ir al estado 66
+
+    statement           ir al estado 129
+    statement_simple    ir al estado 130
+    statement_compound  ir al estado 131
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 228
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON . for_condition x_SEMICOLON for_increment x_RPAR block
+
+    INTEGER  desplazar e ir al estado 100
+    FLOAT    desplazar e ir al estado 101
+    STRING   desplazar e ir al estado 102
+    CHAR     desplazar e ir al estado 103
+    x_ID     desplazar e ir al estado 60
+    x_TRUE   desplazar e ir al estado 104
+    x_FALSE  desplazar e ir al estado 105
+    x_LPAR   desplazar e ir al estado 106
+    x_MINUS  desplazar e ir al estado 107
+    x_NOT    desplazar e ir al estado 108
+
+    for_condition     ir al estado 246
+    expression        ir al estado 247
+    expression_unary  ir al estado 110
+    constant          ir al estado 111
+    variable          ir al estado 112
+    variable_id       ir al estado 86
+    function          ir al estado 113
+
+
+estado 229
+
+   91 statement_while: x_WHILE x_LPAR while_condition x_RPAR . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 248
+    init_block  ir al estado 179
+
+
+estado 230
+
+   94 statement_if: x_IF x_LPAR if_condition x_RPAR . block
+   95             | x_IF x_LPAR if_condition x_RPAR . block statement_else
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 249
+    init_block  ir al estado 179
+
+
+estado 231
+
+  105 statement_sleep: x_SLEEP x_LPAR variable x_RPAR .
+
+    $default  reduce usando la regla 105 (statement_sleep)
+
+
+estado 232
+
+  140 variable_id: variable_id x_LBRACKET expression x_RBRACKET .
+
+    $default  reduce usando la regla 140 (variable_id)
+
+
+estado 233
+
+   37 function_pars: x_VAR param_type x_ID . x_COMMA
+
+    x_COMMA  desplazar e ir al estado 250
+
+
+estado 234
+
+   29 def_function: x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block .
+
+    $default  reduce usando la regla 29 (def_function)
+
+
+estado 235
+
+   34 function_parameters: function_pars x_VAR param_type . x_ID x_COMMA x_EXTEND
+   35                    | function_pars x_VAR param_type . x_ID
+   39 function_pars: function_pars x_VAR param_type . x_ID x_COMMA
+   43 param_type: param_type . x_LBRACKET x_RBRACKET
+
+    x_ID        desplazar e ir al estado 251
+    x_LBRACKET  desplazar e ir al estado 202
+
+
+estado 236
+
+   32 function_parameters: function_pars param_type x_ID . x_COMMA x_EXTEND
+   33                    | function_pars param_type x_ID .
+   38 function_pars: function_pars param_type x_ID . x_COMMA
+
+    x_COMMA  desplazar e ir al estado 252
+
+    $default  reduce usando la regla 33 (function_parameters)
+
+
+estado 237
+
+   36 function_pars: param_type x_ID x_COMMA .
+
+    $default  reduce usando la regla 36 (function_pars)
+
+
+estado 238
+
+   43 param_type: param_type x_LBRACKET x_RBRACKET .
+
+    $default  reduce usando la regla 43 (param_type)
+
+
+estado 239
+
+   27 proc_type_list: proc_type_list x_COMMA type .
+   50 type: type . x_LBRACKET INTEGER x_RBRACKET
+
+    x_LBRACKET  desplazar e ir al estado 52
+
+    $default  reduce usando la regla 27 (proc_type_list)
+
+
+estado 240
+
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+  144 function_arguments: function_arguments x_COMMA expression .
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 144 (function_arguments)
+
+
+estado 241
+
+  104 write_list: write_list x_COMMA expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 104 (write_list)
+
+
+estado 242
+
+   51 block: init_block x_LBRACE declaration_list . statement_list x_RBRACE
+   62 declaration_list: declaration_list . declaration x_SEMICOLON
+   63                 | declaration_list . declaration
+
+    error       desplazar e ir al estado 55
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_SLEEP     desplazar e ir al estado 66
+    x_LET       desplazar e ir al estado 10
+
+    declaration         ir al estado 126
+    statement_list      ir al estado 253
+    statement           ir al estado 70
+    statement_simple    ir al estado 71
+    statement_compound  ir al estado 72
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 243
+
+   52 block: init_block x_LBRACE statement_list . x_RBRACE
+   69 statement_list: statement_list . statement x_SEMICOLON
+   70               | statement_list . statement_simple
+   71               | statement_list . statement_compound
+
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_RBRACE    desplazar e ir al estado 254
+    x_SLEEP     desplazar e ir al estado 66
+
+    statement           ir al estado 129
+    statement_simple    ir al estado 130
+    statement_compound  ir al estado 131
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 244
+
+   53 block: init_block declaration_list statement_list . x_RBRACE
+   69 statement_list: statement_list . statement x_SEMICOLON
+   70               | statement_list . statement_simple
+   71               | statement_list . statement_compound
+
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_RBRACE    desplazar e ir al estado 255
+    x_SLEEP     desplazar e ir al estado 66
+
+    statement           ir al estado 129
+    statement_simple    ir al estado 130
+    statement_compound  ir al estado 131
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 245
+
+   54 block: init_block statement_list x_RBRACE .
+
+    $default  reduce usando la regla 54 (block)
+
+
+estado 246
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON for_condition . x_SEMICOLON for_increment x_RPAR block
+
+    x_SEMICOLON  desplazar e ir al estado 256
+
+
+estado 247
+
+   89 for_condition: expression .
+  112 expression: expression . x_PLUS expression
+  113           | expression . x_MINUS expression
+  114           | expression . x_MULT expression
+  115           | expression . x_DIV expression
+  116           | expression . x_POWER expression
+  117           | expression . x_AND expression
+  118           | expression . x_OR expression
+  119           | expression . x_LESS expression
+  120           | expression . x_LESSEQ expression
+  121           | expression . x_GREATER expression
+  122           | expression . x_GREATEREQ expression
+  123           | expression . x_EQ expression
+  124           | expression . x_NEQ expression
+
+    x_PLUS       desplazar e ir al estado 157
+    x_MINUS      desplazar e ir al estado 158
+    x_MULT       desplazar e ir al estado 159
+    x_DIV        desplazar e ir al estado 160
+    x_POWER      desplazar e ir al estado 161
+    x_EQ         desplazar e ir al estado 162
+    x_NEQ        desplazar e ir al estado 163
+    x_AND        desplazar e ir al estado 164
+    x_OR         desplazar e ir al estado 165
+    x_LESS       desplazar e ir al estado 166
+    x_LESSEQ     desplazar e ir al estado 167
+    x_GREATER    desplazar e ir al estado 168
+    x_GREATEREQ  desplazar e ir al estado 169
+
+    $default  reduce usando la regla 89 (for_condition)
+
+
+estado 248
+
+   91 statement_while: x_WHILE x_LPAR while_condition x_RPAR block .
+
+    $default  reduce usando la regla 91 (statement_while)
+
+
+estado 249
+
+   94 statement_if: x_IF x_LPAR if_condition x_RPAR block .
+   95             | x_IF x_LPAR if_condition x_RPAR block . statement_else
+
+    x_ELSE  desplazar e ir al estado 257
+
+    $default  reduce usando la regla 94 (statement_if)
+
+    statement_else  ir al estado 258
+
+
+estado 250
+
+   37 function_pars: x_VAR param_type x_ID x_COMMA .
+
+    $default  reduce usando la regla 37 (function_pars)
+
+
+estado 251
+
+   34 function_parameters: function_pars x_VAR param_type x_ID . x_COMMA x_EXTEND
+   35                    | function_pars x_VAR param_type x_ID .
+   39 function_pars: function_pars x_VAR param_type x_ID . x_COMMA
+
+    x_COMMA  desplazar e ir al estado 259
+
+    $default  reduce usando la regla 35 (function_parameters)
+
+
+estado 252
+
+   32 function_parameters: function_pars param_type x_ID x_COMMA . x_EXTEND
+   38 function_pars: function_pars param_type x_ID x_COMMA .
+
+    x_EXTEND  desplazar e ir al estado 260
+
+    $default  reduce usando la regla 38 (function_pars)
+
+
+estado 253
+
+   51 block: init_block x_LBRACE declaration_list statement_list . x_RBRACE
+   69 statement_list: statement_list . statement x_SEMICOLON
+   70               | statement_list . statement_simple
+   71               | statement_list . statement_compound
+
+    x_RETURN    desplazar e ir al estado 56
+    x_BREAK     desplazar e ir al estado 57
+    x_CONTINUE  desplazar e ir al estado 58
+    x_EXIT      desplazar e ir al estado 59
+    x_ID        desplazar e ir al estado 60
+    x_WRITE     desplazar e ir al estado 61
+    x_READ      desplazar e ir al estado 62
+    x_FOR       desplazar e ir al estado 63
+    x_WHILE     desplazar e ir al estado 64
+    x_IF        desplazar e ir al estado 65
+    x_RBRACE    desplazar e ir al estado 261
+    x_SLEEP     desplazar e ir al estado 66
+
+    statement           ir al estado 129
+    statement_simple    ir al estado 130
+    statement_compound  ir al estado 131
+    statement_for       ir al estado 73
+    statement_while     ir al estado 74
+    statement_if        ir al estado 75
+    statement_assign    ir al estado 76
+    statement_read      ir al estado 77
+    statement_write     ir al estado 78
+    statement_sleep     ir al estado 79
+    statement_function  ir al estado 80
+    statement_break     ir al estado 81
+    statement_continue  ir al estado 82
+    statement_return    ir al estado 83
+    statement_exit      ir al estado 84
+    variable            ir al estado 85
+    variable_id         ir al estado 86
+    function            ir al estado 87
+
+
+estado 254
+
+   52 block: init_block x_LBRACE statement_list x_RBRACE .
+
+    $default  reduce usando la regla 52 (block)
+
+
+estado 255
+
+   53 block: init_block declaration_list statement_list x_RBRACE .
+
+    $default  reduce usando la regla 53 (block)
+
+
+estado 256
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON . for_increment x_RPAR block
+
+    x_ID  desplazar e ir al estado 176
+
+    for_increment     ir al estado 262
+    statement_assign  ir al estado 263
+    variable          ir al estado 85
+    variable_id       ir al estado 86
+
+
+estado 257
+
+   98 statement_else: x_ELSE . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 264
+    init_block  ir al estado 179
+
+
+estado 258
+
+   95 statement_if: x_IF x_LPAR if_condition x_RPAR block statement_else .
+
+    $default  reduce usando la regla 95 (statement_if)
+
+
+estado 259
+
+   34 function_parameters: function_pars x_VAR param_type x_ID x_COMMA . x_EXTEND
+   39 function_pars: function_pars x_VAR param_type x_ID x_COMMA .
+
+    x_EXTEND  desplazar e ir al estado 265
+
+    $default  reduce usando la regla 39 (function_pars)
+
+
+estado 260
+
+   32 function_parameters: function_pars param_type x_ID x_COMMA x_EXTEND .
+
+    $default  reduce usando la regla 32 (function_parameters)
+
+
+estado 261
+
+   51 block: init_block x_LBRACE declaration_list statement_list x_RBRACE .
+
+    $default  reduce usando la regla 51 (block)
+
+
+estado 262
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment . x_RPAR block
+
+    x_RPAR  desplazar e ir al estado 266
+
+
+estado 263
+
+   90 for_increment: statement_assign .
+
+    $default  reduce usando la regla 90 (for_increment)
+
+
+estado 264
+
+   98 statement_else: x_ELSE block .
+
+    $default  reduce usando la regla 98 (statement_else)
+
+
+estado 265
+
+   34 function_parameters: function_pars x_VAR param_type x_ID x_COMMA x_EXTEND .
+
+    $default  reduce usando la regla 34 (function_parameters)
+
+
+estado 266
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR . block
+
+    $default  reduce usando la regla 55 (init_block)
+
+    block       ir al estado 267
+    init_block  ir al estado 179
+
+
+estado 267
+
+   86 statement_for: x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block .
+
+    $default  reduce usando la regla 86 (statement_for)

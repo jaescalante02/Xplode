@@ -64,7 +64,7 @@ class Variable : public Expression {
 
   void firstcheck(SymTable *symtb){
   
-     Symbol *tempsymv, *tempsymt=NULL;
+  /*   Symbol *tempsymv, *tempsymt=NULL;
      SymTable *temptb = symtb;
      std::string arrstr[3];
      std::list<Xplode::Token *>::iterator itvar;
@@ -154,7 +154,7 @@ class Variable : public Expression {
     
      // (){std::cout << "Declarada "<<*varList->begin()<<"\n";}
      // else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
-  
+  */
   }
 
 };

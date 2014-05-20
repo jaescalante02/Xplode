@@ -15,11 +15,11 @@
 #ifndef X_MAINPROGRAM
 #define X_MAINPROGRAM
 
-#define INT_SYMBOL new Symbol("int","",0,0,1,0)
-#define FLOAT_SYMBOL new Symbol("float","",0,0,1,0)
-#define CHAR_SYMBOL new Symbol("char","",0,0,1,0)
-#define BOOL_SYMBOL new Symbol("bool","",0,0,1,0)
-#define VOID_SYMBOL new Symbol("void","",0,0,1,0)
+#define INT_SYMBOL new Symbol("int",NULL,0,0)
+#define FLOAT_SYMBOL new Symbol("float",NULL,0,0)
+#define CHAR_SYMBOL new Symbol("char",NULL,0,0)
+#define BOOL_SYMBOL new Symbol("bool",NULL,0,0)
+#define VOID_SYMBOL new Symbol("void",NULL,0,0)
 
 class Program : public CompoundStatement {
 
@@ -27,22 +27,22 @@ public:
   NodeList *definitionList; 
   SymTable *table;
 
-  Program(Node *b){ 
+  Program(SymTable *stb, Node *b){ 
 
-    table= new SymTable();
-    this->insertPrimitives(); 
+    table= stb;
+    //this->insertPrimitives(); 
     definitionList = 0; 
     block = (Block *) b;
     block->setFather(table); 
 
   }
 
-  Program(NodeList *d, Node *b){ 
+  Program(SymTable *stb, NodeList *d, Node *b){ 
 
-    table = new SymTable(d); 
-    this->insertPrimitives(); 
+    table = stb; 
+    //this->insertPrimitives(); 
     definitionList = d; 
-    this->setFathers();
+    //this->setFathers();
     block = (Block *) b; 
     block->setFather(table);
 

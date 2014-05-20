@@ -11,21 +11,33 @@
 #ifndef X_TYPEDECLARATION
 #define X_TYPEDECLARATION
 
+
+#define TYPE_ERROR 0
+#define TYPE_VOID  1
+#define TYPE_INT   2
+#define TYPE_BOOL  3
+#define TYPE_CHAR  4
+#define TYPE_FLOAT 5
+#define TYPE_ARRAY 6
+#define TYPE_TUPLE 7
+#define TYPE_FUNCTION 8
+
+
 class TypeDeclaration: public Node {
 
   public:
 
-    std::string name;
-    std::list<std::string> *max_index;
+  TypeDeclaration *ntype;
+  int numtype;
 
-    TypeDeclaration(std::string n) {
+    TypeDeclaration(){}
+    TypeDeclaration(int num, TypeDeclaration *n=NULL) {
 
-      name = n;
-      max_index = new std::list<std::string>;
+      numtype = num;
+      ntype = n;
 
     }
 
-    void addDimension(std::string number){ (*max_index).push_front(number); }
 
     void print(){}
 

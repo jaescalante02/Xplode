@@ -20,8 +20,8 @@ class Extends : public Node {
   std::string type;
   
   Extends(Node *t) {     
-    TypeDeclaration *tp = (TypeDeclaration *) t; 
-    type = tp->name; 
+    //TypeDeclaration *tp = (TypeDeclaration *) t; 
+    //type = tp->name; 
   }
 
   void print(){

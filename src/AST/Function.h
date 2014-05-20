@@ -11,6 +11,7 @@
 #include "../Symbol.h"
 #include "Block.h"
 #include "TypeDeclaration.h"
+#include "TupleType.h"
 #include "../Token.h"
 
 
@@ -21,17 +22,17 @@ class Function : public CompoundStatement {
   public:
   std::string name;
   std::string returnType;
-  NodeList *parameters;
+  TupleType *parameters;
 
-  Function(Xplode::Token *n, Node *r,Node *b, NodeList *p = 0 ) { 
+  Function(Xplode::Token *n, Node *r,Node *b, Node *p = 0 ) { 
 
     name = n->value; 
-    TypeDeclaration *tp = (TypeDeclaration *) r; 
-    returnType = tp->name; 
-    parameters = p; 
+    //TypeDeclaration *tp = (TypeDeclaration *) r; 
+    //returnType = tp->name; 
+    parameters = (TupleType *) p; 
     block  = (Block *) b;
     if (parameters != 0){
-      block->table->add(parameters);
+    //  block->table->add(parameters);
     }
     line = n->line;
     column = n->column;
@@ -54,7 +55,7 @@ class Function : public CompoundStatement {
   
   }
 
-  Symbol *toSymbol() {return new Symbol(name,returnType, line, column, 4, 0); }
+  Symbol *toSymbol() {return new Symbol(name,NULL, line, column); }
 
   void firstcheck(SymTable *symtb){
 

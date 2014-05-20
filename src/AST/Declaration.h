@@ -30,31 +30,35 @@ class Declaration : public Statement {
       column = v->column; 
   }
 
-  void print(){
+  void print(){/*
    std::string tab = std::string(4, ' ');
    
    std::cout << "DECLARATION\n";
    std::cout << "type: " << ntype->name << "\n";
    std::cout << "var: " << var << "\n";
+  
+  */
   }
 
   Symbol *toSymbol(){ 
-  
+  /*
     return new Symbol(var,ntype->name, line, column, false,
             ntype->max_index->size()); 
+  
+  */
   }
 
   void firstcheck(SymTable *symtb){
     
     Symbol *nvar, *ntp;
-    
+ /*   
     nvar = symtb->find(var);
     ntp = symtb->find(ntype->name);
     //falta
     if((nvar)&&(nvar->defined)) errorlog->addError(6,line, column,&var);    
     if(!ntp) errorlog->addError(7,line,column,&ntype->name); 
     if((ntp)&&(!ntp->defined)) errorlog->addError(7,line,column,&ntype->name); 
-  
+  */
   }  
 
 };

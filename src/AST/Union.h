@@ -18,14 +18,15 @@
 class Union : public Statement {
   public:
   std::string name;
-  NodeList *attributes;
+  TypeDeclaration *attributes;
   SymTable *table;
   
-  Union(Xplode::Token *n, NodeList* a) { 
+  Union(Xplode::Token *n, Node* a) { 
 
-    table = new SymTable(a);
+   // table = new SymTable(a);
+    table = new SymTable();
     name = n->value; 
-    attributes = a;
+    attributes = (TypeDeclaration *) a;
     line = n->line; 
     column = n->column; 
   }
@@ -49,7 +50,7 @@ class Union : public Statement {
 
   }
 
-  Symbol *toSymbol() { return new Symbol(name,"",line,column, 3, 0, table); }
+  Symbol *toSymbol() { return new Symbol(name,NULL,line,column); }
 
   void firstcheck(){
   
