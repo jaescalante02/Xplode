@@ -400,15 +400,8 @@ function_parameters
     TupleType *t = (TupleType *) $1;
     t->add($2,$3->value);
     $$ = t;
-  
-  } //falta var
-  | function_pars param_type x_ID { 
-  
-    TupleType *t = (TupleType *) $1;
-    t->add($2,$3->value);
-    $$ = t;
-  
   }
+    
   | function_pars x_VAR param_type x_ID x_COMMA x_EXTEND { 
   
     TupleType *t = (TupleType *) $1;
@@ -416,6 +409,15 @@ function_parameters
     $$ = t;
   
   }
+
+  | function_pars param_type x_ID { 
+  
+    TupleType *t = (TupleType *) $1;
+    t->add($2,$3->value);
+    $$ = t;
+  
+  }
+
   | function_pars x_VAR param_type x_ID { 
   
     TupleType *t = (TupleType *) $1;
@@ -423,6 +425,24 @@ function_parameters
     $$ = t;
   
   }
+
+  | param_type x_ID { 
+  
+    TupleType *t = new TupleType();
+    t->add($1,$2->value);
+    $$ = t;
+  
+  }
+  
+  | x_VAR param_type x_ID { 
+  
+    TupleType *t = new TupleType();
+    t->add($2,$3->value);
+    $$ = t;
+  
+  }
+  
+  
   ;
   
 function_pars
@@ -453,6 +473,7 @@ function_pars
   
   } //falta var
   | error  { $$ = new TupleType(); }
+  ;
   
 
 param_type 
