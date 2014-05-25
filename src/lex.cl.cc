@@ -353,8 +353,8 @@ int yyFlexLexer::yylex()
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 62
-#define YY_END_OF_BUFFER 63
+#define YY_NUM_RULES 68
+#define YY_END_OF_BUFFER 69
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -362,25 +362,27 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[159] =
+static yyconst flex_int16_t yy_accept[180] =
     {   0,
-        0,    0,   63,   61,    6,   55,   54,   61,   61,   61,
-       34,   35,   45,   43,   41,   44,   42,   46,    1,   61,
-       40,   56,   61,   58,   60,   60,   60,   60,   60,   60,
-       60,   60,   60,   60,   60,   60,   60,   60,   36,   37,
-       38,   61,   39,    6,   51,    0,    4,   52,    0,   47,
-        0,    3,    0,    1,   49,   57,   50,   59,   60,   60,
-       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
-       60,   30,   60,   60,   60,   60,   60,   60,   60,   60,
-       60,   60,   60,   60,   53,    5,   48,    3,    2,    1,
-       60,   60,   60,   60,   60,   60,    9,   60,   60,   60,
+        0,    0,   69,   67,    8,   61,   60,   67,   67,   67,
+       40,   41,   51,   49,   47,   50,   48,   52,    1,   67,
+       46,   62,   67,   64,   66,   66,   66,   66,   66,   66,
+       66,   66,   66,   66,   66,   66,   66,   66,   42,   43,
+       44,   67,   45,    8,   57,    0,    6,   58,    0,   53,
+        0,    5,    0,    1,    0,   55,   63,   56,   65,   66,
+       66,   66,   66,   66,   66,   66,   66,   66,   66,   66,
+       66,   66,   66,   66,   32,   66,   66,   66,   66,   66,
+       66,   66,   66,   66,   66,   66,   66,   66,   59,    7,
+       54,    5,    2,    1,    0,    2,   66,   66,   66,   66,
 
-       28,   60,   18,   17,   60,   60,   60,   60,   60,   60,
-       60,   23,   60,   60,   60,   60,   20,   60,   19,   60,
-       31,   15,   60,   60,   60,   11,   60,   27,   60,   60,
-       24,   32,   60,   22,   60,   60,    8,   13,   60,   25,
-       21,   60,   60,   60,   16,   33,   29,   26,   60,   60,
-       60,   12,   60,   60,    7,   14,   10,    0
+       66,   66,   66,   11,   66,   66,   66,   30,   66,   66,
+       20,   66,   19,   66,   66,   66,   66,   66,   66,   66,
+       25,   66,   66,   66,    0,    0,    3,   66,   22,   66,
+       21,   66,   36,   33,   17,   66,   66,   39,   66,   37,
+       38,   13,   66,   29,   66,   66,   26,   34,   66,   24,
+       66,   66,    0,    4,    0,    2,   10,   15,   66,   27,
+       23,   66,   66,   66,   18,   35,   31,   28,    3,   66,
+       66,   66,   14,   66,   66,    9,   16,   12,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -427,51 +429,55 @@ static yyconst flex_int32_t yy_meta[74] =
         1,    1,    1
     } ;
 
-static yyconst flex_int16_t yy_base[164] =
+static yyconst flex_int16_t yy_base[185] =
     {   0,
-        0,    0,  286,  291,  281,  291,  260,  271,  269,    0,
-      291,  291,  264,  291,  291,  291,  259,  254,  250,  244,
-      291,  241,  239,  237,    0,   48,   46,   44,   58,   62,
-       66,   40,   69,   50,   60,   50,   90,   91,  291,  291,
-      291,  182,  291,  193,  291,  131,  127,  291,  121,  291,
-       82,    0,   77,   74,  291,  291,  291,  291,    0,   86,
-       81,  101,  109,   90,   94,  109,  105,  104,  103,  103,
-      108,    0,  104,  105,  111,  127,  122,  111,  118,  126,
-      121,  133,  135,  141,  291,  291,  291,    0,   71,   65,
-      143,  143,  156,  143,  143,  153,    0,  145,  147,  165,
+        0,    0,  334,  335,  331,  335,  312,  326,  324,    0,
+      335,  335,  319,  335,  335,  335,  314,  311,   58,  303,
+      335,  300,  297,  291,    0,   50,   51,   57,   87,   54,
+       51,   37,   52,   50,   80,   61,  108,  100,  335,  335,
+      335,  238,  335,  303,  335,  298,  335,  335,  293,  335,
+      284,    0,  279,   79,   66,  335,  335,  335,  335,    0,
+       70,   61,  106,  111,  101,  101,  100,  109,  110,  109,
+      110,  109,  113,  116,    0,  114,  121,  125,  132,  148,
+      147,  134,  140,  148,  142,  151,  153,  154,  335,  335,
+      335,    0,  169,  171,  278,  175,  156,  156,  170,  156,
 
-        0,  164,    0,    0,  166,  168,  155,  172,  174,  176,
-      171,    0,  178,  176,  172,  180,    0,  185,    0,  188,
-        0,    0,  196,  185,  187,    0,  192,    0,  193,  196,
-        0,    0,  200,    0,  197,  210,    0,    0,  203,    0,
-        0,  209,  219,  208,    0,    0,    0,    0,  204,  210,
-      213,    0,  225,  218,    0,    0,    0,  291,  278,  281,
-      284,   73,  287
+      163,  168,  180,    0,  168,  172,  193,    0,  186,  193,
+        0,  198,    0,  202,  195,  188,  205,  208,  209,  201,
+        0,  213,  207,  204,  234,  242,  265,  210,    0,  217,
+        0,  223,    0,    0,    0,  233,  223,    0,  226,    0,
+        0,    0,  229,    0,  230,  234,    0,    0,  237,    0,
+      247,  249,  223,  125,   83,  260,    0,    0,  242,    0,
+        0,  248,  258,  247,    0,    0,    0,    0,   77,  242,
+      248,  255,    0,  261,  255,    0,    0,    0,  335,  315,
+      318,  321,   82,  324
     } ;
 
-static yyconst flex_int16_t yy_def[164] =
+static yyconst flex_int16_t yy_def[185] =
     {   0,
-      158,    1,  158,  158,  158,  158,  158,  159,  158,  160,
-      158,  158,  158,  158,  158,  158,  158,  158,  161,  158,
-      158,  158,  158,  158,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  158,  158,
-      158,  158,  158,  158,  158,  159,  159,  158,  158,  158,
-      158,  163,  158,  161,  158,  158,  158,  158,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  158,  158,  158,  163,  158,  161,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
+      179,    1,  179,  179,  179,  179,  179,  180,  179,  181,
+      179,  179,  179,  179,  179,  179,  179,  179,  182,  179,
+      179,  179,  179,  179,  183,  183,  183,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  179,  179,
+      179,  179,  179,  179,  179,  180,  179,  179,  179,  179,
+      179,  184,  179,  182,  179,  179,  179,  179,  179,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  179,  179,
+      179,  184,  179,  182,  179,  179,  183,  183,  183,  183,
 
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,  162,  162,  162,
-      162,  162,  162,  162,  162,  162,  162,    0,  158,  158,
-      158,  158,  158
+      183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
+      183,  183,  183,  183,  179,  179,  179,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  183,  183,
+      183,  183,  179,  179,  179,  179,  183,  183,  183,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,  179,  183,
+      183,  183,  183,  183,  183,  183,  183,  183,    0,  179,
+      179,  179,  179,  179
     } ;
 
-static yyconst flex_int16_t yy_nxt[365] =
+static yyconst flex_int16_t yy_nxt[409] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   18,   19,   20,   21,   22,   23,
@@ -480,42 +486,47 @@ static yyconst flex_int16_t yy_nxt[365] =
        36,   37,   38,   25,   25,   39,   40,   25,   26,   27,
        25,   28,   29,   25,   25,   30,   25,   31,   25,   25,
        25,   32,   33,   34,   35,   36,   37,   38,   25,   25,
-       41,   42,   43,   60,   63,   59,   65,   75,   66,   68,
-       90,   64,   77,   61,   80,   62,   89,   67,   72,   90,
-       69,   74,   89,   70,   76,   87,   73,   78,   71,   60,
+       41,   42,   43,   54,   79,   61,   78,   80,   95,   64,
+       75,   96,   81,   55,   60,   62,   65,   63,   76,   67,
+       66,   68,  169,   77,   94,   84,   98,   97,  169,   79,
 
-       63,   65,   75,   66,   79,   68,   64,   77,   61,   80,
-       62,   81,   67,   91,   72,   69,   92,   74,   70,   83,
-       76,   73,   78,   71,   95,   82,   93,   86,   84,   79,
-       94,   47,   96,   97,   98,   47,   99,   81,  100,   91,
-      101,   92,  102,  103,  104,   83,  105,  108,  106,   95,
-       82,  109,   93,   84,  110,  111,   94,   96,  112,   97,
-       98,   99,  113,  100,  114,  101,  107,  102,  103,  104,
-      115,  105,  116,  108,  106,  117,  109,  118,  121,  110,
-      119,  111,  120,  112,  122,  123,  124,  125,  113,  126,
-      114,  107,  128,  127,   44,  129,  115,  130,  116,  131,
+       69,   61,   78,   80,   55,   64,   75,   81,   70,   55,
+       62,   65,   63,   76,   67,   66,   68,   82,   77,   71,
+       84,   98,   72,   97,   83,   69,   73,   74,   87,   85,
+       55,   99,  100,  104,   70,  101,  102,   88,  103,  105,
+      154,  106,   82,   86,   71,  107,  108,   72,  109,   83,
+      110,   73,   74,  111,   87,   85,  112,   99,  100,  104,
+      101,  102,   88,  103,  113,  105,  106,  114,   86,  115,
+      107,  108,  117,  109,  118,  110,  119,  120,  111,  121,
+      122,  112,  123,  124,   93,  128,   94,  116,  129,  113,
+       96,  130,  114,  131,  125,  115,  126,  133,  117,  118,
 
-      117,  132,  134,  118,  121,  119,  133,  120,  135,  122,
-      123,  136,  124,  125,  137,  126,  138,  139,  128,  127,
-      129,  140,  147,  130,  141,  131,  142,  132,  134,  143,
-      144,  133,  145,  135,  146,  148,  136,  149,  150,  137,
-      151,  138,  152,  139,  153,  154,  155,  140,  147,  141,
-      156,  142,  157,   85,  143,  144,   58,  145,   57,  146,
-       56,  148,  149,   55,  150,   54,  151,  152,   52,  153,
-      154,  155,   51,   50,   48,   47,  156,  157,   46,   45,
-       46,   49,   44,   49,   53,  158,   53,   88,  158,   88,
-        3,  158,  158,  158,  158,  158,  158,  158,  158,  158,
+      125,  119,  132,  120,  121,  134,  122,  135,  123,  124,
+      136,  128,  116,  129,  137,  138,  139,  130,  131,  144,
+      125,  140,  126,  133,  141,  142,  125,  132,  145,  143,
+      146,  134,  135,  147,  148,  136,  149,  150,  154,  151,
+      137,  138,  139,  152,  157,  144,  153,  140,  158,  154,
+      141,  142,  159,  145,  155,  143,  146,  156,  160,  147,
+      148,  149,  161,  150,  151,  162,  163,  164,  152,  157,
+      165,  166,  167,  158,  168,  156,  170,  171,  159,  172,
+      127,  173,  174,  175,  160,  125,  177,  161,  176,  178,
+      162,  163,  164,  127,   93,  165,  166,   91,  167,   90,
 
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158
+      168,  170,   47,  171,   44,  172,  173,  174,  175,   89,
+       59,  125,  177,  176,  178,   46,   58,   46,   49,   57,
+       49,   53,   56,   53,   92,   52,   92,   51,   50,   48,
+       47,   45,   44,  179,    3,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+
+      179,  179,  179,  179,  179,  179,  179,  179
     } ;
 
-static yyconst flex_int16_t yy_chk[365] =
+static yyconst flex_int16_t yy_chk[409] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -524,48 +535,53 @@ static yyconst flex_int16_t yy_chk[365] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,   26,   27,  162,   28,   32,   28,   29,
-       90,   27,   34,   26,   36,   26,   89,   28,   30,   54,
-       29,   31,   53,   29,   33,   51,   30,   35,   29,   26,
+        1,    1,    1,   19,   32,   26,   31,   33,   55,   27,
+       30,   55,   34,   19,  183,   26,   27,   26,   30,   28,
+       27,   28,  169,   30,   54,   36,   62,   61,  155,   32,
 
-       27,   28,   32,   28,   35,   29,   27,   34,   26,   36,
-       26,   37,   28,   60,   30,   29,   61,   31,   29,   38,
-       33,   30,   35,   29,   64,   37,   62,   49,   38,   35,
-       63,   47,   65,   66,   67,   46,   68,   37,   69,   60,
-       70,   61,   71,   73,   74,   38,   75,   77,   76,   64,
-       37,   78,   62,   38,   79,   80,   63,   65,   81,   66,
-       67,   68,   82,   69,   83,   70,   76,   71,   73,   74,
-       84,   75,   91,   77,   76,   92,   78,   93,   96,   79,
-       94,   80,   95,   81,   98,   99,  100,  102,   82,  105,
-       83,   76,  106,  105,   44,  107,   84,  108,   91,  109,
+       28,   26,   31,   33,   54,   27,   30,   34,   29,   19,
+       26,   27,   26,   30,   28,   27,   28,   35,   30,   29,
+       36,   62,   29,   61,   35,   28,   29,   29,   38,   37,
+       54,   63,   64,   68,   29,   65,   66,   38,   67,   69,
+      154,   70,   35,   37,   29,   71,   72,   29,   73,   35,
+       74,   29,   29,   76,   38,   37,   77,   63,   64,   68,
+       65,   66,   38,   67,   78,   69,   70,   79,   37,   80,
+       71,   72,   81,   73,   82,   74,   83,   84,   76,   85,
+       86,   77,   87,   88,   93,   97,   94,   80,   98,   78,
+       96,   99,   79,  100,   93,   80,   94,  102,   81,   82,
 
-       92,  110,  113,   93,   96,   94,  111,   95,  114,   98,
-       99,  115,  100,  102,  116,  105,  118,  120,  106,  105,
-      107,  123,  135,  108,  124,  109,  125,  110,  113,  127,
-      129,  111,  130,  114,  133,  136,  115,  139,  142,  116,
-      143,  118,  144,  120,  149,  150,  151,  123,  135,  124,
-      153,  125,  154,   42,  127,  129,   24,  130,   23,  133,
-       22,  136,  139,   20,  142,   19,  143,  144,   18,  149,
-      150,  151,   17,   13,    9,    8,  153,  154,  159,    7,
-      159,  160,    5,  160,  161,    3,  161,  163,    0,  163,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
+       96,   83,  101,   84,   85,  103,   86,  105,   87,   88,
+      106,   97,   80,   98,  107,  109,  110,   99,  100,  115,
+       93,  112,   94,  102,  112,  114,   96,  101,  116,  114,
+      117,  103,  105,  118,  119,  106,  120,  122,  153,  123,
+      107,  109,  110,  124,  128,  115,  125,  112,  130,  125,
+      112,  114,  132,  116,  126,  114,  117,  126,  136,  118,
+      119,  120,  137,  122,  123,  139,  143,  145,  124,  128,
+      146,  149,  151,  130,  152,  156,  159,  162,  132,  163,
+      127,  164,  170,  171,  136,  156,  174,  137,  172,  175,
+      139,  143,  145,   95,   53,  146,  149,   51,  151,   49,
 
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158,  158,  158,  158,  158,  158,  158,
-      158,  158,  158,  158
+      152,  159,   46,  162,   44,  163,  164,  170,  171,   42,
+       24,  156,  174,  172,  175,  180,   23,  180,  181,   22,
+      181,  182,   20,  182,  184,   18,  184,   17,   13,    9,
+        8,    7,    5,    3,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+      179,  179,  179,  179,  179,  179,  179,  179,  179,  179,
+
+      179,  179,  179,  179,  179,  179,  179,  179
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static yyconst flex_int32_t yy_rule_can_match_eol[63] =
+static yyconst flex_int32_t yy_rule_can_match_eol[69] =
     {   0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 
-    0, 0, 0,     };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 1, 0, 0, 0, 0, 0, 0, 0,     };
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
@@ -592,7 +608,7 @@ extern ErrorLog *errorlog;
 #define UPDATE_LOC column += yyleng
 #define SAVE_TOK (*yylval).tok = new Token(line,column,yytext); tok = yytext
 
-#line 596 "lex.cl.cc"
+#line 612 "lex.cl.cc"
 
 #define INITIAL 0
 
@@ -700,7 +716,7 @@ YY_DECL
 #line 30 "classic.l"
 
 
-#line 704 "lex.cl.cc"
+#line 720 "lex.cl.cc"
 
 	if ( !(yy_init) )
 		{
@@ -753,13 +769,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 159 )
+				if ( yy_current_state >= 180 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 291 );
+		while ( yy_base[yy_current_state] != 335 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -806,308 +822,338 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 34 "classic.l"
-{UPDATE_LOC;}
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
+#line 35 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
+	YY_BREAK
+case 5:
+YY_RULE_SETUP
 #line 37 "classic.l"
+{UPDATE_LOC;}
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
+#line 38 "classic.l"
 { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::STRING; 
              //"(\\[\x22\x5c\x6e] | [\x20-\x21\x23-\x5B\x5D-\x7E¿¡áéíóúÁÉÍÓÚñÑ])*"
              //Por discutir que tipo de string se espera
            }
 	YY_BREAK
-case 5:
-YY_RULE_SETUP
-#line 42 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::CHAR; }              
-	YY_BREAK
-case 6:
-YY_RULE_SETUP
-#line 44 "classic.l"
-{UPDATE_LOC; }  // ignore all whitespace
-	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 45 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROGRAM; }
+#line 43 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::CHAR; }              
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 46 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BEGIN; }
+#line 45 "classic.l"
+{UPDATE_LOC; }  // ignore all whitespace
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 47 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_END; }
+#line 46 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROGRAM; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 48 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FUNCTION; }
+#line 47 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BEGIN; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 49 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROC; }
+#line 48 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_END; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 50 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RETURN; }
+#line 49 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FUNCTION; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 51 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BREAK; UPDATE_LOC; }
+#line 50 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PROC; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 52 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CONTINUE; }
+#line 51 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RETURN; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 53 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EXIT; }
+#line 52 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BREAK; UPDATE_LOC; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 54 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SLEEP; }
+#line 53 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CONTINUE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 56 "classic.l"
-{SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LET;}
+#line 54 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EXIT; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 58 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_INT; }
+#line 55 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SLEEP; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 59 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CHAR; }
+#line 57 "classic.l"
+{SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LET;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 60 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BOOL; }
+#line 59 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_INT; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 61 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FLOAT; }
+#line 60 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CHAR; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 62 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VOID; }
+#line 61 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_BOOL; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 63 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VAR; }
+#line 62 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FLOAT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 65 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TRUE; }
+#line 63 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VOID; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 66 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FALSE; }
+#line 64 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_VAR; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 68 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_WRITE; }
+#line 66 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TRUE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 69 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_READ; }
+#line 67 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FALSE; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 71 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FOR; }
+#line 69 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_WRITE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 72 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_WHILE; }
+#line 70 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_READ; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 73 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_IF; }
+#line 72 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FOR; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 74 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ELSE; }
+#line 73 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_WHILE; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 76 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TYPE; }
+#line 74 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_IF; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 77 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_UNION; }
+#line 75 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ELSE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 79 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LPAR; }
+#line 77 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_TYPE; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 80 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RPAR; }
+#line 78 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_UNION; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 81 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LBRACKET; }
+#line 80 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_CTOI; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 82 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RBRACKET; }
+#line 81 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ITOC; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 83 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LBRACE; }
+#line 82 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ITOF; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 84 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RBRACE; }
+#line 83 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_FTOI; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 85 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SEMICOLON; }
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LPAR; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 86 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_COMMA; }
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RPAR; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 87 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_DOT; }
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LBRACKET; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 89 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PLUS; }
+#line 88 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RBRACKET; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 90 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_MINUS; }
+#line 89 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LBRACE; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 91 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_MULT; }
+#line 90 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_RBRACE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 92 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_DIV; }
+#line 91 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_SEMICOLON; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 93 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_POWER; }
+#line 92 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_COMMA; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 95 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EXTEND;}
+#line 93 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_DOT; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 97 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ASSIGN; }
+#line 95 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_PLUS; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 98 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EQ; }
+#line 96 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_MINUS; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 99 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_NEQ; }
+#line 97 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_MULT; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 100 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_AND; }
+#line 98 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_DIV; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 101 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_OR; }
+#line 99 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_POWER; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 102 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_NOT; }
+#line 101 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EXTEND;}
 	YY_BREAK
 case 55:
-/* rule 55 can match eol */
 YY_RULE_SETUP
 #line 103 "classic.l"
-{ line++; column = 1;  }
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ASSIGN; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 105 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LESS; }
+#line 104 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_EQ; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 106 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LESSEQ; }
+#line 105 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_NEQ; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 107 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_GREATER; }
+#line 106 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_AND; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 108 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_GREATEREQ; }
+#line 107 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_OR; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 110 "classic.l"
-{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ID; }
+#line 108 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_NOT; }
 	YY_BREAK
 case 61:
+/* rule 61 can match eol */
 YY_RULE_SETUP
-#line 111 "classic.l"
-{ std::string st(yytext); errorlog->addError(1,line,column,&st);}
+#line 109 "classic.l"
+{ line++; column = 1;  }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
+#line 111 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LESS; }
+	YY_BREAK
+case 63:
+YY_RULE_SETUP
+#line 112 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_LESSEQ; }
+	YY_BREAK
+case 64:
+YY_RULE_SETUP
 #line 113 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_GREATER; }
+	YY_BREAK
+case 65:
+YY_RULE_SETUP
+#line 114 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_GREATEREQ; }
+	YY_BREAK
+case 66:
+YY_RULE_SETUP
+#line 116 "classic.l"
+{ SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::x_ID; }
+	YY_BREAK
+case 67:
+YY_RULE_SETUP
+#line 117 "classic.l"
+{ std::string st(yytext); errorlog->addError(1,line,column,&st);}
+	YY_BREAK
+case 68:
+YY_RULE_SETUP
+#line 119 "classic.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1111 "lex.cl.cc"
+#line 1157 "lex.cl.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1488,7 +1534,7 @@ int yyFlexLexer::yy_get_next_buffer()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 159 )
+			if ( yy_current_state >= 180 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1516,11 +1562,11 @@ int yyFlexLexer::yy_get_next_buffer()
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 159 )
+		if ( yy_current_state >= 180 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 158);
+	yy_is_jam = (yy_current_state == 179);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -2016,7 +2062,7 @@ void clfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 113 "classic.l"
+#line 119 "classic.l"
 
 
 

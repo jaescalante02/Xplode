@@ -16,12 +16,15 @@
 
 extern ErrorLog *errorlog;
 
+#define NO_SAVE_SIZE false
+
 class SymTable {
 
     public:
 
         SymTable *father;
         std::map<std::string, Symbol *> *table;
+        int totaloffset;
 
         SymTable();
 
@@ -29,7 +32,9 @@ class SymTable {
 
         void add(NodeList *l);
 
-        void insert(Symbol *s);
+        void insert(Symbol *s,  bool save = true);
+        
+        void insertString(Symbol *s, int tam);
 
         Symbol *find(std::string variable);
 

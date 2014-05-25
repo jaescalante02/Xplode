@@ -35,7 +35,7 @@ CHAR     [^\n]
 ({DIGIT}+).({DIGIT}+)e(\-?)({DIGIT}+) { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
 
 \/\/[^\n]* {UPDATE_LOC;}
-\"[^\n]*\" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::STRING; 
+\"[^\n\"]*\" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::STRING; 
              //"(\\[\x22\x5c\x6e] | [\x20-\x21\x23-\x5B\x5D-\x7E¿¡áéíóúÁÉÍÓÚñÑ])*"
              //Por discutir que tipo de string se espera
            }

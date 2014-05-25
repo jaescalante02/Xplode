@@ -53,6 +53,11 @@ class TypeDeclaration: public Node {
 
     void print(){}
 
+    bool isarray(){ return (this->numtype==TYPE_ARRAY); }
+
+    bool isfunction(){ return (this->numtype==TYPE_FUNCTION); }
+    
+    bool isnumeric(){ return ((this->numtype==TYPE_INT) || ((this->numtype==TYPE_FLOAT))); }
 
 };
 

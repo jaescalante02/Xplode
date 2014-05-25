@@ -31,6 +31,7 @@ class Symbol {
         std::string name;
         TypeDeclaration *ntype;
         int line;
+        int offset;
         int column;
 
         
@@ -48,7 +49,8 @@ class Symbol {
             name=n;
             ntype = t;
             line = l;
-            column = c; 
+            column = c;
+            offset = 0; 
             //defined = e;
             //dimensions = d;
             //pt = p;

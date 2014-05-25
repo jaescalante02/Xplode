@@ -264,13 +264,13 @@ init: {
     root = new SymTable();
     actual = root; 
     pila.push(actual);
-    root->insert(INT_SYMBOL);    
-    root->insert(FLOAT_SYMBOL);    
-    root->insert(CHAR_SYMBOL);        
-    root->insert(BOOL_SYMBOL); 
-    root->insert(STRING_SYMBOL);    
-    root->insert(VOID_SYMBOL);    
-    root->insert(ERROR_SYMBOL);    
+    root->insert(INT_SYMBOL, NO_SAVE_SIZE);    
+    root->insert(FLOAT_SYMBOL, NO_SAVE_SIZE);    
+    root->insert(CHAR_SYMBOL, NO_SAVE_SIZE);        
+    root->insert(BOOL_SYMBOL, NO_SAVE_SIZE); 
+    root->insert(STRING_SYMBOL, NO_SAVE_SIZE);    
+    root->insert(VOID_SYMBOL, NO_SAVE_SIZE);    
+    root->insert(ERROR_SYMBOL, NO_SAVE_SIZE);    
             
    }
    ;  
@@ -320,7 +320,7 @@ def_union
   : x_UNION x_ID x_LBRACE attribute_list x_RBRACE { 
     TupleType *t = (TupleType *) $4;
     t->make_union();
-    root->insert(t->toSymbol($2));    
+    root->insert(t->toSymbol($2), NO_SAVE_SIZE);    
     //root->print();    
     $$ = new Union($2, $4);
   }
@@ -330,7 +330,7 @@ def_type
   :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE {
     TupleType *t = (TupleType *) $4;
     t->make_type();    
-    root->insert(t->toSymbol($2));
+    root->insert(t->toSymbol($2), NO_SAVE_SIZE);
     //root->print();
     $$ = new TypeStructure($2, $4);
   }
@@ -355,7 +355,7 @@ attribute_list
 def_proc
   : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR {
     TupleType *t = (TupleType *) $5;
-    root->insert(t->toSymbol($3));
+    root->insert(t->toSymbol($3), NO_SAVE_SIZE);
     //root->print();    
     $$ = new Procedure($3, $2, $5);
   }
@@ -377,17 +377,18 @@ proc_type_list
   ;
 
 def_function  
-  : x_FUNCTION function_type x_ID x_LPAR x_RPAR block {
+  : x_FUNCTION function_type x_ID x_LPAR x_RPAR  block {
     FunctionType *f = new FunctionType($2,new TupleType());
-    root->insert(f->toSymbol($3));   
+    root->insert(f->toSymbol($3), NO_SAVE_SIZE);   
     $$ = new Function($3, $2, $6);
   }
   | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
     FunctionType *f = new FunctionType($2,$5);
-    root->insert(f->toSymbol($3));    
+    root->insert(f->toSymbol($3), NO_SAVE_SIZE);    
     $$ = new Function($3, $2, $7, $5);
   }
   ;
+  
 
 function_type
   : primitive_type {$$ = $1; }
@@ -513,25 +514,35 @@ type
 block  
   : init_block x_LBRACE declaration_list statement_list x_RBRACE {
     $$ = new Block(actual,$3,$4); 
+    int aux = actual->totaloffset;
     pila.pop();
     actual = pila.top();
+    if (actual!=root) actual->totaloffset = aux;
   }
   | init_block x_LBRACE statement_list x_RBRACE {
+  
     $$ = new Block(actual, $3); 
+    int aux = actual->totaloffset;
     pila.pop();
     actual = pila.top();
+    if (actual!=root) actual->totaloffset = aux;
   }
   | init_block declaration_list statement_list x_RBRACE { 
     errorlog->addError(16,line,column,NULL); 
     $$ = new Block(actual,$2,$3); 
+    int aux = actual->totaloffset;
     pila.pop();
-    actual = pila.top();    
+    actual = pila.top();
+    if (actual!=root) actual->totaloffset = aux;  
   }
   | init_block statement_list x_RBRACE { 
+    $$ = new Block(actual,$2);
+    int aux = actual->totaloffset;
     pila.pop();
-    actual = pila.top();  
+    actual = pila.top();
+    if (actual!=root) actual->totaloffset = aux; 
     errorlog->addError(16,line,column,NULL); 
-    $$ = new Block(actual,$2); 
+
   }
   ;
 
@@ -540,6 +551,7 @@ init_block
   
     SymTable *aux = new SymTable();
     aux->setFather(actual);
+    aux->totaloffset = (actual==root)?0:actual->totaloffset;
     actual = aux;
     pila.push(actual);
   }
@@ -676,7 +688,10 @@ statement_else
   ;
 
 statement_assign
-  : variable x_ASSIGN expression {$$ = new AssignStatement($1,$3); }
+  : variable x_ASSIGN expression {
+  
+      $$ = new AssignStatement($1,$3); 
+  }
   | variable error { yyclearin; errorlog->addError(18,line,column,NULL); $$ = new Statement(); }
   ;
   
@@ -724,16 +739,25 @@ expression
   : expression_unary  {$$ = $1;}
   | expression x_PLUS expression {
       
-      if(($1->ntype != $3->ntype)){
+    /*  if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
-      //tipos diferentes
+      //error tipos invalidos
       
+      } else {
+      
+        if($1->ntype==$3->ntype){
+        
+        
+        
+        } else {
+        
+        
+        }
+        
       }
       
-      //if(!(($1->ntype==TYPE_INT)||($1->ntype==TYPE_FLOAT))){
       
-      
-      //}
+      */
       
       $$ = new BinaryExpression($2->value,$1,$3); 
       
@@ -802,7 +826,14 @@ expression_cast
 constant
   : INTEGER { $$ = new Constant($1->value,root->find("_int")->ntype);}
   | FLOAT { $$ = new Constant($1->value, root->find("_float")->ntype);}
-  | STRING { $$ = new Constant($1->value,root->find("_string")->ntype);} 
+  | STRING { 
+  
+      char id[20];
+      sprintf(id, "%d_%d", $1->line, $1->column);
+      $$ = new Constant($1->value,root->find("_string")->ntype);
+      root->insertString(new Symbol(std::string("_str"+std::string(id)),root->find("_string")->ntype, line, column),
+      $1->value.size());
+  } 
   | CHAR { $$ = new Constant($1->value,root->find("_char")->ntype);}  
   | x_TRUE { $$ = new Constant($1->value,root->find("_bool")->ntype);}
   | x_FALSE { $$ = new Constant($1->value, root->find("_bool")->ntype);}
@@ -816,13 +847,23 @@ variable
       //error
       } else {
       
-      //verifica indices
+          std::list<std::pair<int, Expression *> >::iterator it;
+          //verificar indices enteros, # parametros
+          for(it=v->indexList->begin(); it!=v->indexList->end();++it){
+          
+          //indices
+          
+          
+          }
+      
       
       }
       $$ = $1; 
    }
   | variable x_DOT variable_id { 
       //buscar el tipo de variable, verificar tipo del union o type
+      Variable *v  = (Variable *) $1;
+      TypeDeclaration *t = v->ntype;
       $1->concat($3); 
       $$=$1;  
   }
@@ -847,9 +888,16 @@ function
       }
       else {
       
-      //comprobar si es una funcion
-   
-      //comprobar cada argumento   
+        if(!s->ntype->isfunction()){
+        
+        //error
+        } else {
+        
+        std::list<Expression *>::iterator it;
+        std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
+        
+        
+        }
       
       }
       $$ = new FunctionExpression($1->value,$3); 

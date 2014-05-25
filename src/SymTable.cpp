@@ -10,6 +10,7 @@
 
            table = new std::map<std::string, Symbol *>;
            father = NULL;
+           totaloffset= 0;
 
         }
 
@@ -42,7 +43,7 @@
 */
         }
 
-        void SymTable::insert(Symbol *s){
+        void SymTable::insert(Symbol *s, bool save){
 
             if (s==NULL) return;
             std::string lowsymbol(s->getname()); 
@@ -50,6 +51,10 @@
             if (!isMember(lowsymbol)) {
             
               (*table)[lowsymbol] = s;
+              if(save){
+                s->offset = totaloffset;
+                totaloffset += s->ntype->size;
+              }
               return;
             }  
             
@@ -63,6 +68,19 @@
             
 
         }
+
+        void SymTable::insertString(Symbol *s, int tam){
+        
+            if (s==NULL) return;
+            std::string lowsymbol(s->getname()); 
+            toLower(lowsymbol);
+            (*table)[lowsymbol] = s;
+            s->offset = totaloffset;
+            totaloffset += tam;
+        
+        
+        }
+
 
         Symbol *SymTable::findall(std::string variable) {
 
@@ -84,18 +102,18 @@
             if (table->empty()) return;
 
             std::map<std::string, Symbol *>::iterator pos;
-            std::cout << " -------------------------------------------------------------------\n";
-            std::cout << " |        id       |    tipo    | dimensiones | linea  |  columna  |\n";
-            std::cout << " -------------------------------------------------------------------\n";
+            std::cout << " ---------------------------------------------------------------------\n";
+            std::cout << " |        id       |    tipo    |     offset    | linea  |  columna  |\n";
+            std::cout << " ---------------------------------------------------------------------\n";
             for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
-                printf(" | %15s | %10ld |      %2d     |  %3d   |    %3d    |\n",
+                printf(" | %15s | %10ld |      %4d     |  %3d   |    %3d    |\n",
                 (*pos).first.c_str(), (long int) pos->second->ntype,
-                0, pos->second->line, 
+                pos->second->offset, pos->second->line, 
                 pos->second->column);
 
             }
             //if(this->father) this->father->print();
-            std::cout << " -------------------------------------------------------------------\n\n";
+            std::cout << " ---------------------------------------------------------------------\n\n";
 
 
         }

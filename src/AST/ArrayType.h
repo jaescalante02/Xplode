@@ -21,6 +21,7 @@ class ArrayType : public TypeDeclaration {
     ArrayType(Node *n, int lim){
 
       ntype = (TypeDeclaration *) n;
+      size = lim*ntype->size;
       numtype = TYPE_ARRAY;
       limit = lim;
 
