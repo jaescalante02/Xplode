@@ -30,6 +30,7 @@
   #include "AST/BinaryExpression.h"
   #include "AST/Block.h"
   #include "AST/BreakStatement.h"
+  #include "AST/CastedExpression.h"
   #include "AST/CompoundStatement.h"
   #include "AST/Constant.h"
   #include "AST/ContinueStatement.h"
@@ -123,6 +124,12 @@
 %token<tok> x_TYPE
 %token<tok> x_UNION
 
+//Type casting
+%token<tok> x_CTOI
+%token<tok> x_ITOC
+%token<tok> x_ITOF
+%token<tok> x_FTOI
+
 //Single characters
 %token<tok> x_LPAR
 %token<tok> x_RPAR
@@ -206,6 +213,7 @@
 %type <var> variable_id
 %type <exp> constant
 %type <exp> expression expression_unary function
+%type <exp> expression_cast
 %type <explist> function_arguments write_list
 %type <exp> while_condition for_condition if_condition
 
@@ -753,6 +761,7 @@ expression_unary
   : constant { $$ = $1; }
   | variable { $$ = $1; }
   | function { $$ = $1; }
+  | expression_cast {$$ = $1; }
   | x_MINUS expression %prec x_UMINUS { 
       $$ = new UnaryOp($1->value,$2); 
   }
@@ -762,10 +771,17 @@ expression_unary
   | x_LPAR expression x_RPAR { $$ = $2;}
   ;
  
+expression_cast
+  : x_CTOI x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
+  | x_ITOC x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
+  | x_ITOF x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
+  | x_FTOI x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
+  ;
+ 
 constant
   : INTEGER { $$ = new Constant($1->value,root->find("_int")->ntype);}
   | FLOAT { $$ = new Constant($1->value, root->find("_float")->ntype);}
-  | STRING { $$ = new Constant($1->value,root->find("_string")->ntype);} //
+  | STRING { $$ = new Constant($1->value,root->find("_string")->ntype);} 
   | CHAR { $$ = new Constant($1->value,root->find("_char")->ntype);}  
   | x_TRUE { $$ = new Constant($1->value,root->find("_bool")->ntype);}
   | x_FALSE { $$ = new Constant($1->value, root->find("_bool")->ntype);}

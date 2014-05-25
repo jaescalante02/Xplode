@@ -1,115 +1,117 @@
 #Xplode
 
-        Version 1.0
+        Version 1.1
 
 Xplode es un compilador para los cursos de la cadena de Lenguajes de Programación de la
 Univerisdad Simón Bolívar.
 
 Xplode es un lenguaje imperativo fuertemente tipado. En su diseño se tomaron en cuenta 
-peculiaridades de C/C++ y Pascal/Modula-2, entre otros,
-en la búsqueda de ofrecer facilidades en torno al uso de Xplode, en base a experiencias previas.
+peculiaridades de C/C++ y Pascal/Modula-2, entre otros, en la búsqueda de ofrecer 
+facilidades en torno al uso de Xplode, en base a experiencias previas.
 
 Sin embargo, es necesario aclarar que no es ninguno de los lenguajes anteriormente señalados,
-es un lenguaje simplificado que cumple ciertos parámetros obligatorios y 
-en nuestro caso algunos extras, para acceder a otro nivel de expresividad.
+es un lenguaje simplificado que cumple ciertos parámetros obligatorios y en nuestro caso 
+algunos extras, para acceder a otro nivel de expresividad.
 
 
-##1 Consideraciones léxicas
+##1. Consideraciones léxicas
 
-Símbolos "unitarios"
---------------------
+###Símbolos "unitarios"
 
 * ( : Paréntesis derecho. Diversos usos.
 * ) : Paréntesis izquierdo. Diversos usos.
-* { : Llave izquierda. 
-* } : Llave derecha
+* { : Llave izquierda. Uso en instrucciones compuestas.
+* } : Llave derecha. Uso en instrucciones compuestas.
 * [ : Bracket izquierda. Relacionado con arreglos
 * ] : Bracket derecha. Relacionado con arreglos
-* ; : Punto y coma. Separador
+* ; : Punto y coma. Separador.
+* , : Coma. Separador de parametros y argumentos.
 * . : Punto. Acceder a los atributos de un type.
-* !
-* +
-* *
-* -
-* /
-
-Simbolos no unitarios
-----------------------
-
-* := : Asignacion
-* ==
-* !=
-* &&
-* ||
+* ! : Signo de Exlamación. Negación lógica.
+* \+ : Signo más. Suma
+* \* : Asterisco. Multiplicación.
+* \- : Signo menos. Resta. Menos unitario.
+* / : Slash. División. 
+* < : Menor que. 
+* \> : Mayor que. 
 
 
+###Simbolos no unitarios
+
+* := : Asignacion.
+* == : Equivalencia.
+* != : Inequivalencia.
+* && : Doble ampersand. Conjunción lógica.
+* || : Disyunción.
+* // : Comentario. Alcanze hasta el final de la línea.
+* ** : Potencia.
+* <= : Menor o igual que. 
+* \>= : Mayor o igual que. 
+* ... : Puntos suspensivos. Usado para funciones con numero variable de parametros. 
 
 
+###Palabras reservadas (Versión Clásica)
 
-Palabras reservadas
---------------------
+####Instrucciones
 
-Instrucciones
--------------
-
-* program : Inicio del archivo
-* begin : Inicio del main
-* end : Final del main
-* if 
-* else
-* while
-* for
-* type
-* union
-* function 
+* program : Inicio del archivo.
+* begin : Inicio del main.
+* end : Final del main.
+* if : Inicio del if.
+* else : Instrucción else de un if.
+* while : Inicio de iteración intedeterminada.
+* for : Inicio de iteración determinada.
+* type : Declaración de tipos. 
+* union : Declaración de unions.
+* proc : Declaración de la fima de funciones.
+* function : Declaración de funciones.
+* void : Usado para funciones que no retornan un valor.
+* let : Declaración de variables.
 * sleep : Detiene la ejecución por un número entero de segundos.
-* return
-* break
-* continue
-* exit
+* return : Retorna el valor de una función.
+* break : Salida incodicional de una iteración.
+* continue : Salto a la siguiente iteración.
+* exit : Termina la ejecución del programa.
 
-Valores
--------
 
-* void
+####Valores
+
 * true
 * false
 * enteros
 * flotantes
-* String
+* string
 
 
-Otros
-------
+####Otros
 
-* var : diferencia paso por referencia y por valor *** Caso de los arreglos, verificacion extraña ***
-* // : comentario
-* read: lee por teclado y asigna en una variable
-* write: escribe por salida estándar
+* var : Diferencia paso por referencia y por valor *** Caso de los arreglos, verificacion extraña ***
+* read : Lee por teclado y asigna en una variable.
+* write : Escribe por salida estándar.
 
 
- 
-Otros aspectos
+###Otros aspectos
 
 Xplode entre sus características a tener en cuenta ignora el uso de mayúsculas,
 es decir, el identificador FOO, FoO y foo se refieren a la misma variable, aplicando
 lo mismo para todas las palabras reservadas.
 
-* **Modos**
+
+####Modos
 
 En Xplode se le dará la posibilidad al usuario de usar dos grupos de tokens diferentes.
-Si la primera palabra del programa es 'program' se ejecutará con palabras que recuerdan
-al uso cotidiano de los lenguajes de programación, mientras tanto si inicia con 'xplodegram',
+Si la primera palabra del programa es _program_ se ejecutará con palabras que recuerdan
+al uso cotidiano de los lenguajes de programación, mientras tanto si inicia con _xplodegram_,
 se hará el análisis léxico con un grupo de palabras que recuerdan explosiones, explosivos, etc.
 Está sección ya esta implementada, se logró generalizar el parser para ambos casos,
 sim embargo las palabras claves de la version xplodegram no han sido decididas por lo 
 que se insta al uso de la versión clasica.
 
 
-Tipos
---------
+###Tipos
 
 * int
+* bool
 * char
 * float
 * arreglos
@@ -117,19 +119,18 @@ Tipos
 * unions
 
 
-##2 Gramática referencial
+##2. Gramática referencial
 
 *** Por completar *** 
 
 *version inicial*
 
 La grámatica todavía presenta arreglos por lo que no se explicará en detalle en
-esta versión, sin embargo los referenciamos en esta primera versión al archivo xplode.y en
- donde se encuentra implementada.
+esta versión, sin embargo los referenciamos en esta primera versión al archivo _xplode.y_ en
+donde se encuentra implementada.
 
 
-
-##3 Estructura del programa
+##3. Estructura del programa
 
 Un programa en Xplode se puede dividir en 3 secciones a las cuáles se deberán prestar 
 atención.
@@ -143,7 +144,8 @@ variables globales, constantes y funciones que desea que existan en el programa.
 3. Programa Principal: Sección que será llamada al iniciar la ejecución, iniciada por
 un begin y finalizada en end.
 
-##4 Alcance
+
+##4. Alcance
 
 En Xplode el alcance es estático permitiendo niveles de anidamiento.
 El anidamiento se define como cualquier bloque rodeado por llaves ('{' '}').
@@ -153,69 +155,76 @@ globales.
 
 Para tomar en cuenta:
 
-* Las varibles deben ser declaradas, siempre al inicio del bloque y se mantendrán
+* Las variables deben ser declaradas, siempre al inicio del bloque y se mantendrán
 vivas únicamente en ese alcance.
 
 * Todas las definiciones son alcanzables desde cualquier punto del programa, incluso
   antes de ser definidas.
   
 
-##5 Tipos
+##5. Tipos
 
-Primitivos:
+* Primitivos:
 
 Son los tipos incluidos desde la implantacion del lenguaje.
 
-Estos son int, bool, float y char.
+Estos son `int`, `bool`, `float` y `char`.
 
 
-Creados:
+* Creados:
 
 Xplode permite la definición de nuevos tipos dependiendo de las necesidades
 del usuario.
 
-types:
+  * `types`
 
 Representa una colección de tipos, los cuales pueden ser usados simultáneamente
 con el operador de acceso '.'.
 
-ej:
+	type foo{
 
-type foo{
+	int bar;
+	baz rom;
 
-int bar;
-baz rom;
+	}
 
-}
+	...
+
+	let foo f;
+	f.bar = 3;
+	...
 
 
-
-unions:
+  * `unions`
 
 Representa una colección de uniones, los cuales **no** pueden ser usados simultáneamente
 con el operador de acceso '.', es decir, solo se podrá mantener guardado el último
 que posea una asignación.
 
-ej:
+	union foo{
+	int bar;
+	baz rom;
+	}
 
-union foo{
+	...
+	let foo f;
+	f.baz = 'a';
+	f.rom = 3;
+	// error
+	// write(f.baz) 
+	write(f.rom);
+	...
 
-int bar;
-baz rom;
-
-}
-
-procs:
+  * `procs`
 
 Representa la firma de una función (ver sección 9), con su estructura
 de devolución y parámetros. Usados para el pase de funciones como parámetros.
 
-ej:
+	proc bool menorQue(person, person);
+	function void sortPerson(menorQue f, person[] p);
 
-proc bool menorQue(person, person);
 
-
-##6 Variables
+##6. Variables
 
 Una variable podrá ser cualquier identificador declarada con cualquier tipo válido.
 Esto incluye arreglos y tipos definidos por el usuario. 
@@ -228,7 +237,7 @@ valor de la primera variable foo, hasta que culmine dicho bloque.
 
 Hay excepciones a esta definición de variable solapada en Xplode. No se permite
 solapar los nombres de variables en los siguientes casos: funciones, tipos,
-uniones y procs.
+uniones y procs. Puesto que estos se declaran unicamente en las sección de definiciones. 
 
 2. Variables locales: Son las variables declaradas en la lista de parámetros
    formales o cuerpo de una función.
@@ -245,12 +254,13 @@ bajo los siguientes tipos primitivos:
 
 Esto ocurre ya que no se permite escribir líneas como:
 
-> int a = 3;
+	int a := 3;
 
 Lo correcto en Xplode es declarar la variable a como un entero y en otra línea
 asignarle el valor 3. 
 
-##7 Arreglos
+
+##7. Arreglos
 
 Un arreglo en Xplode esta compuesto por una cantidad positiva de elementos de un 
 tipo válido en concreto, indexados linealmente desde el 0, con un número constante de 
@@ -263,13 +273,13 @@ salir de dicha función.
 Estos también como una de sus características principales, son de asociación 
 profunda, es decir, deberán ser asignados uno a uno (ver sección 10).
 
-##8 Strings
+##8. Strings
 
 Los strings en Xplode son una cadena de caracteres rodeados de comillas dobles y 
 escritos en una sola línea que podran imprimirse al estar como parámetro en
-la función write.
+la función write. A su vez se pueden asignar a un arreglo de caracteres.
 
-##9 Funciones
+##9. Funciones
 
 * Definición
 
@@ -289,24 +299,24 @@ el tipo especifícado, toda especificación en su definición.
 
 ej:
 
-bar(2*8 + 43, orr, 'w', menorQue).
+	bar(2*8 + 43, orr, 'w', menorQue).
 
-Nota: Las funciones con tipo de devolución void serán tomadas como instrucciones.
+Nota: Las funciones con tipo de devolución `void` serán tomadas como instrucciones.
 
 * Funciones de número de parámetros variables
 
 Xplode permite funciones con número de parámetros variables especificándose de la
 siguiente forma:
 
-function foo(char a, int b, ...){ *instrucciones* }
+	function foo(char a, int b, ...){ *instrucciones* }
 
-Esta notación significa que a foo en su invocación le ingresará más de un tipo int.
+Esta notación significa que a foo en su invocación le ingresará más de un tipo `int`.
 
 Posibles invocaciones:
 
-foo('a',1), foo('a',1,2,3), foo('a',1,2,5,57,8,9,42).
+	foo('a',1), foo('a',1,2,3), foo('a',1,2,5,57,8,9,42).
 
-TODO:
+* TO-DO:
 
 Para el manejo de está lista finita se tiene pensado el uso de los tokens
 NEXT y LENGTH, teniendo como efecto obtener el siguiente en la lista o el tamaño
@@ -319,7 +329,7 @@ procs (ver sección 5), que pasan a ser un tipo y se podrá asignar una función
 dentro del alcance de la función que usa el proc.
 
 
-##10 Asignación
+##10. Asignación
 
 Efectúa una copia por valor para los tipos básicos. La instrucción
 `LValue := RValue ;` copia el valor del lado derecho en la dirección indicada en
@@ -330,17 +340,21 @@ el lado izquierdo.
 3. Ambos lados de la asignación deben tener el mismo tipo.
 4. Los parámetros formales de una función son considerados variables.
 
-##11 Estructuras de control
+##11. Estructuras de control
 
 Las estructuras de control de Xplode están basadas en las de C/Java (es decir,
-if/else/while/for), teniendo un comportamiento similar, agregando un caracter
-';' seguidamente de las llaves "{ ... }" que cierran un bloque. Por ejemplo:
+if/else/while/for), teniendo un comportamiento similar, permitiendo agregar opcionalmente
+un caracter ';' al terminar la instrucción. Por ejemplo:
 
     if (guardia) { 
         ...
+    } 
+	
+	if (guardia2) { 
+        ...
     } ;
     
-    Otro ejemplo:
+Otro ejemplo:
     
     if (guardia) {
         ...
@@ -348,6 +362,8 @@ if/else/while/for), teniendo un comportamiento similar, agregando un caracter
         ...
     } ;
 
+Ambos casos son válidos.
+	
 1. Las expresiones condicionales de las declaraciones `if` y `while` deben ser de tipo
    `bool`.
 2. Una declaración de tipo `break` o `continue` sólo pueden aparecer en el
@@ -363,7 +379,7 @@ if/else/while/for), teniendo un comportamiento similar, agregando un caracter
 6. La variable de iteración de un ciclo acotado `for` debe ser de un valor de
    tipo `int`.
 
-##12 Expresiones
+##12. Expresiones
 
 1. Ambos operandos en las operaciones (`+`, `-`, `*`, `/`, `<`, `>`, `<=` y `>=`)
    deben ser ambos enteros o flotantes, pero del mismo tipo.
@@ -371,14 +387,14 @@ if/else/while/for), teniendo un comportamiento similar, agregando un caracter
 3. El operador menos unario `-` aplica sobre enteros y flotantes y devuelve el
    mismo tipo del operando.
 4. Ambos operandos deben ser del mismo tipo para las operaciones de igualdad 
-   (`==`, `!=`), ya sea `int` o `float`. El resultado de la operación será de 
+   (`==`, `!=`), ya sea `int`, `float`, `bool` o `char`. El resultado de la operación será de 
    tipo `bool`.
-5. Los operandos para las expresiones booleanas (`!`, `&&` y `||`) aceptan sólo 
+5. Los operandos para las expresiones booleanas  (`!`, `&&` y `||`) aceptan sólo 
    argumentos de tipo `bool` y devuelven un valor del tipo `bool`.
 6. Las operaciones booleanas `||` y `&&` no se evalúan completamente.
    Existe el corto circuito.
-7. La conversión de tipos aún no está implementada, próximamente se incluirán
-   (itof, ftoi, ctoi, itoc).
+7. La conversión de tipos está limitada a: `int` <-> `float` y `int` <-> `char`.
+   (`itof`, `ftoi`, `ctoi`, `itoc`).
 
 A continuación se presentan, de menor a mayor, los operadores con sus 
 precedencias:
@@ -392,41 +408,32 @@ precedencias:
 %left `**` (potencia)
 %left `-` (menos unario)
 
-##12 Expresiones
-
-%nonassoc x_EQ x_NEQ
-%nonassoc x_LESS x_LESSEQ x_GREATER x_GREATEREQ
-%left x_AND x_OR
-%left x_NOT
-%left	x_PLUS x_MINUS
-%left x_MULT x_DIV
-%left x_POWER
-%left	x_UMINUS
-
-
 ##13 Chequeos a tiempo de ejecución
 
 Se espera que sea el menor número de verificaciones posibles.
 
 Las existentes hasta el momento se enumeran a continuación:
 
-1. Comprobación del índice de un arreglo.
+* Comprobación del índice de un arreglo.
+* Acceso correcto al campo de un union.
+* División entre 0.
+* Overflow.
 
 ##14 Cosas que explotan!
 
-Por ahora es díficil decirlo porque apenas hacemos los primeros chequeos.
+*  Error léxico.
+*  Uso de variable no declarada.
+*  Redeclaración de una variable en el mismo bloque.
+*  Errores de tipos. (expresiones, asignacion, parámetros, condición del if/while/for,...)
+*  Conversión inválida de tipos.
+*  Acceso a campos invalidos de un type.
+*  Uso del break/continue fuera de una iteración.
+*  Uso del return fuera de una función.
+*  Errores de ejecución. (Ver sección anterior) 
 
 ##15 Ideas explosivas
 
-*** Se decidió que se ignorará mayúsculas, confirmar ***
-
-*** Se decidió permitir número variable de argumentos, no tenemos notacion ***
-
-*** Posible pase de funciones como parametros (2da clase) ***
-
-*** int[5:8][3:6] ***
-
-*** sleep? ***
-
-*** concat? i++, i--, solo instrucciones ***
+* Permitir concat de strings/arreglo de caracteres.
+* Azúcar sintáctica. `i++`  `i--` (Solo instrucciones)
+* Establecer mensajes de error relacionado con explociones.
 
