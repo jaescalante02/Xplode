@@ -11,7 +11,7 @@
 #ifndef X_TYPEDECLARATION
 #define X_TYPEDECLARATION
 
-
+//TYPE
 #define TYPE_ERROR 0
 #define TYPE_VOID  1
 #define TYPE_INT   2
@@ -21,7 +21,18 @@
 #define TYPE_ARRAY 6
 #define TYPE_TUPLE 7
 #define TYPE_FUNCTION 8
+#define TYPE_STRING 9
+#define TYPE_UNION 10
+#define TYPE_TYPE 11
+//SIZE
 
+#define SIZE_INT   4
+#define SIZE_BOOL  1
+#define SIZE_CHAR  1
+#define SIZE_FLOAT 4
+#define SIZE_POINTER 4
+
+#define ALIGNMENT 1
 
 class TypeDeclaration: public Node {
 
@@ -29,13 +40,14 @@ class TypeDeclaration: public Node {
 
   TypeDeclaration *ntype;
   int numtype;
+  int size;
 
     TypeDeclaration(){}
-    TypeDeclaration(int num, TypeDeclaration *n=NULL) {
+    TypeDeclaration(int num,int s=0, TypeDeclaration *n=NULL) {
 
       numtype = num;
       ntype = n;
-
+      size = s;
     }
 
 

@@ -27,6 +27,13 @@ class FunctionType : public TypeDeclaration {
 
     }
 
+    Symbol *toSymbol(Xplode::Token *s){
+    
+    return new Symbol(s->value,this,s->line,s->column);
+    
+    
+    }
+
 
     void print(){}
 

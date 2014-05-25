@@ -15,11 +15,13 @@
 #ifndef X_MAINPROGRAM
 #define X_MAINPROGRAM
 
-#define INT_SYMBOL new Symbol("int",NULL,0,0)
-#define FLOAT_SYMBOL new Symbol("float",NULL,0,0)
-#define CHAR_SYMBOL new Symbol("char",NULL,0,0)
-#define BOOL_SYMBOL new Symbol("bool",NULL,0,0)
-#define VOID_SYMBOL new Symbol("void",NULL,0,0)
+#define INT_SYMBOL new Symbol("_int",new TypeDeclaration(TYPE_INT,SIZE_INT),0,0)
+#define FLOAT_SYMBOL new Symbol("_float",new TypeDeclaration(TYPE_FLOAT,SIZE_FLOAT),0,0)
+#define CHAR_SYMBOL new Symbol("_char",new TypeDeclaration(TYPE_CHAR,SIZE_CHAR),0,0)
+#define BOOL_SYMBOL new Symbol("_bool",new TypeDeclaration(TYPE_BOOL,SIZE_BOOL),0,0)
+#define VOID_SYMBOL new Symbol("_void",new TypeDeclaration(TYPE_VOID),0,0)
+#define STRING_SYMBOL new Symbol("_string",new TypeDeclaration(TYPE_STRING),0,0)
+#define ERROR_SYMBOL new Symbol("_error",new TypeDeclaration(TYPE_ERROR),0,0)
 
 class Program : public CompoundStatement {
 

@@ -139,7 +139,7 @@
 %token<tok> x_MINUS
 %token<tok> x_MULT
 %token<tok> x_DIV
-%token<tok><tok> x_POWER
+%token<tok> x_POWER
 
 %token<tok> x_ASSIGN
 %token<tok> x_EQ
@@ -256,6 +256,14 @@ init: {
     root = new SymTable();
     actual = root; 
     pila.push(actual);
+    root->insert(INT_SYMBOL);    
+    root->insert(FLOAT_SYMBOL);    
+    root->insert(CHAR_SYMBOL);        
+    root->insert(BOOL_SYMBOL); 
+    root->insert(STRING_SYMBOL);    
+    root->insert(VOID_SYMBOL);    
+    root->insert(ERROR_SYMBOL);    
+            
    }
    ;  
 
@@ -303,6 +311,7 @@ definition
 def_union
   : x_UNION x_ID x_LBRACE attribute_list x_RBRACE { 
     TupleType *t = (TupleType *) $4;
+    t->make_union();
     root->insert(t->toSymbol($2));    
     //root->print();    
     $$ = new Union($2, $4);
@@ -312,6 +321,7 @@ def_union
 def_type 
   :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE {
     TupleType *t = (TupleType *) $4;
+    t->make_type();    
     root->insert(t->toSymbol($2));
     //root->print();
     $$ = new TypeStructure($2, $4);
@@ -360,16 +370,20 @@ proc_type_list
 
 def_function  
   : x_FUNCTION function_type x_ID x_LPAR x_RPAR block {
+    FunctionType *f = new FunctionType($2,new TupleType());
+    root->insert(f->toSymbol($3));   
     $$ = new Function($3, $2, $6);
   }
   | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
+    FunctionType *f = new FunctionType($2,$5);
+    root->insert(f->toSymbol($3));    
     $$ = new Function($3, $2, $7, $5);
   }
   ;
 
 function_type
   : primitive_type {$$ = $1; }
-  | x_VOID {$$ = new TypeDeclaration(TYPE_VOID); }
+  | x_VOID {$$ = root->find("_void")->ntype; }
   ;
   
 function_parameters 
@@ -435,22 +449,32 @@ function_pars
 
 param_type 
   : primitive_type {$$ = $1; }
-  | x_ID {$$ = new TypeDeclaration(TYPE_VOID); }
+  | x_ID {
+  
+      Symbol *s = root->find($1->value);
+      if(s)
+        $$ = s->ntype;
+  
+  }
   | param_type x_LBRACKET x_RBRACKET {      
      $$ = new ArrayType($1,-1);
    } 
   ;
   
 primitive_type
-  :  x_INT {$$ = new TypeDeclaration(TYPE_INT); }
-  | x_CHAR {$$ = new TypeDeclaration(TYPE_CHAR); } 
-  | x_BOOL {$$ = new TypeDeclaration(TYPE_BOOL); } 
-  | x_FLOAT {$$ = new TypeDeclaration(TYPE_FLOAT); }
+  :  x_INT {$$ = root->find("_int")->ntype; }
+  | x_CHAR {$$ = root->find("_char")->ntype; } 
+  | x_BOOL {$$ = root->find("_bool")->ntype; } 
+  | x_FLOAT {$$ = root->find("_float")->ntype; }
   ;
 
 type 
   : primitive_type {$$ = $1; }
-  | x_ID {$$ = new TypeDeclaration(TYPE_VOID); }
+  | x_ID {
+      Symbol *s = root->find($1->value);
+      if(s)
+        $$ = s->ntype;
+    }
   | type x_LBRACKET INTEGER x_RBRACKET { 
      $$ = new ArrayType($1,atoi($3->value.c_str()));
     }
@@ -580,8 +604,6 @@ statement_compound
   | statement_if {$$ = $1; }
   ;
 
-
-
 statement_for
   : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block{
     $$ = new ForStatement($3,$5,$7,$9);
@@ -643,7 +665,7 @@ write_list
   ;
  
 statement_sleep
-  : x_SLEEP x_LPAR variable x_RPAR {$$ = new SleepStatement($3); }
+  : x_SLEEP x_LPAR expression x_RPAR {$$ = new SleepStatement($3); }
   ;    
 
 statement_function
@@ -671,54 +693,130 @@ statement_exit
 
 expression
   : expression_unary  {$$ = $1;}
-  | expression x_PLUS expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_MINUS expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_MULT expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_DIV expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_POWER expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_PLUS expression {
+      
+      if(($1->ntype != $3->ntype)){
+      
+      //tipos diferentes
+      
+      }
+      
+      //if(!(($1->ntype==TYPE_INT)||($1->ntype==TYPE_FLOAT))){
+      
+      
+      //}
+      
+      $$ = new BinaryExpression($2->value,$1,$3); 
+      
+  }
+  | expression x_MINUS expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_MULT expression {
+      $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_DIV expression {
+      $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_POWER expression {
+      $$ = new BinaryExpression($2->value,$1,$3); 
+  }
 
-  | expression x_AND expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_OR expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_AND expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_OR expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }  
+  | expression x_LESS expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_LESSEQ expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_GREATER expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_GREATEREQ expression {
+      $$ = new BinaryExpression($2->value,$1,$3);
+  }
   
-  | expression x_LESS expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_LESSEQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_GREATER expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_GREATEREQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  
-  | expression x_EQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
-  | expression x_NEQ expression {$$ = new BinaryExpression($2->value,$1,$3); }
+  | expression x_EQ expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
+  | expression x_NEQ expression {
+    $$ = new BinaryExpression($2->value,$1,$3); 
+  }
   ;
 
 expression_unary
   : constant { $$ = $1; }
   | variable { $$ = $1; }
   | function { $$ = $1; }
-  | x_MINUS expression %prec x_UMINUS { $$ = new UnaryOp($1->value,$2); }
-  | x_NOT expression { $$ = new UnaryOp($1->value,$2); }
-  | x_LPAR expression x_RPAR { $$ = new UnaryExpression($2); }
+  | x_MINUS expression %prec x_UMINUS { 
+      $$ = new UnaryOp($1->value,$2); 
+  }
+  | x_NOT expression { 
+      $$ = new UnaryOp($1->value,$2); 
+  }
+  | x_LPAR expression x_RPAR { $$ = $2;}
   ;
  
 constant
-  : INTEGER { $$ = new Constant($1->value);}
-  | FLOAT { $$ = new Constant($1->value);}
-  | STRING { $$ = new Constant($1->value);}
-  | CHAR { $$ = new Constant($1->value);}  
-  | x_TRUE { $$ = new Constant($1->value);}
-  | x_FALSE { $$ = new Constant($1->value);}
+  : INTEGER { $$ = new Constant($1->value,root->find("_int")->ntype);}
+  | FLOAT { $$ = new Constant($1->value, root->find("_float")->ntype);}
+  | STRING { $$ = new Constant($1->value,root->find("_string")->ntype);} //
+  | CHAR { $$ = new Constant($1->value,root->find("_char")->ntype);}  
+  | x_TRUE { $$ = new Constant($1->value,root->find("_bool")->ntype);}
+  | x_FALSE { $$ = new Constant($1->value, root->find("_bool")->ntype);}
   ;
   
 variable
-  : variable_id {$$ = $1; }
-  | variable x_DOT variable_id { $1->concat($3); $$=$1;  }
+  : variable_id {
+      Variable *v = (Variable *) $1;
+      Symbol *s = actual->find((*v->varList->begin())->value);
+      if(!s){
+      //error
+      } else {
+      
+      //verifica indices
+      
+      }
+      $$ = $1; 
+   }
+  | variable x_DOT variable_id { 
+      //buscar el tipo de variable, verificar tipo del union o type
+      $1->concat($3); 
+      $$=$1;  
+  }
   ;
 
 variable_id
-  : x_ID {$$ = new Variable($1); }
-  | variable_id x_LBRACKET expression x_RBRACKET { $1->addIndex($3); $$=$1; }
+  : x_ID {
+      $$ = new Variable($1); 
+  }
+  | variable_id x_LBRACKET expression x_RBRACKET { 
+      $1->addIndex($3); 
+      $$=$1; 
+  }
   ;
 
 function
-  : x_ID x_LPAR function_arguments x_RPAR {$$ = new FunctionExpression($1->value,$3); }
+  : x_ID x_LPAR function_arguments x_RPAR {
+  
+      Symbol *s = actual->find($1->value);
+      if(!s){
+      //ERROR no existe el simbolo
+      }
+      else {
+      
+      //comprobar si es una funcion
+   
+      //comprobar cada argumento   
+      
+      }
+      $$ = new FunctionExpression($1->value,$3); 
+  }
   | x_ID x_LPAR x_RPAR {$$ = new FunctionExpression($1->value); }
   ;
 
@@ -730,8 +828,6 @@ function_arguments
 %%
 
 // We have to implement the error function
-
-
  
 void Xplode::BisonParser::error(const Xplode::BisonParser::location_type &loc, const std::string &msg) {
 

@@ -11,11 +11,11 @@
 #include <stdio.h>
 #include "Node.h"
 #include "../SymTable.h"
-
+#include "TypeDeclaration.h"
 
 class Expression : public Node {
   public:
-  std::string type; //Used for type checks
+  TypeDeclaration *ntype; //Used for type checks
 
   virtual void print() {}
 
