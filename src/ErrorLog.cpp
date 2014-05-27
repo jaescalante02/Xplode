@@ -30,7 +30,7 @@
 
       case 0:
       
-        buffer << "'"<<arrstr[0] << "' con error.\n";
+        buffer <<"ERROR " << line << ":" << column << "\n";
         break;
         
       case 1:

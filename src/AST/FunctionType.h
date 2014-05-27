@@ -14,16 +14,18 @@
 
 class FunctionType : public TypeDeclaration {
 
-  TypeDeclaration *returnType, *arguments;
+  
 
   public:
 
-    FunctionType(Node *ret, Node *args){
+    TypeDeclaration *returnType, *arguments, *extend;
+    
+    FunctionType(Node *ret, Node *args,Node *e){
 
       numtype = TYPE_FUNCTION;
       returnType = (TypeDeclaration *) ret;
       arguments = (TypeDeclaration *) args;
-      
+      extend = (TypeDeclaration *) e;
 
     }
 

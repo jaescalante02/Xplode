@@ -18,6 +18,7 @@ class TupleType : public TypeDeclaration {
 
     std::list< std::pair<TypeDeclaration*, int>* > *types;
     std::list<std::string> *names;
+    TypeDeclaration *extend;
 
 
     TupleType(){
@@ -25,6 +26,7 @@ class TupleType : public TypeDeclaration {
     types = new std::list< std::pair<TypeDeclaration*, int>* >;
     names = new std::list<std::string>;
     numtype = TYPE_TUPLE;
+    extend = NULL;
     size=0;
     
     }

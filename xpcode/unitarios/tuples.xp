@@ -7,10 +7,17 @@ union u{
 
 }
 
-type t{
+type t0{
 
 int c;
 bool d;
+
+}
+
+type t{
+
+int c;
+t0 d;
 
 }
 
@@ -38,14 +45,12 @@ while(1<5){
 
 let char r,j;
 let int j1,j2;
-let t m;
+let t prueba;
 let int[30] h;
 let char a;
 
 
-write("hola", "hola2hola2");
-write("chao");
-r:=t.c+t.e;
+r:= h[3];
 
 };
 

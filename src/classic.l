@@ -30,9 +30,9 @@ CHAR     [^\n]
 %%
 
 {DIGIT}+  { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::INTEGER; }
-({DIGIT}+).({DIGIT}+)  { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
+({DIGIT}+)\.({DIGIT}+)  { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
 ({DIGIT}+)e(\-?)({DIGIT}+) { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
-({DIGIT}+).({DIGIT}+)e(\-?)({DIGIT}+) { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
+({DIGIT}+)\.({DIGIT}+)e(\-?)({DIGIT}+) { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::FLOAT; }
 
 \/\/[^\n]* {UPDATE_LOC;}
 \"[^\n\"]*\" { SAVE_TOK; UPDATE_LOC; return Xplode::BisonParser::token::STRING; 

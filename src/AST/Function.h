@@ -23,9 +23,11 @@ class Function : public CompoundStatement {
   std::string name;
   std::string returnType;
   TupleType *parameters;
+  SymTable* symtb;
 
-  Function(Xplode::Token *n, Node *r,Node *b, Node *p = 0 ) { 
+  Function(SymTable *s,Xplode::Token *n, Node *r,Node *b, Node *p = 0 ) { 
 
+    symtb = s;
     name = n->value; 
     //TypeDeclaration *tp = (TypeDeclaration *) r; 
     //returnType = tp->name; 
@@ -77,6 +79,12 @@ class Function : public CompoundStatement {
   
   }
 
+  void printTable() {
+
+     symtb->print();
+     if (block!=NULL) block->printTable();
+
+  }
 
 
 };

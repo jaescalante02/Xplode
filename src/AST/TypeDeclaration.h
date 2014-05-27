@@ -50,6 +50,7 @@ class TypeDeclaration: public Node {
       size = s;
     }
 
+   
 
     void print(){}
 
@@ -58,6 +59,11 @@ class TypeDeclaration: public Node {
     bool isfunction(){ return (this->numtype==TYPE_FUNCTION); }
     
     bool isnumeric(){ return ((this->numtype==TYPE_INT) || ((this->numtype==TYPE_FLOAT))); }
+    
+    bool isprimitive(){ return ((this->numtype==TYPE_INT) || (this->numtype==TYPE_FLOAT) 
+                             || (this->numtype==TYPE_CHAR) || (this->numtype==TYPE_BOOL)); }
+
+    bool haveattributes() {return ((this->numtype==TYPE_UNION) || ((this->numtype==TYPE_TYPE)));}
 
 };
 

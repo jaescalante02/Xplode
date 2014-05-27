@@ -174,7 +174,7 @@
 %left x_NOT
 %left	x_PLUS x_MINUS
 %left x_MULT x_DIV   
-%left x_POWER
+%right x_POWER
 %left	x_UMINUS
 
 
@@ -377,19 +377,26 @@ proc_type_list
   ;
 
 def_function  
-  : x_FUNCTION function_type x_ID x_LPAR x_RPAR  block {
-    FunctionType *f = new FunctionType($2,new TupleType());
-    root->insert(f->toSymbol($3), NO_SAVE_SIZE);   
-    $$ = new Function($3, $2, $6);
+  : init_block x_FUNCTION function_type x_ID x_LPAR x_RPAR  block {
+    FunctionType *f = new FunctionType($3,new TupleType(),NULL);
+    root->insert(f->toSymbol($4), NO_SAVE_SIZE); 
+    $$ = new Function(actual,$4, $3, $7);  
+    pila.pop();
+    actual = pila.top();
+
+    
   }
-  | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
-    FunctionType *f = new FunctionType($2,$5);
-    root->insert(f->toSymbol($3), NO_SAVE_SIZE);    
-    $$ = new Function($3, $2, $7, $5);
+  | init_block x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
+    TupleType *t = (TupleType *) $6;
+    FunctionType *f = new FunctionType($3,$6,t->extend);
+    root->insert(f->toSymbol($4), NO_SAVE_SIZE);
+    $$ = new Function(actual,$4, $3, $8, $6);
+    pila.pop();
+    actual = pila.top();    
+
   }
   ;
   
-
 function_type
   : primitive_type {$$ = $1; }
   | x_VOID {$$ = root->find("_void")->ntype; }
@@ -400,6 +407,8 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($2,$3->value);
+    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));
+    t->extend = (TypeDeclaration *) $2;
     $$ = t;
   }
     
@@ -407,6 +416,8 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
+    actual->insert(new Symbol($4->value,(TypeDeclaration *) $3,$4->line,$4->column));    
+    t->extend = (TypeDeclaration *) $3;
     $$ = t;
   
   }
@@ -415,6 +426,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($2,$3->value);
+    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));
     $$ = t;
   
   }
@@ -423,6 +435,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
+    actual->insert(new Symbol($4->value,(TypeDeclaration *) $3,$4->line,$4->column));
     $$ = t;
   
   }
@@ -431,6 +444,7 @@ function_parameters
   
     TupleType *t = new TupleType();
     t->add($1,$2->value);
+    actual->insert(new Symbol($2->value,(TypeDeclaration *) $1,$2->line,$2->column));
     $$ = t;
   
   }
@@ -439,29 +453,31 @@ function_parameters
   
     TupleType *t = new TupleType();
     t->add($2,$3->value);
+    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));
     $$ = t;
   
-  }
-  
-  
+  }  
   ;
   
 function_pars
   : param_type x_ID x_COMMA { 
     TupleType *t = new TupleType(); 
     t->add($1,$2->value);
+    actual->insert(new Symbol($2->value,(TypeDeclaration *) $1,$2->line,$2->column));
     $$ = t;
     }
   | x_VAR param_type x_ID x_COMMA { 
   
     TupleType *t = new TupleType(); 
     t->add($2,$3->value);
+    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));    
     $$ = t;
     } //falta var
     
   | function_pars param_type x_ID x_COMMA { 
   
     TupleType *t = (TupleType *) $1;
+    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));    
     t->add($2,$3->value);
     $$ = t;
   
@@ -470,6 +486,7 @@ function_pars
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
+    actual->insert(new Symbol($4->value,(TypeDeclaration *) $3,$4->line,$4->column));    
     $$ = t;
   
   } //falta var
@@ -646,7 +663,7 @@ statement_compound
   ;
 
 statement_for
-  : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block{
+  : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block {
     $$ = new ForStatement($3,$5,$7,$9);
   }
   | x_FOR error block { yyclearin; $$ = new Statement(); }
@@ -696,7 +713,10 @@ statement_assign
   ;
   
 statement_read
-  : x_READ x_LPAR variable x_RPAR {$$ = new ReadStatement($3); }
+  : x_READ x_LPAR variable x_RPAR {
+
+    $$ = new ReadStatement($3); 
+  }
   ;
   
 statement_write
@@ -704,12 +724,23 @@ statement_write
   ;
 
 write_list
-  : expression {$$ = new std::list<Expression *>(); $$->push_back($1);} 
-  | write_list x_COMMA expression {$$ = $1; $$->push_back($3); }
+  : expression {
+
+    $$ = new std::list<Expression *>(); 
+    $$->push_back($1);
+  } 
+  | write_list x_COMMA expression {
+  
+    $$ = $1; 
+    $$->push_back($3);
+  }
   ;
  
 statement_sleep
-  : x_SLEEP x_LPAR expression x_RPAR {$$ = new SleepStatement($3); }
+  : x_SLEEP x_LPAR expression x_RPAR {
+  
+      $$ = new SleepStatement($3);
+  }
   ;    
 
 statement_function
@@ -739,66 +770,359 @@ expression
   : expression_unary  {$$ = $1;}
   | expression x_PLUS expression {
       
-    /*  if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
       
       } else {
       
-        if($1->ntype==$3->ntype){
+        if($1->ntype!=$3->ntype){
         
+         errorlog->addError(0,768,$1->line,NULL);
         
         
         } else {
         
+          tp = $1->ntype;
         
         }
         
       }
       
       
-      */
+      
       
       $$ = new BinaryExpression($2->value,$1,$3); 
+      $$->ntype = tp;
       
   }
   | expression x_MINUS expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = $1->ntype;
+        
+        }
+        
+      }
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp;
   }
   | expression x_MULT expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = $1->ntype;
+        
+        }
+        
+      }  
+  
       $$ = new BinaryExpression($2->value,$1,$3); 
+      $$->ntype = tp;
   }
   | expression x_DIV expression {
-      $$ = new BinaryExpression($2->value,$1,$3); 
+
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = $1->ntype;
+        
+        }
+        
+      }  
+      
+      $$ = new BinaryExpression($2->value,$1,$3);
+      $$->ntype = tp; 
   }
   | expression x_POWER expression {
+
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(($1->ntype->numtype!=TYPE_INT)||($3->ntype->numtype!=TYPE_INT)){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = $1->ntype;
+        
+        }
+        
+      }
+  
       $$ = new BinaryExpression($2->value,$1,$3); 
+      $$->ntype = tp; 
   }
 
   | expression x_AND expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(($1->ntype->numtype!=TYPE_BOOL)||($3->ntype->numtype!=TYPE_BOOL)){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = $1->ntype;
+        
+        }
+        
+      }
+  
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp; 
   }
   | expression x_OR expression {
+
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(($1->ntype->numtype!=TYPE_BOOL)||($3->ntype->numtype!=TYPE_BOOL)){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = $1->ntype;
+        
+        }
+        
+      }  
+  
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp; 
   }  
   | expression x_LESS expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = root->find("_bool")->ntype;
+        
+        }
+        
+      }
+
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp; 
   }
   | expression x_LESSEQ expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = root->find("_bool")->ntype;
+        
+        }
+        
+      }  
+  
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp; 
   }
   | expression x_GREATER expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = root->find("_bool")->ntype;
+        
+        }
+        
+      }  
+  
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp; 
   }
   | expression x_GREATEREQ expression {
+  
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = root->find("_bool")->ntype;
+        
+        }
+        
+      }  
+  
       $$ = new BinaryExpression($2->value,$1,$3);
+      $$->ntype = tp; 
   }
   
   | expression x_EQ expression {
+ 
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isprimitive() || !$3->ntype->isprimitive()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = root->find("_bool")->ntype;
+        
+        }
+        
+      }  
+  
     $$ = new BinaryExpression($2->value,$1,$3); 
+    $$->ntype = tp; 
   }
   | expression x_NEQ expression {
-    $$ = new BinaryExpression($2->value,$1,$3); 
+
+      TypeDeclaration *tp = root->find("_error")->ntype;
+      
+      if(!$1->ntype->isprimitive() || !$3->ntype->isprimitive()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,762,$1->line,NULL);
+      
+      } else {
+      
+        if($1->ntype!=$3->ntype){
+        
+         errorlog->addError(0,768,$1->line,NULL);
+        
+        
+        } else {
+        
+          tp = root->find("_bool")->ntype;
+        
+        }
+        
+      }
+  
+    $$ = new BinaryExpression($2->value,$1,$3);
+    $$->ntype = tp;  
   }
   ;
 
@@ -843,27 +1167,80 @@ variable
   : variable_id {
       Variable *v = (Variable *) $1;
       Symbol *s = actual->find((*v->varList->begin())->value);
+      TypeDeclaration *tp = root->find("_error")->ntype;;
       if(!s){
-      //error
+      
+        errorlog->addError(0,851,$1->line,NULL);
       } else {
       
           std::list<std::pair<int, Expression *> >::iterator it;
           //verificar indices enteros, # parametros
+          tp = s->ntype;
           for(it=v->indexList->begin(); it!=v->indexList->end();++it){
           
-          //indices
+            if((*it).second->ntype->numtype!=TYPE_INT) errorlog->addError(0,858,$1->line, NULL); //no es entero
           
+            if(tp->isarray()){
+            
+            ArrayType *arrt = (ArrayType *) tp;
+            tp = arrt->ntype;
+            
+            }else{
+            
+            errorlog->addError(0,859,$1->line, NULL); // no es un arreglo
+            
+            
+            }
           
+          }
+          
+          if(!tp->isprimitive()) { //faltan indices
+          
+            root->find("_error")->ntype;
+            errorlog->addError(0,860,$1->line, NULL);
           }
       
       
       }
+      
+      v->ntype = tp;
       $$ = $1; 
+      
    }
   | variable x_DOT variable_id { 
       //buscar el tipo de variable, verificar tipo del union o type
       Variable *v  = (Variable *) $1;
-      TypeDeclaration *t = v->ntype;
+      TypeDeclaration *t = v->ntype, *tp = root->find("_error")->ntype;
+      //std::cout<<(long)t<< "ENTRA ACAAAA\n";
+      if(!t->haveattributes()){
+      
+        errorlog->addError(0,872,$1->line,NULL);//no tiene operador .
+      
+      
+      } else {
+        Variable *v2  = (Variable *) $3;
+        std::string id = (*v2->varList->begin())->value;        
+        TupleType *tup = (TupleType *) t;
+        std::list< std::pair<TypeDeclaration*, int>* >::iterator it2 = tup->types->begin();
+        std::list<std::string>::iterator it;
+        //verificar
+        for(it=tup->names->begin();it!=tup->names->end();++it){
+        
+          if(!(*it).compare(id)){
+        
+        
+            tp = (*it2)->first;
+            break;
+          } //break y tienes el siguiente tipo
+        
+          ++it2;
+        }
+        
+        if(it==tup->names->end()) errorlog->addError(0,909,$1->line,NULL); //no exist ele atrr
+      
+      } 
+      
+      v->ntype = tp;
       $1->concat($3); 
       $$=$1;  
   }
@@ -883,24 +1260,65 @@ function
   : x_ID x_LPAR function_arguments x_RPAR {
   
       Symbol *s = actual->find($1->value);
+      TypeDeclaration *tp = root->find("_error")->ntype;
       if(!s){
-      //ERROR no existe el simbolo
-      }
-      else {
+      
+        errorlog->addError(0,887,$1->line,NULL);
+      
+      }else {
       
         if(!s->ntype->isfunction()){
-        
-        //error
+
+          errorlog->addError(0,895,$1->line,NULL);
+          
         } else {
         
-        std::list<Expression *>::iterator it;
-        std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
+          FunctionType *f = (FunctionType *) s->ntype;
+          TupleType *t = (TupleType *) f->arguments;
+          std::list<Expression *>::iterator it = $3->begin();
+          std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
+          //std::cout<<$3->size()<<"  "<<t->types->size();
+          for(it2=t->types->begin();it2!=t->types->end();++it2){
+        
+            if(it==$3->end()) break;
+          
+            //std::cout<< (long) (*it)->ntype << " t/u"<< (long) (*it2)->first;
+            if((*it)->ntype != (*it2)->first) errorlog->addError(0,906,$1->line,NULL);
+          
+            ++it;
+          }
+        
+          if(it2!=t->types->end()) errorlog->addError(0,974,$1->line,NULL); //faltan argumentos
+        
+          if(it!=$3->end()){
+         
+            if(!f->extend){
+            
+              errorlog->addError(0,942,$1->line,NULL);
+            
+            } else {//caso sobran extend
+          
+              for(;it!=$3->end();++it){
+            
+                if(f->extend!=(*it)->ntype) errorlog->addError(0,986,$1->line,NULL);
+            
+            
+              }
+          
+          
+            }
+                
+          } else { tp = f->returnType;}
+        
+        
         
         
         }
       
       }
+      
       $$ = new FunctionExpression($1->value,$3); 
+      $$->ntype = tp;
   }
   | x_ID x_LPAR x_RPAR {$$ = new FunctionExpression($1->value); }
   ;
