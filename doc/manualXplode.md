@@ -121,13 +121,256 @@ que se insta al uso de la versión clasica.
 
 ##2. Gramática referencial
 
-*** Por completar *** 
+###Program
+    start
+      :  x_PROGRAM main 
+      |  x_PROGRAM definition_list main 
+    
+    main
+      : init_block x_BEGIN statement_list x_END  
+      | init_block x_BEGIN declaration_list statement_list x_END 
 
-*version inicial*
+###Definitions  
+    definition_list
+      : definition 
+      | definition_list definition 
+      | definition_list error 
+      
+    definition
+      : def_union 
+      | def_proc x_SEMICOLON 
+      | def_type 
+      | def_function 
+      | declaration x_SEMICOLON 
+      
+    def_union
+      : x_UNION x_ID x_LBRACE attribute_list x_RBRACE 
+      
+    def_type 
+      :  x_TYPE x_ID x_LBRACE attribute_list x_RBRACE 
+       
+    attribute_list
+      : type x_ID x_SEMICOLON 
+      | attribute_list type x_ID x_SEMICOLON 
+      
+    def_proc
+      : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR 
+      
+    proc_type_list
+      : type 
+      | proc_type_list x_COMMA type    
+      
+    def_function  
+      : x_FUNCTION function_type x_ID x_LPAR x_RPAR block 
+      | x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block 
+      
+    function_type
+      : primitive_type 
+      | x_VOID 
+       
+    function_parameters 
+      : function_pars param_type x_ID x_COMMA x_EXTEND    
+      | function_pars x_VAR param_type x_ID x_COMMA x_EXTEND 
+      | function_pars param_type x_ID 
+      | function_pars x_VAR param_type x_ID 
+      | param_type x_ID 
+      | x_VAR param_type x_ID 
+      
+    function_pars
+      : param_type x_ID x_COMMA 
+      | x_VAR param_type x_ID x_COMMA  //falta var 
+      | function_pars param_type x_ID x_COMMA 
+      | function_pars x_VAR param_type x_ID x_COMMA  //falta var
+      
+    param_type 
+      : primitive_type 
+      | x_ID 
+      | param_type x_LBRACKET x_RBRACKET  
+     
+    primitive_type
+      :  x_INT 
+      | x_CHAR  
+      | x_BOOL  
+      | x_FLOAT 
+      
+    type 
+      : primitive_type 
+      | x_ID 
+      | type x_LBRACKET INTEGER x_RBRACKET 
+    
+###Block  
+    block  
+      : init_block x_LBRACE declaration_list statement_list x_RBRACE 
+      | init_block x_LBRACE statement_list x_RBRACE 
+      | init_block declaration_list statement_list x_RBRACE 
+      | init_block statement_list x_RBRACE 
+    
+###Declaration  
+    declaration
+      : x_LET declaration_type declaration_id_list  
+    
+    declaration_type
+      : type   
+    
+    declaration_id_list
+      : x_ID  
+      | declaration_id_list x_COMMA x_ID 
+        
+    declaration_list
+      : declaration x_SEMICOLON 
+      | declaration  
+      | declaration_list declaration x_SEMICOLON 
+      | declaration_list declaration  
 
-La grámatica todavía presenta arreglos por lo que no se explicará en detalle en
-esta versión, sin embargo los referenciamos en esta primera versión al archivo _xplode.y_ en
-donde se encuentra implementada.
+###Statements  
+
+    statement
+      : statement_simple 
+      | statement_compound 
+      
+    statement_list
+      : statement x_SEMICOLON 
+      | statement_simple  
+      | statement_compound 
+      | statement_list statement x_SEMICOLON 
+      | statement_list statement_simple 
+      | statement_list statement_compound 
+      
+    statement_simple
+      : statement_assign 
+      | statement_read 
+      | statement_write 
+      | statement_sleep 
+      | statement_function 
+      | statement_break 
+      | statement_continue 
+      | statement_return 
+      | statement_exit
+      
+    statement_compound
+      : statement_for 
+      | statement_while 
+      | statement_if 
+      
+    statement_for
+      : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block
+      | x_FOR error block 
+      
+    for_init
+      : statement_assign   
+    
+    for_condition
+      : expression 
+      
+    for_increment
+      : statement_assign 
+      
+    statement_while
+      : x_WHILE x_LPAR while_condition x_RPAR block 
+      | x_WHILE error block 
+      
+    while_condition
+      : expression 
+      
+    statement_if
+      : x_IF x_LPAR if_condition x_RPAR block 
+      | x_IF x_LPAR if_condition x_RPAR block statement_else 
+      | x_IF error block 
+      
+    if_condition
+      : expression 
+      
+    statement_else
+      : x_ELSE block 
+     
+    statement_assign
+      : variable x_ASSIGN expression 
+      | variable error 
+      
+    statement_read
+      : x_READ x_LPAR variable x_RPAR 
+      
+    statement_write
+      : x_WRITE x_LPAR write_list x_RPAR 
+      
+    write_list
+      : expression  
+      | write_list x_COMMA expression 
+      
+    statement_sleep
+      : x_SLEEP x_LPAR expression x_RPAR 
+          
+    statement_function
+      : function 
+      
+    statement_break
+      : x_BREAK 
+      
+    statement_continue
+      : x_CONTINUE 
+      
+    statement_return
+      : x_RETURN expression 
+      
+    statement_exit
+      : x_EXIT x_LPAR x_RPAR 
+
+###Expressions  
+    expression
+      : expression_unary  
+      | expression x_PLUS expression 
+      | expression x_MINUS expression 
+      | expression x_MULT expression 
+      | expression x_DIV expression 
+      | expression x_POWER expression 
+      | expression x_AND expression 
+      | expression x_OR expression   
+      | expression x_LESS expression 
+      | expression x_LESSEQ expression 
+      | expression x_GREATER expression 
+      | expression x_GREATEREQ expression 
+      | expression x_EQ expression 
+      | expression x_NEQ expression 
+      
+    expression_unary
+      : constant 
+      | variable 
+      | function 
+      | expression_cast 
+      | x_MINUS expression %prec x_UMINUS 
+      | x_NOT expression 
+      | x_LPAR expression x_RPAR 
+      
+    expression_cast
+      : x_CTOI x_LPAR expression x_RPAR 
+      | x_ITOC x_LPAR expression x_RPAR 
+      | x_ITOF x_LPAR expression x_RPAR 
+      | x_FTOI x_LPAR expression x_RPAR 
+      
+    constant
+      : INTEGER 
+      | FLOAT 
+      | STRING  
+      | CHAR   
+      | x_TRUE 
+      | x_FALSE 
+      
+    variable
+      : variable_id  else 
+      | variable x_DOT variable_id 
+      
+    variable_id
+      : x_ID 
+      | variable_id x_LBRACKET expression x_RBRACKET 
+      
+    function
+      : x_ID x_LPAR function_arguments x_RPAR 
+      | x_ID x_LPAR x_RPAR 
+      
+    function_arguments
+      : expression 
+      | function_arguments x_COMMA expression 
+
 
 
 ##3. Estructura del programa
@@ -176,7 +419,7 @@ Estos son `int`, `bool`, `float` y `char`.
 Xplode permite la definición de nuevos tipos dependiendo de las necesidades
 del usuario.
 
-  * `types`
+`types`
 
 Representa una colección de tipos, los cuales pueden ser usados simultáneamente
 con el operador de acceso '.'.
@@ -195,7 +438,7 @@ con el operador de acceso '.'.
 	...
 
 
-  * `unions`
+`unions`
 
 Representa una colección de uniones, los cuales **no** pueden ser usados simultáneamente
 con el operador de acceso '.', es decir, solo se podrá mantener guardado el último
@@ -215,7 +458,7 @@ que posea una asignación.
 	write(f.rom);
 	...
 
-  * `procs`
+`procs`
 
 Representa la firma de una función (ver sección 9), con su estructura
 de devolución y parámetros. Usados para el pase de funciones como parámetros.
@@ -279,9 +522,15 @@ Los strings en Xplode son una cadena de caracteres rodeados de comillas dobles y
 escritos en una sola línea que podran imprimirse al estar como parámetro en
 la función write. A su vez se pueden asignar a un arreglo de caracteres.
 
+	let char[12] xp;
+	xp := " is awesome!";
+	write("Xplode");
+	write(xp);
+	
+
 ##9. Funciones
 
-* Definición
+###Definición
 
 En Xplode la definición de las funciones recoge los parámetros en un orden específico
 y referencial para la hora de su invocación y su tipo de retorno.
@@ -292,18 +541,16 @@ instrucciones, sintaxis y alcance.
 Sus parámetros tendrán la especificación de como son pasados, siendo las opciones
 por valor o por referencia, esta última con un token var previo al tipo.
 
-* Invocación
+###Invocación
 
 Se invocarán con una expresión del tipo especificado en el orden especificado y retornando
 el tipo especifícado, toda especificación en su definición.
-
-ej:
 
 	bar(2*8 + 43, orr, 'w', menorQue).
 
 Nota: Las funciones con tipo de devolución `void` serán tomadas como instrucciones.
 
-* Funciones de número de parámetros variables
+###Funciones de número de parámetros variables
 
 Xplode permite funciones con número de parámetros variables especificándose de la
 siguiente forma:
@@ -316,13 +563,13 @@ Posibles invocaciones:
 
 	foo('a',1), foo('a',1,2,3), foo('a',1,2,5,57,8,9,42).
 
-* TO-DO:
+####To-Do:
 
 Para el manejo de está lista finita se tiene pensado el uso de los tokens
 NEXT y LENGTH, teniendo como efecto obtener el siguiente en la lista o el tamaño
 de la misma respectivamente, sin embargo esto no esta implementado aún.
 
-* Funciones de segunda clase o pase de funciones como parámetros
+###Funciones de segunda clase o pase de funciones como parámetros
 
 El pase de funciones como parámetros se hará de la forma común, usando las definiciones
 procs (ver sección 5), que pasan a ser un tipo y se podrá asignar una función al mismo
@@ -343,13 +590,12 @@ el lado izquierdo.
 ##11. Estructuras de control
 
 Las estructuras de control de Xplode están basadas en las de C/Java (es decir,
-if/else/while/for), teniendo un comportamiento similar, permitiendo agregar opcionalmente
-un caracter ';' al terminar la instrucción. Por ejemplo:
+if/else/while/for) y tienen un comportamiento similar. Sin embargo, debido a que en
+Xplode el token `;` es un finalizador, su uso es opcional en estas instrucciones. Por ejemplo:
 
     if (guardia) { 
         ...
     } 
-	
 	if (guardia2) { 
         ...
     } ;
@@ -359,6 +605,9 @@ Otro ejemplo:
     if (guardia) {
         ...
     } else {
+        ...
+    } ;
+	if (guardia2) { 
         ...
     } ;
 
@@ -399,14 +648,14 @@ Ambos casos son válidos.
 A continuación se presentan, de menor a mayor, los operadores con sus 
 precedencias:
 
-%nonassoc `==` `!=` (equivalencia, inequivalencia)
-%nonassoc `<` `<=` `>=` `>` (menor que, menor o igual que, mayor o igual que, mayor que)
-%left `&&` `||` (conjunción, disyunción)
-%left `!` (negación)
-%left `+` `-` (suma, resta)
-%left `*` `/` (multiplicación, división)
-%left `**` (potencia)
-%left `-` (menos unario)
+    %nonassoc '==' '!=' (equivalencia, inequivalencia)
+    %nonassoc '<' '<=' '>=' '>' (menor que, menor o igual que, mayor o igual que, mayor que)
+    %left && '||' (conjunción, disyunción)
+    %left '!' (negación)
+    %left '+' - (suma, resta)
+    %left '*' / (multiplicación, división)
+    %left '**' (potencia)
+    %left '-' (menos unario)
 
 ##13 Chequeos a tiempo de ejecución
 
