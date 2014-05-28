@@ -360,7 +360,11 @@ attribute_list
 def_proc
   : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR {
     TupleType *t = (TupleType *) $5;
-    root->insert(t->toSymbol($3), NO_SAVE_SIZE);
+    FunctionType *f = new FunctionType((TypeDeclaration *) $2, t, NULL);
+    Symbol *s = t->toSymbol($3);
+    s->istype = true;
+    s->hidden = true;
+    root->insert(s, NO_SAVE_SIZE);
     //root->print();    
     $$ = new Procedure($3, $2, $5);
   }
@@ -769,7 +773,7 @@ statement_assign
 statement_read
   : x_READ x_LPAR variable x_RPAR {
 
-      if($3->ntype->isprimitive()){
+      if(!($3->ntype->isprimitive())&&!(($3->ntype->isarray())&&($3->ntype->ntype->numtype==TYPE_CHAR))){
       
       //error tipos invalidos
         errorlog->addError(0,755,$1->line,NULL);
@@ -844,7 +848,12 @@ statement_continue
 statement_return
   : x_RETURN expression {
     
-    if(actualfun->returnType!=$2->ntype) errorlog->addError(0,846,$1->line,NULL);
+    if(!inFunction){
+      if(actualfun->returnType!=$2->ntype) 
+        errorlog->addError(0,849,$1->line,NULL);
+    }else  
+        errorlog->addError(0,851,$1->line,NULL); 
+         
     $$ = new ReturnStatement($2); 
   }
   ;
@@ -1324,11 +1333,6 @@ variable
           
           }
           
-          if(!tp->isprimitive()) { //faltan indices
-          
-            root->findType("_error")->ntype;
-            errorlog->addError(0,860,$1->line, NULL);
-          }
       
       
       }
