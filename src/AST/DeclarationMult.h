@@ -44,13 +44,12 @@ class DeclarationMult : public Statement {
     lvar.push_back(d);
   }
 
-  void print(){
-   std::string tab = std::string(4, ' ');
+  void print(int tab){
    
-   std::cout << "DECLARATION\n";
-   //std::cout << "type: " << ntype->name << "\n";
+   std::cout << std::string(tab, ' ') << "DECLARATION\n";
+   //std::cout << std::string(tab, ' ') << "type: " << ntype->name << "\n";
    for(std::list<decl>::iterator iter = lvar.begin(); iter != lvar.end(); ++iter){
-       std::cout << "var: " << (*iter).var << "\n"; 
+       std::cout << std::string(tab, ' ') << "var: " << (*iter).var << "\n"; 
     }   
   }
 

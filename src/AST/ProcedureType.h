@@ -20,9 +20,9 @@ class ProcedureType : public Node {
     //TypeDeclaration *tp = (TypeDeclaration *) n; 
     //name = tp->name;
   }
-  void print(){
-   std::cout << "PROCEDURE TYPE\n";
-   std::cout << "type: " << name << "\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "PROCEDURE TYPE\n";
+   std::cout << std::string(tab, ' ') << "type: " << name << "\n";
   }
 
 };

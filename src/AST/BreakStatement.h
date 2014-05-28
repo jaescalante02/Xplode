@@ -16,8 +16,8 @@ class BreakStatement : public Statement {
   public:
   BreakStatement(){ }
   
-  void print(){
-   std::cout << "BREAK STATEMENT\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "BREAK STATEMENT\n";
   }
 
   void firstcheck(SymTable *symtb){  

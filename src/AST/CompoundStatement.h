@@ -23,7 +23,7 @@ public:
 
   CompoundStatement(){}
 
-  void print(){}
+  void print(int tab){}
 
   virtual void printTable() {
 

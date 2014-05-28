@@ -30,7 +30,7 @@ class Declaration : public Statement {
       column = v->column; 
   }
 
-  void print(){/*
+  void print(int tab){/*
    std::string tab = std::string(4, ' ');
    
    std::cout << "DECLARATION\n";

@@ -31,11 +31,12 @@ class TypeStructure : public Statement {
     column = n->column; 
   }
   
-  void print(){
-   std::cout << "TYPE\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "ATTRIBUTES\n";
-   attributes->print();
+  
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "TYPE\n";
+   std::cout << std::string(tab, ' ') << "name: " << name << "\n";
+   std::cout << std::string(tab, ' ') << "ATTRIBUTES\n";
+   attributes->print(tab+2);
   }
 
   void setFather(SymTable *s){

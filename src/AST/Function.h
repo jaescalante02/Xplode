@@ -23,13 +23,14 @@ class Function : public CompoundStatement {
 
   TypeDeclaration *ntype;
   SymTable* symtb;
+  std::string returnType;
 
   Function(SymTable *s,Node *t,Node *b) { 
 
     symtb = s;
     ntype = (TypeDeclaration *) t; 
     //TypeDeclaration *tp = (TypeDeclaration *) r; 
-    //returnType = tp->name; 
+    //returnType = ntype->name; 
     //parameters = (TupleType *) p; 
     block  = (Block *) b;
     //if (parameters != 0){
@@ -37,15 +38,16 @@ class Function : public CompoundStatement {
     //}
   }
 
-  void print(){
-   std::cout << "FUNCTION\n";
-   //std::cout << "name: " << name << "\n";
-   //std::cout << "return: "<< returnType << "\n";
+  void print(int tab){
+   
+   std::cout << std::string(tab, ' ') << std::string(tab, ' ') << "FUNCTION\n";
+   //std::cout << std::string(tab, ' ') << "name: " << name << "\n";
+   //std::cout << std::string(tab, ' ') << "return: "<< returnType << "\n";
    
    //if (parameters != 0){
     //parameters->print();
    //}
-    block->print();
+    block->print(tab+2);
   }
 
   void setFather(SymTable *s){

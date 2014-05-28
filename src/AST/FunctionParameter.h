@@ -17,10 +17,10 @@ class FunctionParameter : public Node {
   std::string var;
   
 FunctionParameter(std::string t, std::string v) { type = t; var = v; }
-  void print(){
-   std::cout << "PARAMETER\n";
-   std::cout << "type: " << type << "\n";
-   std::cout << "var: " << var << "\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "PARAMETER\n";
+   std::cout << std::string(tab, ' ') << "type: " << type << "\n";
+   std::cout << std::string(tab, ' ') << "var: " << var << "\n";
   }
 
 };

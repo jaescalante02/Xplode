@@ -24,15 +24,15 @@ class IfStatement : public CompoundStatement {
     block = (Block *) t;
     elseBlock = (Block *) e;
   }
-  void print(){
-   std::cout << "IF STATEMENT \n";
-   std::cout << "condition: \n";
-   condition->print();
-   std::cout << "then: \n";
-   block->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "IF STATEMENT \n";
+   std::cout << std::string(tab, ' ') << "condition: \n";
+   condition->print(tab+2);
+   std::cout << std::string(tab, ' ') << "then: \n";
+   block->print(tab+2);
    if (elseBlock != 0){
-    std::cout << "else: \n";
-    elseBlock->print();
+    std::cout << std::string(tab, ' ') << "else: \n";
+    elseBlock->print(tab+2);
    }
   }
 

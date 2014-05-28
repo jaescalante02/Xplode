@@ -21,12 +21,12 @@ class AssignStatement : public Statement {
     lvalue = l;
     rvalue = r;
   }
-  void print(){
-   std::cout << "ASSIGN STATEMENT\n";
-   std::cout << "left value:\n";
-   lvalue->print();
-   std::cout << "right value: \n";
-   rvalue ->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "ASSIGN STATEMENT\n";
+   std::cout << std::string(tab, ' ') << "left value:\n";
+   lvalue->print(tab+2);
+   std::cout << std::string(tab, ' ') << "right value: \n";
+   rvalue ->print(tab+2);
   }
   
   void firstcheck(SymTable *symtb){

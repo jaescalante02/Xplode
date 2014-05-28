@@ -18,10 +18,10 @@ class SleepStatement : public Statement {
   Expression *var;
   SleepStatement(Expression *v){ var = v; }
   
-  void print(){
-   std::cout << "SLEEP STATEMENT\n";
-   std::cout << "argument:\n";
-   var->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "SLEEP STATEMENT\n";
+   std::cout << std::string(tab, ' ') << "argument:\n";
+   var->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

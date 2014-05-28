@@ -17,9 +17,9 @@ class UnaryExpression : public Expression {
   public:
   Expression *exp; 
   UnaryExpression(Expression *e){exp = e; }
-  void print(){
-   std::cout << "UNARY EXPRESSION\n";
-   exp->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "UNARY EXPRESSION\n";
+   exp->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

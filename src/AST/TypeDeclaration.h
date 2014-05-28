@@ -52,7 +52,7 @@ class TypeDeclaration: public Node {
 
    
 
-    void print(){}
+    void print(int tab){}
 
     bool isarray(){ return (this->numtype==TYPE_ARRAY); }
 

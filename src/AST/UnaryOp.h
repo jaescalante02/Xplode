@@ -29,10 +29,10 @@ class UnaryOp : public Expression {
     }
     
   }
-  void print(){
-   std::cout << opname << "\n";
-   std::cout << "expression:\n";
-   exp->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << opname << "\n";
+   std::cout << std::string(tab, ' ') << "expression:\n";
+   exp->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

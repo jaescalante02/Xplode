@@ -28,18 +28,18 @@ class Variable : public Expression {
     varList->push_back(v);
   }
   
-  void print(){ 
-   std::cout << "VARIABLE\n";
+  void print(int tab){ 
+   std::cout << std::string(tab, ' ') << "VARIABLE\n";
    for(std::list<Xplode::Token *>::iterator iter = varList->begin(); 
       iter != varList->end(); ++iter){
       
-     std::cout << "field: " << (*iter)->value << "\n"; 
+     std::cout << std::string(tab, ' ') << "field: " << (*iter)->value << "\n"; 
    }
    for(std::list<std::pair<int, Expression *> >::iterator iter = indexList->begin();
        iter != indexList->end(); ++iter){
        
-     std::cout << "index: " << (*iter).first <<"|"<<"\n";
-     iter->second->print(); 
+     std::cout << std::string(tab, ' ') << "index: " << (*iter).first <<"|"<<"\n";
+     iter->second->print(tab+2); 
    }
   }
   
@@ -152,8 +152,8 @@ class Variable : public Expression {
       
      }
     
-     // (){std::cout << "Declarada "<<*varList->begin()<<"\n";}
-     // else {std::cout << "No declarada "<<*varList->begin()<<"\n";}
+     // (){std::cout << std::string(tab, ' ') << "Declarada "<<*varList->begin()<<"\n";}
+     // else {std::cout << std::string(tab, ' ') << "No declarada "<<*varList->begin()<<"\n";}
   */
   }
 

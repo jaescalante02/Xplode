@@ -16,8 +16,8 @@ class ContinueStatement : public Statement {
   public:
   ContinueStatement(){ }
   
-  void print(){
-   std::cout << "CONTINUE STATEMENT\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "CONTINUE STATEMENT\n";
   }
 
   void firstcheck(SymTable *symtb){  
