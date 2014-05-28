@@ -85,6 +85,9 @@
 	Node *decTypeNode;
 	SymTable *actual, *root;
 	std::stack<SymTable *> pila;
+	int inBlock = 0;
+	bool inFunction = false;
+	FunctionType *actualfun;
 }
 
 %token<tok> INTEGER
@@ -185,6 +188,7 @@
 %type <node> def_type
 %type <node> def_proc
 %type <node> def_function
+%type <node> declared_function
 %type <decl> declaration
 %type <node> declaration_type
 %type <decl> declaration_id_list
@@ -378,25 +382,33 @@ proc_type_list
   ;
 
 def_function  
-  : init_block x_FUNCTION function_type x_ID x_LPAR x_RPAR  block {
-    FunctionType *f = new FunctionType($3,new TupleType(),NULL);
-    root->insert(f->toSymbol($4), NO_SAVE_SIZE); 
-    $$ = new Function(actual,$4, $3, $7);  
+  : init_block x_FUNCTION declared_function block {
+
+    $$ = new Function(actual, $3, $4);  
     pila.pop();
     actual = pila.top();
 
     
   }
-  | init_block x_FUNCTION function_type x_ID x_LPAR function_parameters x_RPAR block {
-    TupleType *t = (TupleType *) $6;
-    FunctionType *f = new FunctionType($3,$6,t->extend);
-    root->insert(f->toSymbol($4), NO_SAVE_SIZE);
-    $$ = new Function(actual,$4, $3, $8, $6);
-    pila.pop();
-    actual = pila.top();    
-
-  }
   ;
+  
+declared_function
+    : function_type x_ID x_LPAR function_parameters x_RPAR {
+    
+        TupleType *t = (TupleType *) $4;
+        FunctionType *f = new FunctionType($1,$4,t->extend);
+        root->insert(f->toSymbol($2), NO_SAVE_SIZE);
+    
+    
+    
+    }
+    | function_type x_ID x_LPAR x_RPAR {
+   
+          FunctionType *f = new FunctionType($1,new TupleType(),NULL);
+          root->insert(f->toSymbol($2), NO_SAVE_SIZE); 
+    
+    }
+    ;
   
 function_type
   : primitive_type {$$ = $1; }
@@ -664,10 +676,11 @@ statement_compound
   ;
 
 statement_for
-  : x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block {
-    $$ = new ForStatement($3,$5,$7,$9);
+  : init_breakable x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block {
+    $$ = new ForStatement($4,$6,$8,$10);
+    inBlock--;
   }
-  | x_FOR error block { yyclearin; $$ = new Statement(); }
+  | init_breakable x_FOR error block { yyclearin; $$ = new Statement(); inBlock--; }
   ;
 
 for_init
@@ -692,9 +705,14 @@ for_increment
   ;
 
 statement_while
-  : x_WHILE x_LPAR while_condition x_RPAR block {$$ = new  WhileStatement($3,$5); }
-  | x_WHILE error block {  yyclearin; $$ = new Statement(); }
+  : init_breakable x_WHILE x_LPAR while_condition x_RPAR block {$$ = new  WhileStatement($4,$6); inBlock--;}
+  | init_breakable x_WHILE error block {  yyclearin; $$ = new Statement(); inBlock--; }
   ;
+
+init_breakable
+  : {inBlock++;}
+  ;
+
 
 while_condition
   : expression {

@@ -20,34 +20,31 @@
 
 class Function : public CompoundStatement {
   public:
-  std::string name;
-  std::string returnType;
-  TupleType *parameters;
+
+  TypeDeclaration *ntype;
   SymTable* symtb;
 
-  Function(SymTable *s,Xplode::Token *n, Node *r,Node *b, Node *p = 0 ) { 
+  Function(SymTable *s,Node *t,Node *b) { 
 
     symtb = s;
-    name = n->value; 
+    ntype = (TypeDeclaration *) t; 
     //TypeDeclaration *tp = (TypeDeclaration *) r; 
     //returnType = tp->name; 
-    parameters = (TupleType *) p; 
+    //parameters = (TupleType *) p; 
     block  = (Block *) b;
-    if (parameters != 0){
+    //if (parameters != 0){
     //  block->table->add(parameters);
-    }
-    line = n->line;
-    column = n->column;
+    //}
   }
 
   void print(){
    std::cout << "FUNCTION\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "return: "<< returnType << "\n";
+   //std::cout << "name: " << name << "\n";
+   //std::cout << "return: "<< returnType << "\n";
    
-   if (parameters != 0){
-    parameters->print();
-   }
+   //if (parameters != 0){
+    //parameters->print();
+   //}
     block->print();
   }
 
@@ -57,7 +54,7 @@ class Function : public CompoundStatement {
   
   }
 
-  Symbol *toSymbol() {return new Symbol(name,NULL, line, column); }
+  Symbol *toSymbol() {}//return new Symbol(name,NULL, line, column); }
 
   void firstcheck(SymTable *symtb){
 
