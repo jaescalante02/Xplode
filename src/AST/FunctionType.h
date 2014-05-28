@@ -20,7 +20,7 @@ class FunctionType : public TypeDeclaration {
 
     TypeDeclaration *returnType, *arguments, *extend;
     
-    FunctionType(Node *ret, Node *args,Node *e){
+    FunctionType(Node *ret, Node *args,Node *e) {
 
       numtype = TYPE_FUNCTION;
       returnType = (TypeDeclaration *) ret;

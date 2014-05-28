@@ -55,7 +55,7 @@ int main(int argc, char * argv[]) {
     //program->check();
     if(errorlog->existError())
       errorlog->print();
-    else
+    //else
       program->printTable(); 
     return 0;
 

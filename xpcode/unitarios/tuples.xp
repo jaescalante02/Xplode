@@ -25,7 +25,7 @@ let int m;
 
 let bool Q;
 
-function int suma(int a, int b) {let int t; return a+b;}
+function int suma(int a, int b) {let int t; return suma(a,b);}
 
 proc int p(int,float);
 
@@ -41,7 +41,6 @@ m:=4;
 
 let char j1;
 m:=8;
-
 
 }
 

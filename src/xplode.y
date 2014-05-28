@@ -387,7 +387,7 @@ def_function
     $$ = new Function(actual, $3, $4);  
     pila.pop();
     actual = pila.top();
-
+    inFunction = false;
     
   }
   ;
@@ -397,7 +397,10 @@ declared_function
     
         TupleType *t = (TupleType *) $4;
         FunctionType *f = new FunctionType($1,$4,t->extend);
+        actualfun = f;
+        $$ = f;
         root->insert(f->toSymbol($2), NO_SAVE_SIZE);
+        inFunction = true;
     
     
     
@@ -405,6 +408,8 @@ declared_function
     | function_type x_ID x_LPAR x_RPAR {
    
           FunctionType *f = new FunctionType($1,new TupleType(),NULL);
+          actualfun = f;
+          $$ = f;
           root->insert(f->toSymbol($2), NO_SAVE_SIZE); 
     
     }
@@ -823,15 +828,25 @@ statement_function
   ;
   
 statement_break
-  : x_BREAK {$$ = new BreakStatement(); }
+  : x_BREAK {
+    if(!inBlock) errorlog->addError(0,832,$1->line,NULL);
+    $$ = new BreakStatement();
+  }
   ;
    
 statement_continue
-  : x_CONTINUE {$$ = new ContinueStatement();}
+  : x_CONTINUE {
+    if(!inBlock) errorlog->addError(0,832,$1->line,NULL);
+    $$ = new ContinueStatement();
+  }
   ;
 
 statement_return
-  : x_RETURN expression {$$ = new ReturnStatement($2); }
+  : x_RETURN expression {
+    
+    if(actualfun->returnType!=$2->ntype) errorlog->addError(0,846,$1->line,NULL);
+    $$ = new ReturnStatement($2); 
+  }
   ;
 
 statement_exit
@@ -1423,7 +1438,10 @@ function
           
             }
                 
-          } else { tp = f->returnType;}
+          } else {
+           
+            tp = f->returnType;
+          }
         
         
         
