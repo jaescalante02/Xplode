@@ -26,15 +26,15 @@ class ForStatement : public CompoundStatement {
     condition = c;
     block = (Block *) b;
   }
-  void print(){
-   std::cout << "FOR STATEMENT \n";
-   std::cout << "intialization: \n";
-   init->print();
-   std::cout << "increment: \n";
-   increment->print();
-   std::cout << "condition: \n";
-   condition->print();
-   block->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "FOR STATEMENT \n";
+   std::cout << std::string(tab, ' ') << "intialization: \n";
+   init->print(tab+2);
+   std::cout << std::string(tab, ' ') << "increment: \n";
+   increment->print(tab+2);
+   std::cout << std::string(tab, ' ') << "condition: \n";
+   condition->print(tab+2);
+   block->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

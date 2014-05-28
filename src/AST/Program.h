@@ -60,15 +60,15 @@ public:
 
   }
 
-  void print(){
-    std::cout << "PROGRAM \n";
+  void print(int tab = 0){
+    std::cout << std::string(tab, ' ') << "PROGRAM \n";
     if (definitionList != 0 ){
-     std::cout << "DEFINITIONS \n";
-     definitionList->print();
+     std::cout << std::string(tab, ' ') << "DEFINITIONS \n";
+     definitionList->print(tab+2);
     }
-    block->print();
+    block->print(tab+2);
   }
-
+  
   void printTable(){
 
     if(table!=NULL) table->print();

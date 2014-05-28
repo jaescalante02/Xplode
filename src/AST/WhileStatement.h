@@ -22,11 +22,11 @@ class WhileStatement : public CompoundStatement {
     block = (Block *) b;
   }
   
-  void print(){
-   std::cout << "WHILE STATEMENT \n";
-   std::cout << "condition: \n";
-   condition->print();
-   block->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "WHILE STATEMENT \n";
+   std::cout << std::string(tab, ' ') << "condition: \n";
+   condition->print(tab+2);
+   block->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

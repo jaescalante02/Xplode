@@ -20,11 +20,11 @@ class WriteStatement : public Statement {
 
   WriteStatement(std::list<Expression *> *a){writeList = a; }
 
-  void print(){
-   std::cout << "WRITE STATEMENT\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "WRITE STATEMENT\n";
    for(std::list<Expression *>::iterator iter = writeList->begin(); iter != writeList->end(); ++iter){
-      std::cout << "write: \n";
-      (*iter)->print(); 
+      std::cout << std::string(tab, ' ') << "write: \n";
+      (*iter)->print(tab+2); 
     }
   }
 

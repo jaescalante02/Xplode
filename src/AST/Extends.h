@@ -24,9 +24,9 @@ class Extends : public Node {
     //type = tp->name; 
   }
 
-  void print(){
-   std::cout << "EXTENDS\n";
-   std::cout << "type: " << type << "\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "EXTENDS\n";
+   std::cout << std::string(tab, ' ') << "type: " << type << "\n";
   }
 
   Symbol *toSymbol(){ return NULL;}

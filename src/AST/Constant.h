@@ -19,9 +19,9 @@ class Constant : public Expression {
   public:
   std::string value;
   Constant(std::string v, TypeDeclaration *n){value = v; ntype = n; }
-  void print(){
-   std::cout << "CONSTANT\n";
-   std::cout << "value: " << value << "\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "CONSTANT\n";
+   std::cout << std::string(tab, ' ') << "value: " << value << "\n";
   }
 
   void firstcheck(SymTable *symtb){}

@@ -20,10 +20,10 @@ class ReadStatement : public Statement {
   
   ReadStatement(Expression *v){ var = v; }
   
-  void print(){
-   std::cout << "READ STATEMENT\n";
-   std::cout << "variable:\n";
-   var->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "READ STATEMENT\n";
+   std::cout << std::string(tab, ' ') << "variable:\n";
+   var->print(tab+2);
   }
   
   void firstcheck(SymTable *symtb){

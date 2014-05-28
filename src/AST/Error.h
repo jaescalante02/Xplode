@@ -15,7 +15,7 @@
 class Error : public Node {
   public:
   Error(){ }
-  void print(){
+  void print(int tab){
   }
 
   void firstcheck(SymTable *symtb){

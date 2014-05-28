@@ -38,14 +38,14 @@ class Block : public Node {
     this->setFathers();
   }
 
-  void print(){
-   std::cout << "BLOCK \n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "BLOCK \n";
    if (declarationList != 0 ){
-    std::cout << "DECLARATIONS \n";
-    declarationList->print();
+    std::cout << std::string(tab, ' ') << "DECLARATIONS \n";
+    declarationList->print(tab+2);
    }
-   std::cout << "STATEMENTS\n";
-   statementList->print();
+   std::cout << std::string(tab, ' ') << "STATEMENTS\n";
+   statementList->print(tab+2);
   }
 
   void printTable(){

@@ -17,7 +17,7 @@ class Expression : public Node {
   public:
   TypeDeclaration *ntype; //Used for type checks
 
-  virtual void print() {}
+  virtual void print(int tab) {}
 
   virtual void firstcheck(SymTable *symtb){ }
 

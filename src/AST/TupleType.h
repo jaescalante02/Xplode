@@ -79,7 +79,7 @@ class TupleType : public TypeDeclaration {
     
     }
 
-    void print(){}
+    void print(int tab){}
 
 
 };

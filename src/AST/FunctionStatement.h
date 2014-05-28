@@ -18,9 +18,9 @@ class FunctionStatement : public Statement {
   Expression *exp;
   FunctionStatement(Expression *e){ exp = e; }
   
-  void print(){
-   std::cout << "FUNCTION STATEMENT\n";
-   exp->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "FUNCTION STATEMENT\n";
+   exp->print(tab +2 );
   }
 
   void firstcheck(SymTable *symtb){

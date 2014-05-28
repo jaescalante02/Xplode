@@ -29,13 +29,13 @@ class Parameter : public Node {
       passtype = ptype;
   }
 
-  void print(){
-   std::string tab = std::string(4, ' ');
+  void print(int tab){
    
-   std::cout << "PARAMETER\n";
-   std::cout << "passing by: " << passtype << "\n";
-   //std::cout << "type: " << ntype->name << "\n";
-   std::cout << "var: " << var << "\n";
+   
+   std::cout << std::string(tab, ' ') << "PARAMETER\n";
+   std::cout << std::string(tab, ' ') << "passing by: " << passtype << "\n";
+   //std::cout << std::string(tab, ' ') << "type: " << ntype->name << "\n";
+   std::cout << std::string(tab, ' ') << "var: " << var << "\n";
   }
 
   Node* type(){

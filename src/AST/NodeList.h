@@ -30,9 +30,9 @@ class NodeList  {
     return nodeList.size();
   }
   
-  void print(){   
+  void print(int tab){   
     for(std::list<Node *>::iterator iter = nodeList.begin(); iter != nodeList.end(); ++iter){
-         (*iter)->print(); 
+         (*iter)->print(tab); 
     }
   }
 

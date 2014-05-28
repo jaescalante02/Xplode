@@ -17,11 +17,11 @@ class CastedExpression : public Expression {
   std::string cname;
   Expression *exp; 
   CastedExpression(std::string c, Expression *e){cname = c; exp = e; }
-  void print(){
-   std::cout << "CAST \n";
-   std::cout << "name: " << cname << "\n";
-   std::cout << "expression: \n";
-   exp->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "CAST \n";
+   std::cout << std::string(tab, ' ') << "name: " << cname << "\n";
+   std::cout << std::string(tab, ' ') << "expression: \n";
+   exp->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

@@ -17,13 +17,13 @@ class FunctionExpression : public Expression {
   std::string fname;
   std::list<Expression *> *argList; 
   FunctionExpression(std::string n, std::list<Expression *> *a = 0){fname = n; argList = a; }
-  void print(){
-   std::cout << "FUNCTION \n";
-   std::cout << "name: " << fname << "\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "FUNCTION \n";
+   std::cout << std::string(tab, ' ') << "name: " << fname << "\n";
    if ( argList != 0 ){
      for(std::list<Expression *>::iterator iter = argList->begin(); iter != argList->end(); ++iter){
-        std::cout << "argument: \n";
-        (*iter)->print(); 
+        std::cout << std::string(tab, ' ') << "argument: \n";
+        (*iter)->print(tab+2); 
      }
    }
   }

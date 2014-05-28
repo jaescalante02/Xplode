@@ -20,12 +20,13 @@ class Node {
   
   //virtual Node *clone() = 0;
 
-    virtual void print() = 0;
+    virtual void print(int tab) = 0;
 
 
     int line;
     int column;
 
 };
+
 
 #endif

@@ -33,12 +33,12 @@ class Procedure : public Statement {
       column = n->column;
   }
 
-  void print(){
-   std::cout << "PROCEDURE\n";
-   std::cout << "name: " << name << "\n";
-   std::cout << "return: "<< returnType << "\n";
-   std::cout << "TYPE PARAMETERS\n";
-   types->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "PROCEDURE\n";
+   std::cout << std::string(tab, ' ') << "name: " << name << "\n";
+   std::cout << std::string(tab, ' ') << "return: "<< returnType << "\n";
+   std::cout << std::string(tab, ' ') << "TYPE PARAMETERS\n";
+   types->print(tab + 2);
 
   }
 

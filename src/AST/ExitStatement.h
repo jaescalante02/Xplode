@@ -16,8 +16,8 @@ class ExitStatement : public Statement {
   public:
   ExitStatement(){ }
   
-  void print(){
-   std::cout << "EXIT STATEMENT\n";
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "EXIT STATEMENT\n";
   }
 
   void firstcheck(SymTable *symtb){  

@@ -18,10 +18,10 @@ class ReturnStatement : public Statement {
   Expression *exp;
   ReturnStatement(Expression *e){ exp = e; }
   
-  void print(){
-   std::cout << "RETURN STATEMENT\n";
-   std::cout << "argument:\n";
-   exp->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "RETURN STATEMENT\n";
+   std::cout << std::string(tab, ' ') << "argument:\n";
+   exp->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){

@@ -24,12 +24,12 @@ class BinaryExpression : public Expression {
     lexp = l;
     rexp = r;
   }
-  void print(){
-   std::cout << "EXPRESSION" << opname << "\n";
-   std::cout << "left expression:\n";
-   lexp->print();
-   std::cout << "right expression: \n";
-   rexp ->print();
+  void print(int tab){
+   std::cout << std::string(tab, ' ') << "EXPRESSION" << opname << "\n";
+   std::cout << std::string(tab, ' ') << "left expression:\n";
+   lexp->print(tab+2);
+   std::cout << std::string(tab, ' ') << "right expression: \n";
+   rexp ->print(tab+2);
   }
 
   void firstcheck(SymTable *symtb){
