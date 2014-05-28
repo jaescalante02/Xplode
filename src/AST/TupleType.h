@@ -48,7 +48,7 @@ class TupleType : public TypeDeclaration {
 
     Symbol *toSymbol(Xplode::Token *s){
     
-    return new Symbol(s->value,this,s->line,s->column);
+    return new Symbol(true,s->value,this,s->line,s->column,true);
     
     
     }

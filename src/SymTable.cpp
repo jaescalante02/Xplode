@@ -94,8 +94,21 @@
 
             std::string var(variable);
             toLower(var);
-            return this->findall(var);
+            Symbol *s = this->findall(var);
+            if(s) return (!s->istype)?s:NULL;
+            return NULL;
         }
+        
+        Symbol *SymTable::findType(std::string type){ 
+
+            std::string tp(type);
+            toLower(tp);
+            Symbol *s = this->findall(tp);
+            if(s) return (s->istype)?s:NULL;
+            return NULL;
+        }
+        
+        
 
         void SymTable::print(){
 

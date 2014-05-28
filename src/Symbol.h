@@ -31,6 +31,8 @@ class Symbol {
         std::string name;
         TypeDeclaration *ntype;
         int line;
+        bool hidden;
+        bool istype;
         int offset;
         int column;
 
@@ -44,13 +46,15 @@ class Symbol {
         5 proc       
         */
 
-        Symbol(std::string n, TypeDeclaration *t, int l, int c){
+        Symbol(bool h, std::string n, TypeDeclaration *t, int l, int c,bool i){
 
             name=n;
             ntype = t;
             line = l;
             column = c;
             offset = 0; 
+            hidden = h;
+            istype = i;
             //defined = e;
             //dimensions = d;
             //pt = p;

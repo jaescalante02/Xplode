@@ -50,7 +50,7 @@ class Union : public Statement {
 
   }
 
-  Symbol *toSymbol() { return new Symbol(name,NULL,line,column); }
+  Symbol *toSymbol() { return new Symbol(true,name,NULL,line,column,true); }
 
   void firstcheck(){
   

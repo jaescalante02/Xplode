@@ -42,7 +42,7 @@ class Procedure : public Statement {
 
   }
 
-  Symbol *toSymbol() {return new Symbol(name,NULL, line, column); }
+  Symbol *toSymbol() {return new Symbol(false,name,NULL, line, column,false); }
 
   void firstcheck(){ }
 

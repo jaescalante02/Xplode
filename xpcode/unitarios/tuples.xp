@@ -14,7 +14,7 @@ bool d;
 
 }
 
-type t{
+type tok{
 
 int c;
 t0 d;
@@ -25,13 +25,13 @@ let int m;
 
 let bool Q;
 
-function int suma(int a, int b) {let int t; return suma(a,b);}
+function int suma(int a, int b, ...) {let int t; return suma(a,b);}
 
 proc int p(int,float);
 
 begin
 let int m,h;
-let bool t;
+let tok ss,sss;
 
 if(2==2){
 let char j;
@@ -46,6 +46,8 @@ m:=8;
 
 write("hola",3, "chao","hi");
 
+m:=suma(2,3,3,3,3,2);
 
+ss:=tok;
 
 end

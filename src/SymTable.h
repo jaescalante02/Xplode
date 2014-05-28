@@ -37,6 +37,8 @@ class SymTable {
         void insertString(Symbol *s, int tam);
 
         Symbol *find(std::string variable);
+        
+        Symbol *findType(std::string type);
 
         void print();
 

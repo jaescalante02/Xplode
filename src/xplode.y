@@ -417,7 +417,7 @@ declared_function
   
 function_type
   : primitive_type {$$ = $1; }
-  | x_VOID {$$ = root->find("_void")->ntype; }
+  | x_VOID {$$ = root->findType("_void")->ntype; }
   ;
   
 function_parameters 
@@ -425,7 +425,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($2,$3->value);
-    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
     t->extend = (TypeDeclaration *) $2;
     $$ = t;
   }
@@ -434,7 +434,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
-    actual->insert(new Symbol($4->value,(TypeDeclaration *) $3,$4->line,$4->column));    
+    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false));    
     t->extend = (TypeDeclaration *) $3;
     $$ = t;
   
@@ -444,7 +444,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($2,$3->value);
-    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
     $$ = t;
   
   }
@@ -453,7 +453,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
-    actual->insert(new Symbol($4->value,(TypeDeclaration *) $3,$4->line,$4->column));
+    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false));
     $$ = t;
   
   }
@@ -462,7 +462,7 @@ function_parameters
   
     TupleType *t = new TupleType();
     t->add($1,$2->value);
-    actual->insert(new Symbol($2->value,(TypeDeclaration *) $1,$2->line,$2->column));
+    actual->insert(new Symbol(false,$2->value,(TypeDeclaration *) $1,$2->line,$2->column,false));
     $$ = t;
   
   }
@@ -471,7 +471,7 @@ function_parameters
   
     TupleType *t = new TupleType();
     t->add($2,$3->value);
-    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
     $$ = t;
   
   }  
@@ -481,21 +481,21 @@ function_pars
   : param_type x_ID x_COMMA { 
     TupleType *t = new TupleType(); 
     t->add($1,$2->value);
-    actual->insert(new Symbol($2->value,(TypeDeclaration *) $1,$2->line,$2->column));
+    actual->insert(new Symbol(false,$2->value,(TypeDeclaration *) $1,$2->line,$2->column,false));
     $$ = t;
     }
   | x_VAR param_type x_ID x_COMMA { 
   
     TupleType *t = new TupleType(); 
     t->add($2,$3->value);
-    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));    
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));    
     $$ = t;
     } //falta var
     
   | function_pars param_type x_ID x_COMMA { 
   
     TupleType *t = (TupleType *) $1;
-    actual->insert(new Symbol($3->value,(TypeDeclaration *) $2,$3->line,$3->column));    
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));    
     t->add($2,$3->value);
     $$ = t;
   
@@ -504,7 +504,7 @@ function_pars
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
-    actual->insert(new Symbol($4->value,(TypeDeclaration *) $3,$4->line,$4->column));    
+    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false));    
     $$ = t;
   
   } //falta var
@@ -516,7 +516,7 @@ param_type
   : primitive_type {$$ = $1; }
   | x_ID {
   
-      Symbol *s = root->find($1->value);
+      Symbol *s = root->findType($1->value);
       if(s)
         $$ = s->ntype;
   
@@ -527,16 +527,16 @@ param_type
   ;
   
 primitive_type
-  :  x_INT {$$ = root->find("_int")->ntype; }
-  | x_CHAR {$$ = root->find("_char")->ntype; } 
-  | x_BOOL {$$ = root->find("_bool")->ntype; } 
-  | x_FLOAT {$$ = root->find("_float")->ntype; }
+  :  x_INT {$$ = root->findType("_int")->ntype; }
+  | x_CHAR {$$ = root->findType("_char")->ntype; } 
+  | x_BOOL {$$ = root->findType("_bool")->ntype; } 
+  | x_FLOAT {$$ = root->findType("_float")->ntype; }
   ;
 
 type 
   : primitive_type {$$ = $1; }
   | x_ID {
-      Symbol *s = root->find($1->value);
+      Symbol *s = root->findType($1->value);
       if(s)
         $$ = s->ntype;
     }
@@ -612,13 +612,13 @@ declaration_id_list
     
     $$ = new DeclarationMult(decTypeNode); 
     $$->add($1); 
-    actual->insert(new Symbol($1->value,(TypeDeclaration *) decTypeNode,$1->line,$1->column));
+    actual->insert(new Symbol(false,$1->value,(TypeDeclaration *) decTypeNode,$1->line,$1->column,false));
     //actual->print();
   } 
   | declaration_id_list x_COMMA x_ID {
     $$ = $1; 
     $$->add($3);
-    actual->insert(new Symbol($3->value,(TypeDeclaration *) decTypeNode,$3->line,$3->column));
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) decTypeNode,$3->line,$3->column,false));
     //actual->print();
   }
   ;
@@ -803,8 +803,8 @@ printable
   
       char id[20];
       sprintf(id, "%d_%d", $1->line, $1->column);
-      $$ = new Constant($1->value,root->find("_string")->ntype);
-      root->insertString(new Symbol(std::string("_str"+std::string(id)),root->find("_string")->ntype, line, column),
+      $$ = new Constant($1->value,root->findType("_string")->ntype);
+      root->insertString(new Symbol(true, std::string("_str"+std::string(id)),root->findType("_string")->ntype, line, column,false),
       $1->value.size()-1); //tam(incluye 2 comillas dobles) - 2 + 1 (espacio para el \0)
   } 
 
@@ -860,7 +860,7 @@ expression
   : expression_unary  {$$ = $1;}
   | expression x_PLUS expression {
       
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -891,7 +891,7 @@ expression
   }
   | expression x_MINUS expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -917,7 +917,7 @@ expression
   }
   | expression x_MULT expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -944,7 +944,7 @@ expression
   }
   | expression x_DIV expression {
 
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -971,7 +971,7 @@ expression
   }
   | expression x_POWER expression {
 
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(($1->ntype->numtype!=TYPE_INT)||($3->ntype->numtype!=TYPE_INT)){
       
@@ -999,7 +999,7 @@ expression
 
   | expression x_AND expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(($1->ntype->numtype!=TYPE_BOOL)||($3->ntype->numtype!=TYPE_BOOL)){
       
@@ -1026,7 +1026,7 @@ expression
   }
   | expression x_OR expression {
 
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(($1->ntype->numtype!=TYPE_BOOL)||($3->ntype->numtype!=TYPE_BOOL)){
       
@@ -1053,7 +1053,7 @@ expression
   }  
   | expression x_LESS expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -1069,7 +1069,7 @@ expression
         
         } else {
         
-          tp = root->find("_bool")->ntype;
+          tp = root->findType("_bool")->ntype;
         
         }
         
@@ -1080,7 +1080,7 @@ expression
   }
   | expression x_LESSEQ expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -1096,7 +1096,7 @@ expression
         
         } else {
         
-          tp = root->find("_bool")->ntype;
+          tp = root->findType("_bool")->ntype;
         
         }
         
@@ -1107,7 +1107,7 @@ expression
   }
   | expression x_GREATER expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -1123,7 +1123,7 @@ expression
         
         } else {
         
-          tp = root->find("_bool")->ntype;
+          tp = root->findType("_bool")->ntype;
         
         }
         
@@ -1134,7 +1134,7 @@ expression
   }
   | expression x_GREATEREQ expression {
   
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
@@ -1150,7 +1150,7 @@ expression
         
         } else {
         
-          tp = root->find("_bool")->ntype;
+          tp = root->findType("_bool")->ntype;
         
         }
         
@@ -1162,7 +1162,7 @@ expression
   
   | expression x_EQ expression {
  
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isprimitive() || !$3->ntype->isprimitive()){
       
@@ -1178,7 +1178,7 @@ expression
         
         } else {
         
-          tp = root->find("_bool")->ntype;
+          tp = root->findType("_bool")->ntype;
         
         }
         
@@ -1189,7 +1189,7 @@ expression
   }
   | expression x_NEQ expression {
 
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       
       if(!$1->ntype->isprimitive() || !$3->ntype->isprimitive()){
       
@@ -1205,7 +1205,7 @@ expression
         
         } else {
         
-          tp = root->find("_bool")->ntype;
+          tp = root->findType("_bool")->ntype;
         
         }
         
@@ -1242,7 +1242,7 @@ expression_cast
       }
       
       $$ = new CastedExpression($1->value,$3); 
-      $$->ntype = root->find("_int")->ntype; 
+      $$->ntype = root->findType("_int")->ntype; 
   }
   | x_ITOC x_LPAR expression x_RPAR {
   
@@ -1255,7 +1255,7 @@ expression_cast
       }
       
       $$ = new CastedExpression($1->value,$3); 
-      $$->ntype = root->find("_char")->ntype; 
+      $$->ntype = root->findType("_char")->ntype; 
   }
   | x_ITOF x_LPAR expression x_RPAR {
   
@@ -1268,7 +1268,7 @@ expression_cast
       }
       
       $$ = new CastedExpression($1->value,$3); 
-      $$->ntype = root->find("_float")->ntype; 
+      $$->ntype = root->findType("_float")->ntype; 
   }
   | x_FTOI x_LPAR expression x_RPAR {
   
@@ -1281,26 +1281,26 @@ expression_cast
       }
       
       $$ = new CastedExpression($1->value,$3); 
-      $$->ntype = root->find("_int")->ntype; 
+      $$->ntype = root->findType("_int")->ntype; 
   }
   ;
  
 constant
-  : INTEGER { $$ = new Constant($1->value,root->find("_int")->ntype);}
-  | FLOAT { $$ = new Constant($1->value, root->find("_float")->ntype);}
-  | CHAR { $$ = new Constant($1->value,root->find("_char")->ntype);}  
-  | x_TRUE { $$ = new Constant($1->value,root->find("_bool")->ntype);}
-  | x_FALSE { $$ = new Constant($1->value, root->find("_bool")->ntype);}
+  : INTEGER { $$ = new Constant($1->value,root->findType("_int")->ntype);}
+  | FLOAT { $$ = new Constant($1->value, root->findType("_float")->ntype);}
+  | CHAR { $$ = new Constant($1->value,root->findType("_char")->ntype);}  
+  | x_TRUE { $$ = new Constant($1->value,root->findType("_bool")->ntype);}
+  | x_FALSE { $$ = new Constant($1->value, root->findType("_bool")->ntype);}
   ;
   
 variable
   : variable_id {
       Variable *v = (Variable *) $1;
       Symbol *s = actual->find((*v->varList->begin())->value);
-      TypeDeclaration *tp = root->find("_error")->ntype;;
+      TypeDeclaration *tp = root->findType("_error")->ntype;;
       if(!s){
       
-        errorlog->addError(0,851,$1->line,NULL);
+        errorlog->addError(0,851,$1->line,NULL); //no es variable o no existe
       } else {
       
           std::list<std::pair<int, Expression *> >::iterator it;
@@ -1326,7 +1326,7 @@ variable
           
           if(!tp->isprimitive()) { //faltan indices
           
-            root->find("_error")->ntype;
+            root->findType("_error")->ntype;
             errorlog->addError(0,860,$1->line, NULL);
           }
       
@@ -1340,7 +1340,7 @@ variable
   | variable x_DOT variable_id { 
       //buscar el tipo de variable, verificar tipo del union o type
       Variable *v  = (Variable *) $1;
-      TypeDeclaration *t = v->ntype, *tp = root->find("_error")->ntype;
+      TypeDeclaration *t = v->ntype, *tp = root->findType("_error")->ntype;
       //std::cout<<(long)t<< "ENTRA ACAAAA\n";
       if(!t->haveattributes()){
       
@@ -1390,7 +1390,7 @@ function
   : x_ID x_LPAR function_arguments x_RPAR {
   
       Symbol *s = actual->find($1->value);
-      TypeDeclaration *tp = root->find("_error")->ntype;
+      TypeDeclaration *tp = root->findType("_error")->ntype;
       if(!s){
       
         errorlog->addError(0,887,$1->line,NULL);
@@ -1430,6 +1430,7 @@ function
           
               for(;it!=$3->end();++it){
             
+
                 if(f->extend!=(*it)->ntype) errorlog->addError(0,986,$1->line,NULL);
             
             

@@ -15,13 +15,13 @@
 #ifndef X_MAINPROGRAM
 #define X_MAINPROGRAM
 
-#define INT_SYMBOL new Symbol("_int",new TypeDeclaration(TYPE_INT,SIZE_INT),0,0)
-#define FLOAT_SYMBOL new Symbol("_float",new TypeDeclaration(TYPE_FLOAT,SIZE_FLOAT),0,0)
-#define CHAR_SYMBOL new Symbol("_char",new TypeDeclaration(TYPE_CHAR,SIZE_CHAR),0,0)
-#define BOOL_SYMBOL new Symbol("_bool",new TypeDeclaration(TYPE_BOOL,SIZE_BOOL),0,0)
-#define VOID_SYMBOL new Symbol("_void",new TypeDeclaration(TYPE_VOID),0,0)
-#define STRING_SYMBOL new Symbol("_string",new TypeDeclaration(TYPE_STRING),0,0)
-#define ERROR_SYMBOL new Symbol("_error",new TypeDeclaration(TYPE_ERROR),0,0)
+#define INT_SYMBOL new Symbol(true,"_int",new TypeDeclaration(TYPE_INT,SIZE_INT),0,0,true)
+#define FLOAT_SYMBOL new Symbol(true, "_float",new TypeDeclaration(TYPE_FLOAT,SIZE_FLOAT),0,0,true)
+#define CHAR_SYMBOL new Symbol(true,"_char",new TypeDeclaration(TYPE_CHAR,SIZE_CHAR),0,0,true)
+#define BOOL_SYMBOL new Symbol(true,"_bool",new TypeDeclaration(TYPE_BOOL,SIZE_BOOL),0,0,true)
+#define VOID_SYMBOL new Symbol(true,"_void",new TypeDeclaration(TYPE_VOID),0,0,true)
+#define STRING_SYMBOL new Symbol(true,"_string",new TypeDeclaration(TYPE_STRING),0,0,true)
+#define ERROR_SYMBOL new Symbol(true,"_error",new TypeDeclaration(TYPE_ERROR),0,0,true)
 
 class Program : public CompoundStatement {
 
