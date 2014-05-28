@@ -53,8 +53,9 @@ int main(int argc, char * argv[]) {
     
     if (argc > 2){
       for (int i = 1; i < argc-1; i++) {  
-        if (strcmp(argv[i], "-t")) st= true;
-        if (strcmp(argv[i], "-a")) ast= true;
+        if (strcmp(argv[i], "-a") ==0) ast= true;
+        if (strcmp(argv[i], "-t") ==0) st= true;
+        
       }
       std::cout << argv[argc-1];
       fb.open (argv[argc-1] ,std::ios::in);
@@ -67,7 +68,6 @@ int main(int argc, char * argv[]) {
     std::istream is(&fb);
     Xplode::FlexScanner *scanner;
     Program *program;
-    lexdecision = selectLexer(argv[1]);
     if (lexdecision==1) scanner = new Xplode::ClassicScanner(&is);
     else scanner = new Xplode::XplodeScanner(&is);
     Xplode::Parser parser(&program,scanner);
@@ -76,10 +76,10 @@ int main(int argc, char * argv[]) {
     if(errorlog->existError()){
       errorlog->print();
     }  
-    //else{
+    else{
       if (st) program->printTable(); 
       if (ast) program->print();
-    //}
+    }
     return 0;
 
 }
