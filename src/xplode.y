@@ -214,6 +214,7 @@
 %type <exp> constant
 %type <exp> expression expression_unary function
 %type <exp> expression_cast
+%type <exp> printable
 %type <explist> function_arguments write_list
 %type <exp> while_condition for_condition if_condition
 
@@ -674,7 +675,16 @@ for_init
   ;
 
 for_condition
-  : expression {$$ = $1; }
+  : expression {
+  
+      if($1->ntype->numtype!=TYPE_BOOL){
+      
+      //error tipos invalidos
+        errorlog->addError(0,705,$1->line,NULL);
+      
+      }
+      $$ = $1;
+  }
   ;
 
 for_increment
@@ -687,7 +697,18 @@ statement_while
   ;
 
 while_condition
-  : expression {$$ = $1; }
+  : expression {
+  
+      if($1->ntype->numtype!=TYPE_BOOL){
+      
+      //error tipos invalidos
+        errorlog->addError(0,695,$1->line,NULL);
+      
+      }
+  
+      $$ = $1; 
+  
+  }
   ;
 
 statement_if
@@ -697,7 +718,17 @@ statement_if
   ;
   
 if_condition
-  : expression {$$ = $1; }
+  : expression {
+  
+      if($1->ntype->numtype!=TYPE_BOOL){
+      
+      //error tipos invalidos
+        errorlog->addError(0,705,$1->line,NULL);
+      
+      }
+  
+      $$ = $1; 
+  }
   ;
   
 statement_else
@@ -715,6 +746,13 @@ statement_assign
 statement_read
   : x_READ x_LPAR variable x_RPAR {
 
+      if($3->ntype->isprimitive()){
+      
+      //error tipos invalidos
+        errorlog->addError(0,755,$1->line,NULL);
+      
+      }
+
     $$ = new ReadStatement($3); 
   }
   ;
@@ -724,20 +762,39 @@ statement_write
   ;
 
 write_list
-  : expression {
+  : printable {
 
     $$ = new std::list<Expression *>(); 
     $$->push_back($1);
   } 
-  | write_list x_COMMA expression {
+  | write_list x_COMMA printable {
   
     $$ = $1; 
     $$->push_back($3);
   }
   ;
+
+printable
+  : expression {$$=$1;}
+  | STRING { 
+  
+      char id[20];
+      sprintf(id, "%d_%d", $1->line, $1->column);
+      $$ = new Constant($1->value,root->find("_string")->ntype);
+      root->insertString(new Symbol(std::string("_str"+std::string(id)),root->find("_string")->ntype, line, column),
+      $1->value.size()-1); //tam(incluye 2 comillas dobles) - 2 + 1 (espacio para el \0)
+  } 
+
  
 statement_sleep
   : x_SLEEP x_LPAR expression x_RPAR {
+  
+      if($3->ntype->numtype!=TYPE_INT){
+      
+      //error tipos invalidos
+        errorlog->addError(0,775,$1->line,NULL);
+      
+      }
   
       $$ = new SleepStatement($3);
   }
@@ -1141,23 +1198,63 @@ expression_unary
   ;
  
 expression_cast
-  : x_CTOI x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  | x_ITOC x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  | x_ITOF x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
-  | x_FTOI x_LPAR expression x_RPAR {$$ = new CastedExpression($1->value,$3); }
+  : x_CTOI x_LPAR expression x_RPAR {
+  
+  
+      if($3->ntype->numtype!=TYPE_CHAR){
+      
+      //error tipos invalidos
+        errorlog->addError(0,1195,$1->line,NULL);
+      
+      }
+      
+      $$ = new CastedExpression($1->value,$3); 
+      $$->ntype = root->find("_int")->ntype; 
+  }
+  | x_ITOC x_LPAR expression x_RPAR {
+  
+  
+      if($3->ntype->numtype!=TYPE_INT){
+      
+      //error tipos invalidos
+        errorlog->addError(0,1195,$1->line,NULL);
+      
+      }
+      
+      $$ = new CastedExpression($1->value,$3); 
+      $$->ntype = root->find("_char")->ntype; 
+  }
+  | x_ITOF x_LPAR expression x_RPAR {
+  
+  
+      if($3->ntype->numtype!=TYPE_INT){
+      
+      //error tipos invalidos
+        errorlog->addError(0,1195,$1->line,NULL);
+      
+      }
+      
+      $$ = new CastedExpression($1->value,$3); 
+      $$->ntype = root->find("_float")->ntype; 
+  }
+  | x_FTOI x_LPAR expression x_RPAR {
+  
+  
+      if($3->ntype->numtype!=TYPE_FLOAT){
+      
+      //error tipos invalidos
+        errorlog->addError(0,1195,$1->line,NULL);
+      
+      }
+      
+      $$ = new CastedExpression($1->value,$3); 
+      $$->ntype = root->find("_int")->ntype; 
+  }
   ;
  
 constant
   : INTEGER { $$ = new Constant($1->value,root->find("_int")->ntype);}
   | FLOAT { $$ = new Constant($1->value, root->find("_float")->ntype);}
-  | STRING { 
-  
-      char id[20];
-      sprintf(id, "%d_%d", $1->line, $1->column);
-      $$ = new Constant($1->value,root->find("_string")->ntype);
-      root->insertString(new Symbol(std::string("_str"+std::string(id)),root->find("_string")->ntype, line, column),
-      $1->value.size());
-  } 
   | CHAR { $$ = new Constant($1->value,root->find("_char")->ntype);}  
   | x_TRUE { $$ = new Constant($1->value,root->find("_bool")->ntype);}
   | x_FALSE { $$ = new Constant($1->value, root->find("_bool")->ntype);}

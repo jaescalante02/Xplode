@@ -33,26 +33,20 @@ begin
 let int m,h;
 let bool t;
 
-m:=7;
 if(2==2){
-let float w;
+let char j;
+m:=4;
 
-w:=1.2;
+}else{
 
-};
-
-while(1<5){
-
-let char r,j;
-let int j1,j2;
-let t prueba;
-let int[30] h;
-let char a;
+let char j1;
+m:=8;
 
 
-r:= h[3];
+}
 
-};
+write("hola",3, "chao","hi");
+
 
 
 end
