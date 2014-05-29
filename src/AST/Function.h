@@ -43,12 +43,7 @@ class Function : public CompoundStatement {
    
    std::cout << std::string(tab, ' ') << "FUNCTION\n";
    std::cout << std::string(tab, ' ') << "name: " << fname << "\n";
-   //std::cout << std::string(tab, ' ') << "return: "<< returnType << "\n";
-   std::cout << std::string(tab, ' ') << "parameters: " << std::endl;
    ntype->print(tab);
-   //if (parameters != 0){
-    //parameters->print();
-   //}
     block->print(tab+2);
   }
 

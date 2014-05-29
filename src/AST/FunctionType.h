@@ -41,7 +41,7 @@ class FunctionType : public TypeDeclaration {
     
       if (arguments!=NULL){
         std::cout << std::string(tab, ' ') << "args: " << std::endl;
-        arguments->print(tab);
+        arguments->print(tab+2);
       }  
       std::cout << std::string(tab, ' ') << "return: " << (long int) returnType << std::endl;
 
