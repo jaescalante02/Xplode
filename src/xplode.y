@@ -361,9 +361,10 @@ def_proc
   : x_PROC function_type x_ID x_LPAR proc_type_list x_RPAR {
     TupleType *t = (TupleType *) $5;
     FunctionType *f = new FunctionType((TypeDeclaration *) $2, t, NULL);
-    Symbol *s = t->toSymbol($3);
+    Symbol *s = f->toSymbol($3);
     s->istype = true;
     s->hidden = true;
+    if(t->havefunction()) errorlog->addError(0,367,column,NULL); 
     root->insert(s, NO_SAVE_SIZE);
     //root->print();    
     $$ = new Procedure($3, $2, $5);
@@ -541,8 +542,14 @@ type
   : primitive_type {$$ = $1; }
   | x_ID {
       Symbol *s = root->findType($1->value);
-      if(s)
+      if(!s) {
+        $$ = root->findType("_error")->ntype;
+        errorlog->addError(0,5466,column,NULL);
+      }else{
+        
         $$ = s->ntype;
+      }
+        
     }
   | type x_LBRACKET INTEGER x_RBRACKET { 
      $$ = new ArrayType($1,atoi($3->value.c_str()));
@@ -848,11 +855,11 @@ statement_continue
 statement_return
   : x_RETURN expression {
     
-    if(!inFunction){
+    if(inFunction){
       if(actualfun->returnType!=$2->ntype) 
         errorlog->addError(0,849,$1->line,NULL);
     }else  
-        errorlog->addError(0,851,$1->line,NULL); 
+        errorlog->addError(0,8511,$1->line,NULL); 
          
     $$ = new ReturnStatement($2); 
   }
@@ -1231,10 +1238,30 @@ expression_unary
   | function { $$ = $1; }
   | expression_cast {$$ = $1; }
   | x_MINUS expression %prec x_UMINUS { 
-      $$ = new UnaryOp($1->value,$2); 
+  
+      UnaryOp *u = new UnaryOp($1->value,$2);
+      u->ntype= $2->ntype; 
+      if($2->ntype->isnumeric()){
+      
+        errorlog->addError(0,1246,$1->line,NULL);
+        u->ntype= root->findType("_error")->ntype; 
+      
+      }
+      
+      $$ = u; 
   }
-  | x_NOT expression { 
-      $$ = new UnaryOp($1->value,$2); 
+  | x_NOT expression {
+   
+      UnaryOp *u = new UnaryOp($1->value,$2);
+      u->ntype= root->findType("_bool")->ntype; 
+      if($2->ntype->numtype!=TYPE_BOOL){
+      
+        errorlog->addError(0,1248,$1->line,NULL);
+        u->ntype= root->findType("_error")->ntype; 
+      
+      }
+      
+      $$ = u;
   }
   | x_LPAR expression x_RPAR { $$ = $2;}
   ;
@@ -1411,14 +1438,29 @@ function
           TupleType *t = (TupleType *) f->arguments;
           std::list<Expression *>::iterator it = $3->begin();
           std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
-          //std::cout<<$3->size()<<"  "<<t->types->size();
+
           for(it2=t->types->begin();it2!=t->types->end();++it2){
         
             if(it==$3->end()) break;
           
-            //std::cout<< (long) (*it)->ntype << " t/u"<< (long) (*it2)->first;
-            if((*it)->ntype != (*it2)->first) errorlog->addError(0,906,$1->line,NULL);
-          
+            if((*it)->ntype->isarray()){
+            
+              TypeDeclaration *t=(*it)->ntype,*t2 =(*it2)->first;
+              
+              while((t->isarray())||(t2->isarray())){              
+                t= t->ntype;
+                t2= t2->ntype;
+              }
+              if((t->ntype!=t2->ntype)||(t->numtype!=t2->numtype)) errorlog->addError(0,1425,$1->line,NULL);
+ 
+             } else if ((*it)->ntype->isfunction()){
+             
+             
+             }else{
+            
+              if((*it)->ntype != (*it2)->first)
+                 errorlog->addError(0,906,$1->line,NULL);
+            }
             ++it;
           }
         

@@ -1,7 +1,7 @@
 program
 
 function bool authenticate(int id){
-  return id == ((id ** id - id) / id) + id;
+  return (id == (((id ** id - id) / id) + id));
 }
 
 

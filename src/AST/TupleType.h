@@ -53,6 +53,19 @@ class TupleType : public TypeDeclaration {
     
     }
     
+    bool havefunction(){
+    
+      for(std::list< std::pair<TypeDeclaration*, int>* >::iterator iter = types->begin(); 
+      iter != types->end(); ++iter){
+      //std::cout<<(long)(*iter)->first<<' '<<(*iter)->first->numtype<<std::endl;
+        if((*iter)->first->isfunction()) return true;
+      
+      }  
+    std::cout<<"buenas\n";
+      return false;
+    
+    }
+    
     void make_union(){
     
       numtype = TYPE_UNION;
