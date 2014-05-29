@@ -47,7 +47,7 @@ class DeclarationMult : public Statement {
   void print(int tab){
    
    std::cout << std::string(tab, ' ') << "DECLARATION\n";
-   //std::cout << std::string(tab, ' ') << "type: " << ntype->name << "\n";
+   std::cout << std::string(tab, ' ') << "type: " << ntype->name << "\n";
    for(std::list<decl>::iterator iter = lvar.begin(); iter != lvar.end(); ++iter){
        std::cout << std::string(tab, ' ') << "var: " << (*iter).var << "\n"; 
     }   

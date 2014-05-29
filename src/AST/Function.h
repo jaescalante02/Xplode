@@ -24,13 +24,14 @@ class Function : public CompoundStatement {
   TypeDeclaration *ntype;
   SymTable* symtb;
   std::string returnType;
+  std::string fname;
 
-  Function(SymTable *s,Node *t,Node *b) { 
+  Function(SymTable *s,std::string name,Node *t,Node *b) { 
 
     symtb = s;
     ntype = (TypeDeclaration *) t; 
     //TypeDeclaration *tp = (TypeDeclaration *) r; 
-    //returnType = ntype->name; 
+    fname =name; 
     //parameters = (TupleType *) p; 
     block  = (Block *) b;
     //if (parameters != 0){
@@ -40,10 +41,11 @@ class Function : public CompoundStatement {
 
   void print(int tab){
    
-   std::cout << std::string(tab, ' ') << std::string(tab, ' ') << "FUNCTION\n";
-   //std::cout << std::string(tab, ' ') << "name: " << name << "\n";
+   std::cout << std::string(tab, ' ') << "FUNCTION\n";
+   std::cout << std::string(tab, ' ') << "name: " << fname << "\n";
    //std::cout << std::string(tab, ' ') << "return: "<< returnType << "\n";
-   
+   std::cout << std::string(tab, ' ') << "parameters: " << std::endl;
+   ntype->print(tab);
    //if (parameters != 0){
     //parameters->print();
    //}

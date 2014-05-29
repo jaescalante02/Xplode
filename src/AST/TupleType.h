@@ -92,8 +92,18 @@ class TupleType : public TypeDeclaration {
     
     }
 
-    void print(int tab){}
+    void print(int tab){
+    
+      std::list< std::string>::iterator it1;
+      std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
+      for( it1 = names->begin(), it2= types->begin(); 
+          it1 != names->end() && it2 != types->end(); ++it1, ++it2){
+          std::cout << std::string(tab, ' ') << "name: " << (*it1) << std::endl;
+          std::cout << std::string(tab, ' ') << "type: "<< (long int) (*it2)->first << std::endl;
+          
+      }
 
+    }
 
 };
 

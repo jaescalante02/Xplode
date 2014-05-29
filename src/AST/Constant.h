@@ -22,6 +22,7 @@ class Constant : public Expression {
   void print(int tab){
    std::cout << std::string(tab, ' ') << "CONSTANT\n";
    std::cout << std::string(tab, ' ') << "value: " << value << "\n";
+   std::cout << std::string(tab, ' ') << "type: " <<(long int ) ntype << std::endl;
   }
 
   void firstcheck(SymTable *symtb){}

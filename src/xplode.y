@@ -25,6 +25,7 @@
 	}
 	#include <stdio.h>
 	#include <stack>
+	#include <string>
 	#include "Token.h"
 	#include "AST/AssignStatement.h"
   #include "AST/BinaryExpression.h"
@@ -88,6 +89,7 @@
 	int inBlock = 0;
 	bool inFunction = false;
 	FunctionType *actualfun;
+	std::string name;
 }
 
 %token<tok> INTEGER
@@ -389,7 +391,8 @@ proc_type_list
 def_function  
   : init_block x_FUNCTION declared_function block {
 
-    $$ = new Function(actual, $3, $4);  
+    name = $2->value;
+    $$ = new Function(actual, name, $3, $4);  
     pila.pop();
     actual = pila.top();
     inFunction = false;
@@ -400,6 +403,7 @@ def_function
 declared_function
     : function_type x_ID x_LPAR function_parameters x_RPAR {
     
+        name = $2->value;
         TupleType *t = (TupleType *) $4;
         FunctionType *f = new FunctionType($1,$4,t->extend);
         actualfun = f;

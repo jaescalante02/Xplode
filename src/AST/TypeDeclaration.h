@@ -41,6 +41,7 @@ class TypeDeclaration: public Node {
   TypeDeclaration *ntype;
   int numtype;
   int size;
+  std::string name;
 
     TypeDeclaration(){}
     TypeDeclaration(int num,int s=0, TypeDeclaration *n=NULL) {
@@ -52,7 +53,10 @@ class TypeDeclaration: public Node {
 
    
 
-    void print(int tab){}
+    void print(int tab){
+        std::cout <<(long int) numtype << std:: endl;
+
+    }
 
     bool isarray(){ return (this->numtype==TYPE_ARRAY); }
 

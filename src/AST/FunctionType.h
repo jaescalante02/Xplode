@@ -37,7 +37,18 @@ class FunctionType : public TypeDeclaration {
     }
 
 
-    void print(int tab){}
+    void print(int tab){
+    
+      if (arguments!=NULL){
+        std::cout << std::string(tab, ' ') << "args: " << std::endl;
+        arguments->print(tab);
+      }  
+      std::cout << std::string(tab, ' ') << "return: " << (long int) returnType << std::endl;
+
+      if (extend!=NULL){
+        std::cout << std::string(tab, ' ') << "extend: " << (long int) extend << std::endl;
+     }
+    }
 
 
 };
