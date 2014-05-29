@@ -364,7 +364,7 @@ def_proc
     Symbol *s = f->toSymbol($3);
     s->istype = true;
     s->hidden = true;
-    if(t->havefunction()) errorlog->addError(0,367,column,NULL); 
+    if(t->havefunction()) errorlog->addError(19,s->line,s->column,NULL); 
     root->insert(s, NO_SAVE_SIZE);
     //root->print();    
     $$ = new Procedure($3, $2, $5);
@@ -429,6 +429,8 @@ function_parameters
   : function_pars param_type x_ID x_COMMA x_EXTEND { 
   
     TupleType *t = (TupleType *) $1;
+    TypeDeclaration *t2 = (TypeDeclaration *) $2;
+    if(!t2->isprimitive()) errorlog->addError(20,$3->line,$3->column,NULL); 
     t->add($2,$3->value);
     actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
     t->extend = (TypeDeclaration *) $2;
@@ -448,6 +450,8 @@ function_parameters
   | function_pars param_type x_ID { 
   
     TupleType *t = (TupleType *) $1;
+    TypeDeclaration *t2 = (TypeDeclaration *)$2;
+    if(!t2->isprimitive()) errorlog->addError(20,$3->line,$3->column,NULL); 
     t->add($2,$3->value);
     actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
     $$ = t;
@@ -465,6 +469,8 @@ function_parameters
 
   | param_type x_ID { 
   
+    TypeDeclaration *t2 = (TypeDeclaration *)$1;
+    if(!t2->isprimitive()) errorlog->addError(20,$2->line,$2->column,NULL); 
     TupleType *t = new TupleType();
     t->add($1,$2->value);
     actual->insert(new Symbol(false,$2->value,(TypeDeclaration *) $1,$2->line,$2->column,false));
@@ -484,7 +490,9 @@ function_parameters
   
 function_pars
   : param_type x_ID x_COMMA { 
-    TupleType *t = new TupleType(); 
+    TupleType *t = new TupleType();
+    TypeDeclaration *t2 = (TypeDeclaration *)$1;
+    if(!t2->isprimitive()) errorlog->addError(20,$2->line,$2->column,NULL);  
     t->add($1,$2->value);
     actual->insert(new Symbol(false,$2->value,(TypeDeclaration *) $1,$2->line,$2->column,false));
     $$ = t;
@@ -500,6 +508,8 @@ function_pars
   | function_pars param_type x_ID x_COMMA { 
   
     TupleType *t = (TupleType *) $1;
+    TypeDeclaration *t2 = (TypeDeclaration *)$2;
+    if(!t2->isprimitive()) errorlog->addError(20,$3->line,$3->column,NULL); 
     actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));    
     t->add($2,$3->value);
     $$ = t;
@@ -544,7 +554,7 @@ type
       Symbol *s = root->findType($1->value);
       if(!s) {
         $$ = root->findType("_error")->ntype;
-        errorlog->addError(0,5466,column,NULL);
+        errorlog->addError(7,$1->line,$1->column,&$1->value);
       }else{
         
         $$ = s->ntype;
@@ -709,7 +719,7 @@ for_condition
       if($1->ntype->numtype!=TYPE_BOOL){
       
       //error tipos invalidos
-        errorlog->addError(0,705,$1->line,NULL);
+        errorlog->addError(21,line,column,NULL);
       
       }
       $$ = $1;
@@ -736,7 +746,7 @@ while_condition
       if($1->ntype->numtype!=TYPE_BOOL){
       
       //error tipos invalidos
-        errorlog->addError(0,695,$1->line,NULL);
+        errorlog->addError(21,line,column,NULL);
       
       }
   
@@ -757,7 +767,7 @@ if_condition
       if($1->ntype->numtype!=TYPE_BOOL){
       
       //error tipos invalidos
-        errorlog->addError(0,705,$1->line,NULL);
+        errorlog->addError(21,line,column,NULL);
       
       }
   
@@ -772,6 +782,8 @@ statement_else
 statement_assign
   : variable x_ASSIGN expression {
   
+      if($1->ntype!=$3->ntype) errorlog->addError(37,$2->line,$2->column,NULL);
+      if(!$1->ntype->isprimitive()) errorlog->addError(40,$2->line,$2->column,NULL);
       $$ = new AssignStatement($1,$3); 
   }
   | variable error { yyclearin; errorlog->addError(18,line,column,NULL); $$ = new Statement(); }
@@ -783,9 +795,9 @@ statement_read
       if(!($3->ntype->isprimitive())&&!(($3->ntype->isarray())&&($3->ntype->ntype->numtype==TYPE_CHAR))){
       
       //error tipos invalidos
-        errorlog->addError(0,755,$1->line,NULL);
+        errorlog->addError(22,$1->line,$1->column,NULL);
       
-      }
+      } 
 
     $$ = new ReadStatement($3); 
   }
@@ -798,12 +810,25 @@ statement_write
 write_list
   : printable {
 
-    $$ = new std::list<Expression *>(); 
+    $$ = new std::list<Expression *>();
+    if(!($1->ntype->isprimitive())&&!(($1->ntype->isarray())&&($1->ntype->ntype->numtype==TYPE_CHAR))&&!($1->ntype->numtype==TYPE_STRING)){
+      
+      //error tipos invalidos
+        errorlog->addError(22,line,column,NULL);
+      
+      } 
     $$->push_back($1);
   } 
   | write_list x_COMMA printable {
   
     $$ = $1; 
+    if(!($3->ntype->isprimitive())&&!(($3->ntype->isarray())&&($3->ntype->ntype->numtype==TYPE_CHAR))&&!($3->ntype->numtype==TYPE_STRING)){
+      
+      //error tipos invalidos
+        errorlog->addError(22,line,column,NULL);
+      
+    }
+    
     $$->push_back($3);
   }
   ;
@@ -826,7 +851,7 @@ statement_sleep
       if($3->ntype->numtype!=TYPE_INT){
       
       //error tipos invalidos
-        errorlog->addError(0,775,$1->line,NULL);
+        errorlog->addError(23,$1->line,$1->column,NULL);
       
       }
   
@@ -840,14 +865,15 @@ statement_function
   
 statement_break
   : x_BREAK {
-    if(!inBlock) errorlog->addError(0,832,$1->line,NULL);
+    
+    if(!inBlock) errorlog->addError(24,$1->line,$1->column,&$1->value);
     $$ = new BreakStatement();
   }
   ;
    
 statement_continue
   : x_CONTINUE {
-    if(!inBlock) errorlog->addError(0,832,$1->line,NULL);
+    if(!inBlock) errorlog->addError(24,$1->line,$1->column,&$1->value);
     $$ = new ContinueStatement();
   }
   ;
@@ -857,9 +883,9 @@ statement_return
     
     if(inFunction){
       if(actualfun->returnType!=$2->ntype) 
-        errorlog->addError(0,849,$1->line,NULL);
+        errorlog->addError(25,$1->line,$1->column,NULL);
     }else  
-        errorlog->addError(0,8511,$1->line,NULL); 
+        errorlog->addError(26,$1->line,$1->column,NULL);
          
     $$ = new ReturnStatement($2); 
   }
@@ -881,13 +907,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -912,13 +938,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -938,13 +964,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -965,13 +991,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -992,13 +1018,13 @@ expression
       if(($1->ntype->numtype!=TYPE_INT)||($3->ntype->numtype!=TYPE_INT)){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1020,13 +1046,13 @@ expression
       if(($1->ntype->numtype!=TYPE_BOOL)||($3->ntype->numtype!=TYPE_BOOL)){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1047,13 +1073,13 @@ expression
       if(($1->ntype->numtype!=TYPE_BOOL)||($3->ntype->numtype!=TYPE_BOOL)){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1074,13 +1100,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1101,13 +1127,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1128,13 +1154,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1155,13 +1181,13 @@ expression
       if(!$1->ntype->isnumeric() || !$3->ntype->isnumeric()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1183,13 +1209,13 @@ expression
       if(!$1->ntype->isprimitive() || !$3->ntype->isprimitive()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1210,13 +1236,13 @@ expression
       if(!$1->ntype->isprimitive() || !$3->ntype->isprimitive()){
       
       //error tipos invalidos
-        errorlog->addError(0,762,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
       
       } else {
       
         if($1->ntype!=$3->ntype){
         
-         errorlog->addError(0,768,$1->line,NULL);
+        errorlog->addError(27,$1->line,$1->column,&$2->value);
         
         
         } else {
@@ -1243,7 +1269,7 @@ expression_unary
       u->ntype= $2->ntype; 
       if($2->ntype->isnumeric()){
       
-        errorlog->addError(0,1246,$1->line,NULL);
+        errorlog->addError(28,$1->line,$1->column,&$1->value);
         u->ntype= root->findType("_error")->ntype; 
       
       }
@@ -1256,7 +1282,7 @@ expression_unary
       u->ntype= root->findType("_bool")->ntype; 
       if($2->ntype->numtype!=TYPE_BOOL){
       
-        errorlog->addError(0,1248,$1->line,NULL);
+        errorlog->addError(28,$1->line,$1->column,&$1->value);
         u->ntype= root->findType("_error")->ntype; 
       
       }
@@ -1273,7 +1299,7 @@ expression_cast
       if($3->ntype->numtype!=TYPE_CHAR){
       
       //error tipos invalidos
-        errorlog->addError(0,1195,$1->line,NULL);
+        errorlog->addError(29,$1->line,$1->column,&$1->value);
       
       }
       
@@ -1286,7 +1312,7 @@ expression_cast
       if($3->ntype->numtype!=TYPE_INT){
       
       //error tipos invalidos
-        errorlog->addError(0,1195,$1->line,NULL);
+        errorlog->addError(29,$1->line,$1->column,&$1->value);
       
       }
       
@@ -1299,7 +1325,7 @@ expression_cast
       if($3->ntype->numtype!=TYPE_INT){
       
       //error tipos invalidos
-        errorlog->addError(0,1195,$1->line,NULL);
+        errorlog->addError(29,$1->line,$1->column,&$1->value);
       
       }
       
@@ -1312,7 +1338,7 @@ expression_cast
       if($3->ntype->numtype!=TYPE_FLOAT){
       
       //error tipos invalidos
-        errorlog->addError(0,1195,$1->line,NULL);
+        errorlog->addError(29,$1->line,$1->column,&$1->value);
       
       }
       
@@ -1336,7 +1362,7 @@ variable
       TypeDeclaration *tp = root->findType("_error")->ntype;;
       if(!s){
       
-        errorlog->addError(0,851,$1->line,NULL); //no es variable o no existe
+        errorlog->addError(30,line,column,NULL); //no es variable o no existe
       } else {
       
           std::list<std::pair<int, Expression *> >::iterator it;
@@ -1344,7 +1370,7 @@ variable
           tp = s->ntype;
           for(it=v->indexList->begin(); it!=v->indexList->end();++it){
           
-            if((*it).second->ntype->numtype!=TYPE_INT) errorlog->addError(0,858,$1->line, NULL); //no es entero
+            if((*it).second->ntype->numtype!=TYPE_INT) errorlog->addError(31,line,column,NULL); //no es entero
           
             if(tp->isarray()){
             
@@ -1353,7 +1379,7 @@ variable
             
             }else{
             
-            errorlog->addError(0,859,$1->line, NULL); // no es un arreglo
+            errorlog->addError(32,line,column,NULL); // no es un arreglo
             
             
             }
@@ -1375,7 +1401,7 @@ variable
       //std::cout<<(long)t<< "ENTRA ACAAAA\n";
       if(!t->haveattributes()){
       
-        errorlog->addError(0,872,$1->line,NULL);//no tiene operador .
+        errorlog->addError(33,line,column,NULL);//no tiene operador .
       
       
       } else {
@@ -1397,7 +1423,7 @@ variable
           ++it2;
         }
         
-        if(it==tup->names->end()) errorlog->addError(0,909,$1->line,NULL); //no exist ele atrr
+        if(it==tup->names->end()) errorlog->addError(34,line,column,&id); //no exist ele atrr
       
       } 
       
@@ -1424,13 +1450,13 @@ function
       TypeDeclaration *tp = root->findType("_error")->ntype;
       if(!s){
       
-        errorlog->addError(0,887,$1->line,NULL);
+        errorlog->addError(35,line,column,&$1->value);
       
       }else {
       
         if(!s->ntype->isfunction()){
 
-          errorlog->addError(0,895,$1->line,NULL);
+          errorlog->addError(36,line,column,&$1->value);
           
         } else {
         
@@ -1451,7 +1477,7 @@ function
                 t= t->ntype;
                 t2= t2->ntype;
               }
-              if((t->ntype!=t2->ntype)||(t->numtype!=t2->numtype)) errorlog->addError(0,1425,$1->line,NULL);
+              if((t->ntype!=t2->ntype)||(t->numtype!=t2->numtype)) errorlog->addError(37,line,column,&$1->value);
  
              } else if ((*it)->ntype->isfunction()){
              
@@ -1459,25 +1485,25 @@ function
              }else{
             
               if((*it)->ntype != (*it2)->first)
-                 errorlog->addError(0,906,$1->line,NULL);
+                 errorlog->addError(37,line,column,&$1->value);
             }
             ++it;
           }
         
-          if(it2!=t->types->end()) errorlog->addError(0,974,$1->line,NULL); //faltan argumentos
+          if(it2!=t->types->end()) errorlog->addError(38,line,column,&$1->value); //faltan argumentos
         
           if(it!=$3->end()){
          
             if(!f->extend){
             
-              errorlog->addError(0,942,$1->line,NULL);
+              errorlog->addError(39,line,column,&$1->value);
             
             } else {//caso sobran extend
           
               for(;it!=$3->end();++it){
             
 
-                if(f->extend!=(*it)->ntype) errorlog->addError(0,986,$1->line,NULL);
+                if(f->extend!=(*it)->ntype) errorlog->addError(37,line,column,&$1->value);
             
             
               }
