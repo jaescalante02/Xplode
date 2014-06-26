@@ -7,7 +7,7 @@ type person{
   float weight;
 }
 
-function void printPerson(person p){
+function void printPerson(var person p){
   write("Person Data is : ");
   write(p.id," ", p.name, " ",p.height, " ", p.weight);
 }

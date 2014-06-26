@@ -1,0 +1,11 @@
+program
+
+function int suma(int x, int y, ...){ return suma(x,y); }
+
+begin
+let int f;
+
+f:= suma(2,3,4,4,2.0);
+
+
+end

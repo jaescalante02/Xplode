@@ -175,7 +175,7 @@
         break; 
       case 36:
     
-        buffer <<"ERROR "<< line <<":"<<column << "'"<<arrstr[0]<<"' no es una funcion.\n";  
+        buffer <<"ERROR "<< line <<":"<<column << " '"<<arrstr[0]<<"' no es una funcion.\n";  
         break; 
       case 37:
     

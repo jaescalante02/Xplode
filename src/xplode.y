@@ -437,6 +437,7 @@ function_parameters
     if(!t2->isprimitive()) errorlog->addError(20,$3->line,$3->column,NULL); 
     t->add($2,$3->value);
     actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
+    actual->insert(new Symbol(false,"_extend",root->findType("_int")->ntype,$5->line,$5->column,false));    
     t->extend = (TypeDeclaration *) $2;
     $$ = t;
   }
@@ -445,7 +446,8 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
-    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false));    
+    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false)); 
+    actual->insert(new Symbol(false,"_extend",root->findType("_int")->ntype,$5->line,$5->column,false));           
     t->extend = (TypeDeclaration *) $3;
     $$ = t;
   
@@ -785,7 +787,7 @@ statement_else
 
 statement_assign
   : variable x_ASSIGN expression {
-  
+      //std::cout<<(long)$1->ntype<<' '<<(long)$3->ntype;
       if($1->ntype!=$3->ntype) errorlog->addError(37,$2->line,$2->column,NULL);
       if(!$1->ntype->isprimitive()) errorlog->addError(40,$2->line,$2->column,NULL);
       $$ = new AssignStatement($1,$3); 
@@ -1512,6 +1514,7 @@ function
             
               }
           
+                tp = f->returnType;
           
             }
                 

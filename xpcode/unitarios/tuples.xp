@@ -25,20 +25,22 @@ let int m;
 
 let bool Q;
 
-function int suma(char[] a, int b) {let int t; return suma(a,b);}
+function int suma(var char[] a, int b, ...) {let int t; return suma(a,b);}
 
 
 
 proc int p(int,float);
 
-proc int p1(p,int);
 
 begin
 let int[40] mi,h;
 let tok ss,sss;
 let int x;
 let char[4] m; 
-
-x:=suma(m,3);
+while(true){
+break;
+}
+return 2;
+x:=suma(m,3,4);
 
 end

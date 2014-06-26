@@ -1,0 +1,15 @@
+program
+
+proc int binaria(int,int);
+
+function int suma(int x, int y) {return x+y;}
+
+function int op(var binaria f, int x, int y){ return f(x,y);}
+
+begin
+
+let int x;
+
+x:= op(suma,2,3);
+
+end

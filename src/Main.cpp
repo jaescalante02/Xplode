@@ -57,7 +57,7 @@ int main(int argc, char * argv[]) {
         if (strcmp(argv[i], "-t") ==0) st= true;
         
       }
-      std::cout << argv[argc-1];
+      //std::cout << argv[argc-1];
       fb.open (argv[argc-1] ,std::ios::in);
       lexdecision = selectLexer(argv[argc-1]);
     } else {
@@ -75,11 +75,13 @@ int main(int argc, char * argv[]) {
     //program->check();
     if(errorlog->existError()){
       errorlog->print();
+      
     }  
     else{
       if (st) program->printTable(); 
       if (ast) program->print();
     }
+    //if (st) program->printTable(); 
     return 0;
 
 }

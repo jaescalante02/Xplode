@@ -31,7 +31,8 @@ function void readPerson(var person p){
 
 
 begin
-  let person p;
+  let person p, k;
+  let int k;
   readPerson(p);
 
 end

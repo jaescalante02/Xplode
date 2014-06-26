@@ -7,7 +7,7 @@ type person{
   float weight;
 }
 
-function void printPerson(person p){
+function void printPerson(var person p){
   write("Person Data is : ");
   write(p.id," ", p.name, " ",p.height, " ", p.weight);
 }
@@ -19,13 +19,13 @@ function void readPerson(var person p){
   read(p.name);
 }
 
-function bool personComp(person a, person b){
+function bool personComp(var person a, var person b){
   return a.id < b.id;
 }
 
 proc bool compare(person,person);
 
-function bool anotherComp(compare f, person a, person b){
+function bool anotherComp(var compare f, var person a, var person b){
   return f(a,b);
 }
 
