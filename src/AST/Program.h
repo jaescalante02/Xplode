@@ -10,7 +10,9 @@
 #include "NodeList.h"
 #include "../SymTable.h"
 #include "Block.h"
-
+#include "../TAC/LabelMaker.h"
+#include "../TAC/TAC_Block.h"
+#include "../TAC/TAC_Program.h"
 
 #ifndef X_MAINPROGRAM
 #define X_MAINPROGRAM
@@ -134,6 +136,23 @@ public:
     }
   */
   }
+
+
+  TAC_Program *toTAC(std::string name){
+  
+    TAC_Program *tac = new TAC_Program(name);
+  
+      std::list<Node *>::iterator iter;
+    Statement *st;
+    if (definitionList!=NULL) 
+      for(iter = (*definitionList).nodeList.begin(); iter != (*definitionList).nodeList.end(); ++iter){
+            st = (Statement *) *iter;
+            st->toTAC(tac); 
+      }
+  
+    return tac;
+  }
+
 
 };
 

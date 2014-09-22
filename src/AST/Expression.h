@@ -12,6 +12,7 @@
 #include "Node.h"
 #include "../SymTable.h"
 #include "TypeDeclaration.h"
+#include "../TAC/TAC_Program.h"
 
 class Expression : public Node {
   public:
@@ -20,6 +21,12 @@ class Expression : public Node {
   virtual void print(int tab) {}
 
   virtual void firstcheck(SymTable *symtb){ }
+
+  virtual void toTAC(TAC_Program *tac){
+  
+  
+  
+  }
 
 };
 

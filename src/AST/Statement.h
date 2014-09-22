@@ -9,6 +9,7 @@
 #include "Node.h"
 #include "../Symbol.h"
 #include "../SymTable.h"
+#include "../TAC/TAC_Program.h"
 
 #ifndef X_STATEMENTDEF
 #define X_STATEMENTDEF
@@ -27,6 +28,7 @@ class Statement: public Node {
     
     virtual Symbol *toSymbol() {return NULL;}
 
+    virtual void toTAC(TAC_Program *ptr){}
 
 };
 

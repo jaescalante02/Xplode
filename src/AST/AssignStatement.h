@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "Statement.h"
 #include "Expression.h"
-
+#include "../TAC/TAC_Program.h"
 
 #ifndef X_ASSIGN
 #define X_ASSIGN
@@ -35,7 +35,10 @@ class AssignStatement : public Statement {
     rvalue->firstcheck(symtb);
   
   }
-
+  
+  virtual void toTAC(TAC_Program *ptr){
+    rvalue->toTAC(ptr);
+  } 
 };
 
 #endif

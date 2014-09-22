@@ -7,6 +7,12 @@
 #include "ClassicScanner.h"
 #include "XplodeParser.h"
 #include "FlexScanner.h"
+#include "TAC/LabelMaker.h"
+#include "TAC/Quad.h"
+#include "TAC/TAC_Block.h"
+#include "TAC/TAC_Program.h"
+
+
 
 
 int line = 1;
@@ -44,7 +50,7 @@ int main(int argc, char * argv[]) {
     bool st = false, ast = false;
     std::filebuf fb;
     int lexdecision=0;
-
+    std::string program_name;
     
     if (argc < 2){
       std::cout << "No filename was given." << std::endl;
@@ -59,9 +65,11 @@ int main(int argc, char * argv[]) {
       }
       //std::cout << argv[argc-1];
       fb.open (argv[argc-1] ,std::ios::in);
+      program_name = argv[argc-1];
       lexdecision = selectLexer(argv[argc-1]);
     } else {
       fb.open (argv[1] ,std::ios::in);
+      program_name = argv[1];      
       lexdecision = selectLexer(argv[1]);
     }
     
@@ -75,12 +83,20 @@ int main(int argc, char * argv[]) {
     //program->check();
     if(errorlog->existError()){
       errorlog->print();
-      
-    }  
-    else{
+      return 0;   
+    
+    } else {
+    
       if (st) program->printTable(); 
       if (ast) program->print();
     }
+    
+    //El programa es correcto, empieza el TAC
+    
+    TAC_Program *tac; 
+    tac= program->toTAC(program_name); 
+    tac->tofile(program_name);
+        
     //if (st) program->printTable(); 
     return 0;
 

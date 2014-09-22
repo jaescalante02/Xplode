@@ -1,0 +1,9 @@
+program
+
+begin
+  let int y;
+  let int k;
+  let int[500] test;
+  y:= k + 2+ k+ 1;
+   
+end

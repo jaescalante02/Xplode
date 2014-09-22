@@ -1,11 +1,11 @@
 program
 
-function int suma(float x, int y, ...){ return suma(x,y); }
+function int suma(int x, int y, ...){ return suma(x,y); }
 
 begin
 let int f;
 
-f:= suma(j,f);
+f:= suma( 9, f);
 
 
 end
