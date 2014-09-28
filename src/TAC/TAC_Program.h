@@ -23,12 +23,12 @@
 class TAC_Program {
   public:
   
-  std::list<TAC_Block* > *blocks;
+  std::vector<TAC_Block* > *blocks;
   LabelMaker *labelmaker;
   
   TAC_Program(std::string name){
   
-    blocks = new std::list<TAC_Block* >;
+    blocks = new std::vector<TAC_Block* >;
     labelmaker = new LabelMaker();
     TAC_Block *b = new TAC_Block();
     b->addquad(new Comment(name));
@@ -38,14 +38,17 @@ class TAC_Program {
   
   }
 
+  void push_quad(Quad *ptr){
+    ((*blocks)[(*blocks).size()-1])->push_quad(ptr); //necesario codigo para separar los bloque
+  }
 
   void tofile(std::string name){
   
     std::string fname(name+TAC_EXTENSION);
     std::ofstream out(fname.c_str());
 
-    for(std::list<TAC_Block *>::iterator iter = blocks->begin(); iter != blocks->end(); ++iter){
-         out << (*iter)->toString()<<std::endl; 
+    for(int i =0;i<(*blocks).size();i++){
+         out << ((*blocks)[i])->toString()<<std::endl; 
 
     }
     out.close();

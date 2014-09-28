@@ -26,7 +26,11 @@ class Constant : public Expression {
   }
 
   void firstcheck(SymTable *symtb){}
-
+  
+  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+    
+    return value;
+  }
 };
 
 #endif

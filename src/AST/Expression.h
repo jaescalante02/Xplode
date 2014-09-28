@@ -22,10 +22,7 @@ class Expression : public Node {
 
   virtual void firstcheck(SymTable *symtb){ }
 
-  virtual void toTAC(TAC_Program *tac){
-  
-  
-  
+  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
   }
 
 };

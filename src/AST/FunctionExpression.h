@@ -40,6 +40,34 @@ class FunctionExpression : public Expression {
   
   }
 
+  virtual std::string toTAC(TAC_Program *tac, SymTable *symtab){
+  
+
+    std::list<Expression *>::reverse_iterator iter;
+    int cont=0;
+    Instruction *inst;
+
+    for(iter = argList->rbegin();iter != argList->rend() ;++iter){
+  
+      inst = new Instruction(PARAM_LABEL);
+      inst->result = (*iter)->toTAC(tac, symtab);
+      tac->push_quad(inst);
+      cont++;
+
+    }
+
+    inst = new Instruction(CALL_LABEL);
+    inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+    inst->leftop = fname;
+    std::stringstream aux;
+    aux << cont;
+    inst->rightop = aux.str();
+    tac->push_quad(inst);
+    return inst->result;
+    
+  }
+
+
 };
 
 

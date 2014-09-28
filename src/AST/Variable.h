@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <list> 
+#include <vector> 
 #include <map>
 #include <algorithm>
 #include <cstdlib>
@@ -42,7 +43,7 @@ class Variable : public Expression {
      iter->second->print(tab+2); 
    }
   }
-  
+    
   void addIndex(Expression *exp){
     indexList->push_back(std::make_pair(0, exp));
   }
@@ -61,6 +62,109 @@ class Variable : public Expression {
   
   
   }
+
+  virtual std::string toTAC(TAC_Program *tac, SymTable *symtab){
+
+     std::list<Xplode::Token *>::iterator itvar;
+     std::list<std::pair<int, Expression *> >::iterator itindex;
+     itvar = varList->begin();
+     itindex = indexList->begin();
+     std::string res;
+     
+     
+     Symbol *sym = symtab->find((*itvar)->value);
+     Instruction *inst = new Instruction(ASSIGN_LABEL);
+     inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+     inst->leftop = sym->name;
+     res= inst->result;
+     tac->push_quad(inst);
+     TypeDeclaration *tipo = sym->ntype; 
+        
+     while(itvar != varList->end()){
+     
+
+      
+      if(tipo->isarray()){
+
+        ArrayType *arrtp = (ArrayType *) tipo;
+        std::vector<int> *index= arrtp->takeindex();
+        std::string res_fin=res;
+        
+        //std::cout << "Pase 1\n";
+        res = itindex->second->toTAC(tac, symtab);
+        ++itindex;
+        tipo = tipo->ntype;
+        int i=1;
+        
+        while(i<index->size()){
+          //std::cout << "Pase 2\n";
+          inst=new Instruction(MUL_LABEL);
+          inst->leftop = res;
+          std::stringstream aux;
+          aux << (*index)[i];
+          inst->rightop = aux.str();
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          tac->push_quad(inst);
+          res = inst->result;
+          
+          inst=new Instruction(ADD_LABEL);
+          inst->leftop = res;
+          inst->rightop = itindex->second->toTAC(tac, symtab);
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          tac->push_quad(inst);
+          tipo = tipo->ntype;
+                                    
+          i++;
+        }
+          //std::cout << "Pase 3\n";        
+          inst=new Instruction(MUL_LABEL);
+          inst->leftop = res;
+          std::stringstream aux;
+          aux << tipo->size;
+          inst->rightop = aux.str();
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          tac->push_quad(inst);
+          res = inst->result;
+          
+          inst=new Instruction(ADD_LABEL);
+          inst->leftop = res_fin;
+          inst->rightop = res;
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          tac->push_quad(inst);
+          res=inst->result;
+        
+       
+      } else if (tipo->haveattributes()) {
+      
+        ++itvar;
+        TupleType *tup= (TupleType *) tipo;
+        std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value); 
+        inst=new Instruction(ADD_LABEL);
+        inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+        inst->leftop = res;
+        std::stringstream aux;
+        aux << info->second;
+        inst->rightop = aux.str();
+        tac->push_quad(inst); 
+        res= inst->result; 
+        tipo = info->first;
+        //std::cout << (long) tipo<< std::endl;
+      
+      } else {
+      
+        ++itvar;
+      
+                    
+      }
+     
+      
+      
+     }
+
+     return res;
+        
+
+  } 
 
   void firstcheck(SymTable *symtb){
   

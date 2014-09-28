@@ -1,9 +1,20 @@
 program
 
+function int suma(int x, int y, ...){
+return x+y;
+}
+
+type ble{bool a; bool b; int c; int e;}
+type bla{bool f; bool g; int h; ble d;}
 begin
   let int y;
   let int k;
-  let int[500] test;
-  y:= k + 2+ k+ 1;
-   
+  let int[5] h;
+  let bla[20] x;
+  let int[4][3] q;
+  let bla m;
+  if(4==4){
+    y:= suma(k+k, k-k, 4, 5)+13;
+  }
+  //y:= x[0][0].a+1+2+3;     
 end

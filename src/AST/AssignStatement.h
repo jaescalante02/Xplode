@@ -36,8 +36,12 @@ class AssignStatement : public Statement {
   
   }
   
-  virtual void toTAC(TAC_Program *ptr){
-    rvalue->toTAC(ptr);
+  virtual void toTAC(TAC_Program *tac, SymTable* symtab){
+    Instruction *inst= new Instruction(ASSIGN_LABEL);    
+    inst->leftop = rvalue->toTAC(tac, symtab);
+    inst->result = lvalue->toTAC(tac, symtab);
+    tac->push_quad(inst);
+    
   } 
 };
 

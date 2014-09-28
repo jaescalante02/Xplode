@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <list> 
+#include <vector> 
 #include <map>
 #include <algorithm>
 #include <cstdlib>
@@ -16,11 +17,11 @@
 class TAC_Block {
   public:
   
-  std::list<Quad* > *instructions;
+  std::vector<Quad* > *instructions;
   
   TAC_Block(){
   
-    instructions = new std::list<Quad* >;
+    instructions = new std::vector<Quad* >;
   
   }
 
@@ -29,13 +30,17 @@ class TAC_Block {
     instructions->push_back(q);
   
   }
+  
+  void push_quad(Quad *ptr){
+    (*instructions).push_back(ptr);
+  }
     
   std::string toString(){
 
     std::stringstream buffer;
   
-    for(std::list<Quad *>::iterator iter = instructions->begin(); iter != instructions->end(); ++iter){
-         buffer << (*iter)->toString();
+    for(int i=0;i<(*instructions).size();i++){
+         buffer << ((*instructions)[i])->toString();
     }
     return buffer.str();
   

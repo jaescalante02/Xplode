@@ -20,7 +20,7 @@ class Instruction: public Quad {
   std::string leftop;
   std::string rightop;
   
-  
+  Instruction(){}
   Instruction(std::string o, std::string rs=EMPTY_LABEL, std::string l=EMPTY_LABEL, 
        std::string r=EMPTY_LABEL){
   
@@ -33,7 +33,7 @@ class Instruction: public Quad {
 
   std::string toString(){
   
-    return "\t\t"+op+" "+result+" "+leftop+" "+rightop;
+    return "\t\t"+op+" "+result+" "+leftop+" "+rightop +"\n";
   }
 
     

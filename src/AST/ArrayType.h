@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <list> 
 #include <map>
+#include <vector> 
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
@@ -25,6 +26,29 @@ class ArrayType : public TypeDeclaration {
       numtype = TYPE_ARRAY;
       limit = lim;
 
+    }
+
+    std::vector<int> *takeindex(){
+    
+      std::vector<int> *v;
+    
+      if(ntype->isarray()){
+      
+        ArrayType *atp = (ArrayType *) ntype;
+        v = atp->takeindex();
+        v->push_back(limit);
+        return v;        
+      
+      } else {
+      
+        v = new std::vector<int>;
+        v->push_back(limit);
+        return v;
+      
+      
+      }
+    
+    
     }
 
 

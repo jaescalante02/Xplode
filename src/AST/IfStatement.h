@@ -58,6 +58,13 @@ class IfStatement : public CompoundStatement {
     
   }
 
+  virtual void toTAC(TAC_Program *tac, SymTable* symtab){
+
+    std::cout << "toTAC del IF";
+    condition->toTAC(tac, symtab);
+    block->toTAC(tac);
+
+  }
 };
 
 #endif

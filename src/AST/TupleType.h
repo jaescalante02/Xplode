@@ -61,7 +61,7 @@ class TupleType : public TypeDeclaration {
         if((*iter)->first->isfunction()) return true;
       
       }  
-    std::cout<<"buenas\n";
+    //std::cout<<"buenas\n";
       return false;
     
     }
@@ -91,6 +91,33 @@ class TupleType : public TypeDeclaration {
       }  
     
     }
+
+    std::pair<TypeDeclaration*, int> *takeattribute(std::string at){
+    
+      std::list< std::string>::iterator it1;
+      std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
+      int i=0;
+      for( it1 = names->begin(); it1 != names->end() ; ++it1){
+        
+        if((*it1)==at) break;
+        //std::cout<< (*it1)<<" "<<at<<std::endl;
+        i++;
+          
+      }
+    
+      int j=0;
+      it2= types->begin();
+      
+      while(j<i){
+        
+        it2++;
+        j++;  
+      }
+    
+      return (*it2);
+    
+    }
+
 
     void print(int tab){
     

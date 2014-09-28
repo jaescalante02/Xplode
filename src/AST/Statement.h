@@ -28,7 +28,7 @@ class Statement: public Node {
     
     virtual Symbol *toSymbol() {return NULL;}
 
-    virtual void toTAC(TAC_Program *ptr){}
+    virtual void toTAC(TAC_Program *ptr, SymTable *symtab){}
 
 };
 

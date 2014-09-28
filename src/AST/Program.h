@@ -142,13 +142,15 @@ public:
   
     TAC_Program *tac = new TAC_Program(name);
   
-      std::list<Node *>::iterator iter;
+    std::list<Node *>::iterator iter;
     Statement *st;
     if (definitionList!=NULL) 
       for(iter = (*definitionList).nodeList.begin(); iter != (*definitionList).nodeList.end(); ++iter){
             st = (Statement *) *iter;
-            st->toTAC(tac); 
+            st->toTAC(tac, table); 
       }
+  
+    block->toTAC(tac);
   
     return tac;
   }

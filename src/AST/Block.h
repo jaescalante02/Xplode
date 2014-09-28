@@ -11,6 +11,7 @@
 #include "Declaration.h"
 #include "../SymTable.h"
 #include "Statement.h"
+#include "../TAC/TAC_Program.h"
 
 #ifndef X_BLOCK
 #define X_BLOCK
@@ -103,6 +104,19 @@ class Block : public Node {
         st->firstcheck(table); 
     } 
   
+  
+  }
+  
+  void toTAC(TAC_Program *tac){
+  
+      std::list<Node *>::iterator iter;
+  
+      for(iter = (*statementList).nodeList.begin(); 
+      iter != (*statementList).nodeList.end(); ++iter){
+      
+        Statement *st = (Statement *) *iter;          
+        st->toTAC(tac, table); 
+      }
   
   }
 
