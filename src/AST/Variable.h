@@ -14,6 +14,8 @@
 #include "../SymTable.h"
 #include "../ErrorLog.h"
 #include "../Token.h"
+#include "TupleType.h"
+#include "ArrayType.h"
 
 extern ErrorLog *errorlog;
 

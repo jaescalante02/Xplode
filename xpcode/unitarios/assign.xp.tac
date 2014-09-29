@@ -16,4 +16,6 @@ INIT:
 		ADD  t9 t8 13
 		ASN  t10 y 
 		ASN  t10 t9 
+		ASN  t11 wwww 
+		ASN  t11 3 
 
