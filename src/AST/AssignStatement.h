@@ -36,7 +36,7 @@ class AssignStatement : public Statement {
   
   }
   
-  virtual void toTAC(TAC_Program *tac, SymTable* symtab){
+  virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label){
     Instruction *inst= new Instruction(ASSIGN_LABEL);    
     inst->leftop = rvalue->toTAC(tac, symtab);
     inst->result = lvalue->toTAC(tac, symtab);

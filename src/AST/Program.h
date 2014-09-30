@@ -147,10 +147,10 @@ public:
     if (definitionList!=NULL) 
       for(iter = (*definitionList).nodeList.begin(); iter != (*definitionList).nodeList.end(); ++iter){
             st = (Statement *) *iter;
-            st->toTAC(tac, table); 
+            st->toTAC(tac, table, EMPTY_LABEL, EMPTY_LABEL); 
       }
   
-    block->toTAC(tac);
+    block->toTAC(tac, EMPTY_LABEL, EMPTY_LABEL);
   
     return tac;
   }

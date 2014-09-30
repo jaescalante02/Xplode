@@ -36,6 +36,26 @@ class WhileStatement : public CompoundStatement {
   
   }
 
+
+  virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
+
+    std::string init = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string medio = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string end = tac->labelmaker->getlabel(LABEL_LABEL);
+    tac->push_quad(new Label(init));
+    std::string cond = condition->toTAC(tac, symtab);
+    tac->push_quad(new Instruction(EQUAL_ZERO_LABEL, cond, end));  
+    tac->new_block();  
+    tac->push_quad(new Label(medio));
+    block->toTAC(tac, init, end);
+    cond = condition->toTAC(tac, symtab);
+    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, medio)); 
+    tac->new_block();         
+    tac->push_quad(new Label(end));
+
+  }
+
+
 };
 
 #endif

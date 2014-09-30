@@ -107,7 +107,7 @@ class Block : public Node {
   
   }
   
-  void toTAC(TAC_Program *tac){
+  void toTAC(TAC_Program *tac, std::string cont_label, std::string break_label){
   
       std::list<Node *>::iterator iter;
   
@@ -115,7 +115,7 @@ class Block : public Node {
       iter != (*statementList).nodeList.end(); ++iter){
       
         Statement *st = (Statement *) *iter;          
-        st->toTAC(tac, table); 
+        st->toTAC(tac, table, cont_label, break_label); 
       }
   
   }

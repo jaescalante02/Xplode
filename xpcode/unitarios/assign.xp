@@ -9,18 +9,30 @@ type bla{bool f; bool g; int h; ble d;}
 begin
   let int y;
   let int k;
-  //let int[5] h;
-  //let bla[20] x;
-  //let int[4][3] q;
-  //let bla m;
-  if(4==4){
-    let int ham;
-    y:= suma(k+k, k-k, 4, 5)+13;
-    if(true){
-      let int wwww;
-      wwww:=3; 
-    
+
+  while(1==1){
+
+    if(6>8){
+
+      while(1!=0){
+      
+        if(8<=4){
+        
+          break;
+          continue;
+          if(2<0){ break; }
+        
+        }      
+      
+      
+      }
+      continue;
+      break;
+
     }
+
+
   }
-  //y:= x[0][0].a+1+2+3;     
+
+ 
 end

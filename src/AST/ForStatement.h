@@ -26,6 +26,31 @@ class ForStatement : public CompoundStatement {
     condition = c;
     block = (Block *) b;
   }
+  
+  
+  virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
+
+    std::string init = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string medio = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string end = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string primer_for = tac->labelmaker->getlabel(LABEL_LABEL);
+   /* 
+    tac->push_quad(new Label(init));
+    std::string cond = condition->toTAC(tac, symtab);
+    tac->push_quad(new Label(primer_for));
+    tac->push_quad(new Instruction(EQUAL_ZERO_LABEL, cond, end));
+    tac->new_block();  
+    tac->push_quad(new Label(medio));
+    block->toTAC(tac, init, end);
+    cond = condition->toTAC(tac, symtab);
+    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, medio)); 
+    tac->new_block();         
+    tac->push_quad(new Label(end));
+*/
+  }
+
+  
+  
   void print(int tab){
    std::cout << std::string(tab, ' ') << "FOR STATEMENT \n";
    std::cout << std::string(tab, ' ') << "intialization: \n";
@@ -45,6 +70,8 @@ class ForStatement : public CompoundStatement {
     if (block!=NULL) block->firstcheck();  
   
   }
+  
+  
 
 };
 

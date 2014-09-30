@@ -28,7 +28,8 @@ class Statement: public Node {
     
     virtual Symbol *toSymbol() {return NULL;}
 
-    virtual void toTAC(TAC_Program *ptr, SymTable *symtab){}
+    virtual void toTAC(TAC_Program *ptr, SymTable *symtab, 
+                        std::string cont_label, std::string break_label){}
 
 };
 
