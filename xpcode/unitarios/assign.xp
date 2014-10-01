@@ -4,35 +4,23 @@ function int suma(int x, int y, ...){
 return x+y;
 }
 
+function void resta(int m){
+
+let int x;
+
+x:=1;
+return;
+
+}
+
+
 type ble{bool a; bool b; int c; int e;}
 type bla{bool f; bool g; int h; ble d;}
 begin
   let int y;
   let int k;
 
-  while(1==1){
-
-    if(6>8){
-
-      while(1!=0){
-      
-        if(8<=4){
-        
-          break;
-          continue;
-          if(2<0){ break; }
-        
-        }      
-      
-      
-      }
-      continue;
-      break;
-
-    }
-
-
-  }
+  y:=1;
 
  
 end

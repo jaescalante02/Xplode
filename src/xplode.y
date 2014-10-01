@@ -673,12 +673,12 @@ declaration_list
   
 statement_list
   : statement x_SEMICOLON {$$ = new NodeList(); $$->add($1); }
-  | statement_simple  {errorlog->addError(14,line,column,NULL); $$ = new NodeList(); $$->add($1); }
+  //| statement_simple  {errorlog->addError(14,line,column,NULL); $$ = new NodeList(); $$->add($1); }
   | statement_compound {$$ = new NodeList(); $$->add($1); }
   | error x_SEMICOLON { yyclearin; $$ = new NodeList(); }
   | error { yyclearin; $$ = new NodeList(); }
   | statement_list statement x_SEMICOLON {$1->add($2); $$ = $1; }
-  | statement_list statement_simple {errorlog->addError(14,line,column,NULL); $1->add($2); $$ = $1; }
+  //| statement_list statement_simple {errorlog->addError(14,line,column,NULL); $1->add($2); $$ = $1; }
   | statement_list statement_compound {$1->add($2); $$ = $1; }
   ;
 
@@ -885,7 +885,18 @@ statement_continue
   ;
 
 statement_return
-  : x_RETURN expression {
+  : 
+    x_RETURN {
+    
+    if(inFunction){
+      if(actualfun->returnType->numtype!=TYPE_VOID) 
+        errorlog->addError(25,$1->line,$1->column,NULL);
+    } else  
+        errorlog->addError(26,$1->line,$1->column,NULL);
+             
+    $$ = new ReturnStatement(NULL);
+  }
+  | x_RETURN expression {
     
     if(inFunction){
       if(actualfun->returnType!=$2->ntype) 
