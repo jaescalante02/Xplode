@@ -36,6 +36,17 @@ class WriteStatement : public Statement {
   
   }
 
+virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
+
+    for(std::list<Expression *>::iterator iter = writeList->begin(); iter != writeList->end(); ++iter){
+      std::string tmp = (*iter)->toTAC(tac,symtab);
+      std::stringstream aux;
+      aux<<(*iter)->ntype->numtype;
+      tac->push_quad(new Instruction(WRITE_LABEL,tmp,aux.str()));
+    }
+  }
+
+
 };
 
 #endif

@@ -9,7 +9,7 @@
 #include "Expression.h"
 #include "Statement.h"
 #include "../SymTable.h"
-
+#include <cstring>
 #ifndef X_READST
 #define X_READST
 
@@ -30,6 +30,14 @@ class ReadStatement : public Statement {
   
     var->firstcheck(symtb);
   
+  }
+
+  virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
+
+    std::string tmp = var->toTAC(tac,symtab);
+    std::stringstream aux;
+    aux<<var->ntype->numtype;
+    tac->push_quad(new Instruction(READ_LABEL,tmp,aux.str()));
   }
 
 };

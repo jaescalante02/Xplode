@@ -31,7 +31,12 @@
 #define CALL_LABEL             "CALL"
 #define PARAM_LABEL            "PARM"
 #define JUMP_LABEL             "JUMP"
+#define RETURN_LABEL           "RET "
+#define WRITE_LABEL            "WR  "
+#define READ_LABEL             "READ"
 #define TEMPORAL               "t"
+#define FOR_LABEL              "for"
+#define END_LABEL              "end"
 
 
 class Label: public Quad {

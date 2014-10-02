@@ -30,23 +30,25 @@ class ForStatement : public CompoundStatement {
   
   virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
 
-    std::string init = tac->labelmaker->getlabel(LABEL_LABEL);
-    std::string medio = tac->labelmaker->getlabel(LABEL_LABEL);
-    std::string end = tac->labelmaker->getlabel(LABEL_LABEL);
+    tac->push_quad(new Label(tac->labelmaker->getlabel(FOR_LABEL)));
+    std::string ini = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string end = tac->labelmaker->getlabel(END_LABEL);
     std::string primer_for = tac->labelmaker->getlabel(LABEL_LABEL);
-   /* 
-    tac->push_quad(new Label(init));
+    init->toTAC(tac,symtab,cont_label,break_label);
+    tac->push_quad(new Instruction(JUMP_LABEL,primer_for));
+    tac->new_block();
+    tac->push_quad(new Label(ini));
+    increment->toTAC(tac,symtab,cont_label,break_label);
+    tac->push_quad(new Label(primer_for));    
     std::string cond = condition->toTAC(tac, symtab);
-    tac->push_quad(new Label(primer_for));
     tac->push_quad(new Instruction(EQUAL_ZERO_LABEL, cond, end));
     tac->new_block();  
-    tac->push_quad(new Label(medio));
-    block->toTAC(tac, init, end);
-    cond = condition->toTAC(tac, symtab);
-    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, medio)); 
-    tac->new_block();         
+    tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+    block->toTAC(tac, ini, end);
+    tac->push_quad(new Instruction(JUMP_LABEL,ini));
+    tac->new_block();
     tac->push_quad(new Label(end));
-*/
+
   }
 
   

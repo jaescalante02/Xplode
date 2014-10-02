@@ -762,8 +762,16 @@ while_condition
   ;
 
 statement_if
-  : x_IF x_LPAR if_condition x_RPAR block {$$ = new IfStatement($3,$5); }
-  | x_IF x_LPAR if_condition x_RPAR block statement_else {$$ = new IfStatement($3,$5,$6); }
+  : x_IF x_LPAR if_condition x_RPAR block {
+      $$ = new IfStatement($3,$5);
+      $$->line = $1->line;
+      $$->column = $1->column; 
+  }
+  | x_IF x_LPAR if_condition x_RPAR block statement_else {
+      $$ = new IfStatement($3,$5,$6); 
+      $$->line = $1->line;
+      $$->column = $1->column;    
+  }
   | x_IF error block { yyclearin; $$ = new Statement(); }
   ;
   

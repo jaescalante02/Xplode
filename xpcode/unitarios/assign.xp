@@ -18,9 +18,9 @@ type ble{bool a; bool b; int c; int e;}
 type bla{bool f; bool g; int h; ble d;}
 begin
   let int y;
-  let int k;
+  let float k;
 
-  y:=1;
-
+  read(y);
+  write(y,k);
  
 end
