@@ -391,7 +391,6 @@ proc_type_list
 def_function  
   : init_block x_FUNCTION declared_function block {
 
-    name = $2->value;
     $$ = new Function(actual, name, $3, $4);  
     pila.pop();
     actual = pila.top();
@@ -854,10 +853,10 @@ printable
       char id[20];
       sprintf(id, "%d_%d", $1->line, $1->column);
       $$ = new Constant($1->value,root->findType("_string")->ntype);
-      root->insertString(new Symbol(true, std::string("_str"+std::string(id)),root->findType("_string")->ntype, line, column,false),
+      root->insertString(new Symbol(true, std::string("_str"+std::string(id)),root->findType("_string")->ntype, $1->line, $1->column, false),
       $1->value.size()-1); //tam(incluye 2 comillas dobles) - 2 + 1 (espacio para el \0)
   } 
-
+  ;
  
 statement_sleep
   : x_SLEEP x_LPAR expression x_RPAR {
@@ -1292,7 +1291,7 @@ expression_unary
   
       UnaryOp *u = new UnaryOp($1->value,$2);
       u->ntype= $2->ntype; 
-      if($2->ntype->isnumeric()){
+      if(!$2->ntype->isnumeric()){
       
         errorlog->addError(28,$1->line,$1->column,&$1->value);
         u->ntype= root->findType("_error")->ntype; 
@@ -1328,7 +1327,7 @@ expression_cast
       
       }
       
-      $$ = new CastedExpression($1->value,$3); 
+      $$ = new CastedExpression("CTOI", $3); 
       $$->ntype = root->findType("_int")->ntype; 
   }
   | x_ITOC x_LPAR expression x_RPAR {
@@ -1341,7 +1340,7 @@ expression_cast
       
       }
       
-      $$ = new CastedExpression($1->value,$3); 
+      $$ = new CastedExpression("ITOC", $3); 
       $$->ntype = root->findType("_char")->ntype; 
   }
   | x_ITOF x_LPAR expression x_RPAR {
@@ -1354,7 +1353,7 @@ expression_cast
       
       }
       
-      $$ = new CastedExpression($1->value,$3); 
+      $$ = new CastedExpression("ITOF",$3); 
       $$->ntype = root->findType("_float")->ntype; 
   }
   | x_FTOI x_LPAR expression x_RPAR {
@@ -1367,7 +1366,7 @@ expression_cast
       
       }
       
-      $$ = new CastedExpression($1->value,$3); 
+      $$ = new CastedExpression("FTOI",$3); 
       $$->ntype = root->findType("_int")->ntype; 
   }
   ;

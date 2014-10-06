@@ -10,6 +10,8 @@
 #include "../SymTable.h"
 
 
+//No se usa 4/10/2014
+
 #ifndef X_UNARYEXP
 #define X_UNARYEXP
 
@@ -27,6 +29,7 @@ class UnaryExpression : public Expression {
     exp->firstcheck(symtb);
   
   }
+
 
 };
 

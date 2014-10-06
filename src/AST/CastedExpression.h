@@ -35,6 +35,36 @@ class CastedExpression : public Expression {
   
   }
 
+  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+      
+      
+      //aqui se debe hacer un if-else-if con los posibles operadores + * -
+      Instruction *inst = new Instruction();
+      inst->leftop = exp->toTAC(tac, symtab);
+      inst->result = tac->labelmaker->getlabel(TEMPORAL);
+            
+      if(cname=="ITOC"){
+      
+        inst->op = ITOC_LABEL;
+      }
+      else if(cname=="CTOI"){
+      
+        inst->op = CTOI_LABEL;
+      } else if(cname=="FTOI"){
+      
+        inst->op = FTOI_LABEL;
+      } else if(cname=="ITOF"){
+      
+        inst->op = ITOF_LABEL;
+      } else {}
+      
+      tac->push_quad(inst);
+      
+      return inst->result;
+  
+  }
+
+
 };
 
 

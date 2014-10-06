@@ -23,6 +23,18 @@ class ExitStatement : public Statement {
   void firstcheck(SymTable *symtb){  
   }
 
+
+  void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, 
+             std::string break_label)
+  {
+
+
+  tac->push_quad(new Instruction(EXIT_LABEL));
+  //comentario para acompanar
+
+
+  }
+
 };
 
 #endif

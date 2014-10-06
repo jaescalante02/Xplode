@@ -72,14 +72,23 @@ class Variable : public Expression {
      itvar = varList->begin();
      itindex = indexList->begin();
      std::string res;
+
+     if((varList->size()==1) && (indexList->size()==0)){
+     
+     return (*itvar)->value;
+     
+     }
+
      
      
-     Symbol *sym = symtab->find((*itvar)->value);
-     Instruction *inst = new Instruction(ASSIGN_LABEL);
-     inst->result = tac->labelmaker->getlabel(TEMPORAL);      
-     inst->leftop = sym->name;
-     res= inst->result;
-     tac->push_quad(inst);
+     Symbol *base_sym, *sym = symtab->find((*itvar)->value);
+     base_sym= sym;
+     Instruction *inst;
+     //Instruction *inst = new Instruction(ASSIGN_LABEL);
+     //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+     //inst->leftop = sym->name;
+     res= EMPTY_LABEL;
+     //tac->push_quad(inst);
      TypeDeclaration *tipo = sym->ntype; 
         
      while(itvar != varList->end()){
@@ -112,7 +121,8 @@ class Variable : public Expression {
           inst=new Instruction(ADD_LABEL);
           inst->leftop = res;
           inst->rightop = itindex->second->toTAC(tac, symtab);
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+          res = inst->result;     
           tac->push_quad(inst);
           tipo = tipo->ntype;
                                     
@@ -128,27 +138,38 @@ class Variable : public Expression {
           tac->push_quad(inst);
           res = inst->result;
           
-          inst=new Instruction(ADD_LABEL);
-          inst->leftop = res_fin;
-          inst->rightop = res;
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
-          tac->push_quad(inst);
-          res=inst->result;
+          //inst=new Instruction(ADD_LABEL);
+          //inst->leftop = res_fin;
+          //inst->rightop = res;
+          //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          //tac->push_quad(inst);
+          //res=inst->result;
         
        
       } else if (tipo->haveattributes()) {
       
         ++itvar;
         TupleType *tup= (TupleType *) tipo;
-        std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value); 
-        inst=new Instruction(ADD_LABEL);
-        inst->result = tac->labelmaker->getlabel(TEMPORAL);      
-        inst->leftop = res;
-        std::stringstream aux;
-        aux << info->second;
-        inst->rightop = aux.str();
-        tac->push_quad(inst); 
-        res= inst->result; 
+        std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value);
+        if(res==EMPTY_LABEL){
+        
+          std::stringstream aux;
+          aux << info->second;
+          res = aux.str();
+          
+        
+        }else { 
+        
+          inst=new Instruction(ADD_LABEL);
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->leftop = res;
+          std::stringstream aux;
+          aux << info->second;
+          inst->rightop = aux.str();
+          tac->push_quad(inst); 
+          res= inst->result;
+        } 
+        
         tipo = info->first;
         //std::cout << (long) tipo<< std::endl;
       
@@ -162,6 +183,15 @@ class Variable : public Expression {
       
       
      }
+
+
+     inst = new Instruction(ASSIGN_ARRAY_LABEL);
+     inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+     inst->leftop = base_sym->name;
+     inst->rightop = res;
+     res = inst->result;  
+     tac->push_quad(inst);
+
 
      return res;
         

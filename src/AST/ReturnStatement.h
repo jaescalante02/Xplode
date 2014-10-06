@@ -20,12 +20,31 @@ class ReturnStatement : public Statement {
   
   void print(int tab){
    std::cout << std::string(tab, ' ') << "RETURN STATEMENT\n";
-   std::cout << std::string(tab, ' ') << "argument:\n";
-   exp->print(tab+2);
+   if(exp!=NULL){
+    std::cout << std::string(tab, ' ') << "argument:\n";
+    exp->print(tab+2);
+   }
   }
 
   void firstcheck(SymTable *symtb){
     exp->firstcheck(symtb);
+  }
+
+
+  void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, 
+             std::string break_label)
+  {
+
+    if(exp==NULL){
+    
+      tac->push_quad(new Instruction(RETURN_LABEL));    
+    
+    } else {
+    
+      std::string ret = exp->toTAC(tac, symtab);    
+      tac->push_quad(new Instruction(RETURN_LABEL, ret));
+    }
+
   }
 
 };

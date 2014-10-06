@@ -30,6 +30,18 @@ class SleepStatement : public Statement {
   
   }
 
+  void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, 
+             std::string break_label)
+  {
+
+  std::string arg = var->toTAC(tac, symtab);
+  tac->push_quad(new Instruction(SLEEP_LABEL, arg));
+  //comentario para acompanar
+
+
+  }
+
+
 };
 
 #endif

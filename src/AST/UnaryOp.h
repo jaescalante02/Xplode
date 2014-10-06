@@ -38,6 +38,29 @@ class UnaryOp : public Expression {
   void firstcheck(SymTable *symtb){
   }
 
+  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+      
+      
+      //aqui se debe hacer un if-else-if con los posibles operadores + * -
+      Instruction *inst = new Instruction();
+      inst->leftop = exp->toTAC(tac, symtab);
+      inst->result = tac->labelmaker->getlabel(TEMPORAL);
+            
+      if(opname=="UMINUS"){
+        inst->op = UMINUS_LABEL;
+      }
+      else if(opname=="NOT"){
+      
+        inst->op = SUB_LABEL;
+      } else {}
+      
+      tac->push_quad(inst);
+      
+      return inst->result;
+  
+  }
+
+
 };
 
 #endif

@@ -60,10 +60,10 @@ class IfStatement : public CompoundStatement {
 
   virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label){
 
-    std::string init = tac->labelmaker->getlabel(LABEL_LABEL);
+    std::string init = tac->labelmaker->getlabel(IF_LABEL);
     std::cout << "IF linea: "<<line<< "columna: "<< column<<std::endl;
-    std::string medio = tac->labelmaker->getlabel(LABEL_LABEL);
-    std::string end = tac->labelmaker->getlabel(LABEL_LABEL);    
+    std::string medio = tac->labelmaker->getlabel(ELSE_LABEL);
+
     tac->push_quad(new Label(init));    
     std::string cond = condition->toTAC(tac, symtab);
     tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, medio)); 
@@ -71,7 +71,8 @@ class IfStatement : public CompoundStatement {
     tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));        
     block->toTAC(tac, cont_label, break_label);
     if(elseBlock != NULL){ 
-    
+
+      std::string end = tac->labelmaker->getlabel(END_LABEL);        
       tac->push_quad(new Instruction(JUMP_LABEL, end));
       tac->new_block();
       tac->push_quad(new Label(medio));        

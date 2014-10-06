@@ -83,6 +83,19 @@ class Function : public CompoundStatement {
   }
 
 
+  void toTAC(TAC_Program *tac, SymTable *symtab, std::string cont_label, 
+             std::string break_label)
+  {
+  
+    tac->push_quad(new Label(fname));
+    block->toTAC(tac, cont_label, break_label);
+  
+  
+  
+  
+  }
+
+
 };
 
 #endif

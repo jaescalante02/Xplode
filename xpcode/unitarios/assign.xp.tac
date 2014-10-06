@@ -1,10 +1,14 @@
 #../xpcode/unitarios/assign.xp
 l1:
 INIT:
-		ASN  t1 y 
-		READ t1 2 
-		ASN  t2 y 
-		WR   t2 2 
-		ASN  t3 k 
-		WR   t3 5 
+		MUL  t1 3 16
+		ADD  t2 t1 2
+		:=[] t3 x t2
+		:=   y t3 
+suma:
+		ADD  t4 x y
+		RET  t4  
+resta:
+		:=   x 1 
+		RET    
 

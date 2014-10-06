@@ -141,7 +141,9 @@ public:
   TAC_Program *toTAC(std::string name){
   
     TAC_Program *tac = new TAC_Program(name);
-  
+    
+    block->toTAC(tac, EMPTY_LABEL, EMPTY_LABEL);
+    
     std::list<Node *>::iterator iter;
     Statement *st;
     if (definitionList!=NULL) 
@@ -149,8 +151,6 @@ public:
             st = (Statement *) *iter;
             st->toTAC(tac, table, EMPTY_LABEL, EMPTY_LABEL); 
       }
-  
-    block->toTAC(tac, EMPTY_LABEL, EMPTY_LABEL);
   
     return tac;
   }

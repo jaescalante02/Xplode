@@ -19,8 +19,10 @@ type bla{bool f; bool g; int h; ble d;}
 begin
   let int y;
   let float k;
-
-  read(y);
-  write(y,k);
+  let bla[10] x;
+  let int[10][20] m;
+  
+  y:= x[3].h;
+  
  
 end
