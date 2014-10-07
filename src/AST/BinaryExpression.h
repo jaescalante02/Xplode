@@ -84,6 +84,90 @@ class BinaryExpression : public Expression {
   
   }
 
+  virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
+                      std::string truelabel, std::string falselabel)
+  {
+        
+      if(opname=="AND"){
+
+        std::string newl =  tac->labelmaker->getlabel(LABEL_LABEL);      
+        lexp->condition_toTAC(tac, symtab, newl, falselabel);
+        tac->push_quad(new Label(newl));
+        rexp->condition_toTAC(tac, symtab, truelabel, falselabel);
+
+      }
+      else if(opname=="OR"){
+      
+        std::string newl =  tac->labelmaker->getlabel(LABEL_LABEL);
+        lexp->condition_toTAC(tac, symtab, truelabel, newl);
+        tac->push_quad(new Label(newl));
+        rexp->condition_toTAC(tac, symtab, truelabel, falselabel);
+      }
+      else if(opname=="<"){
+      
+        Instruction *inst = new Instruction(LESS_LABEL);
+        inst->result = lexp->toTAC(tac, symtab);
+        inst->leftop = rexp->toTAC(tac, symtab);
+        inst->rightop = truelabel;
+        tac->push_quad(inst);
+        tac->new_block();
+      }
+      else if(opname=="<="){
+
+        Instruction *inst = new Instruction(LEQ_LABEL);
+        inst->result = lexp->toTAC(tac, symtab);
+        inst->leftop = rexp->toTAC(tac, symtab);
+        inst->rightop = truelabel;
+        tac->push_quad(inst);
+        tac->new_block();
+
+        
+      } else if(opname=="=="){
+
+        Instruction *inst = new Instruction(EQUAL_LABEL);
+        inst->result = lexp->toTAC(tac, symtab);
+        inst->leftop = rexp->toTAC(tac, symtab);
+        inst->rightop = truelabel;
+        tac->push_quad(inst);
+        tac->new_block();
+
+      }
+      else if(opname=="!="){
+
+        Instruction *inst = new Instruction(NEQUAL_LABEL);
+        inst->result = lexp->toTAC(tac, symtab);
+        inst->leftop = rexp->toTAC(tac, symtab);
+        inst->rightop = truelabel;
+        tac->push_quad(inst);
+        tac->new_block();
+
+      }
+      else if(opname==">="){
+
+        Instruction *inst = new Instruction(GEQ_LABEL);
+        inst->result = lexp->toTAC(tac, symtab);
+        inst->leftop = rexp->toTAC(tac, symtab);
+        inst->rightop = truelabel;
+        tac->push_quad(inst);
+        tac->new_block();
+
+      }
+      else if(opname==">"){
+
+        Instruction *inst = new Instruction(GREATER_LABEL);
+        inst->result = lexp->toTAC(tac, symtab);
+        inst->leftop = rexp->toTAC(tac, symtab);
+        inst->rightop = truelabel;
+        tac->push_quad(inst);
+        tac->new_block();
+
+      }
+      else {}
+  
+  
+  }  
+
+
 };
 
 

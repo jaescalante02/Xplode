@@ -1087,7 +1087,7 @@ expression
         
       }
   
-    $$ = new BinaryExpression($2->value,$1,$3); 
+    $$ = new BinaryExpression("AND",$1,$3); 
     $$->ntype = tp; 
   }
   | expression x_OR expression {
@@ -1114,7 +1114,7 @@ expression
         
       }  
   
-    $$ = new BinaryExpression($2->value,$1,$3); 
+    $$ = new BinaryExpression("OR",$1,$3); 
     $$->ntype = tp; 
   }  
   | expression x_LESS expression {
@@ -1375,8 +1375,8 @@ constant
   : INTEGER { $$ = new Constant($1->value,root->findType("_int")->ntype);}
   | FLOAT { $$ = new Constant($1->value, root->findType("_float")->ntype);}
   | CHAR { $$ = new Constant($1->value,root->findType("_char")->ntype);}  
-  | x_TRUE { $$ = new Constant($1->value,root->findType("_bool")->ntype);}
-  | x_FALSE { $$ = new Constant($1->value, root->findType("_bool")->ntype);}
+  | x_TRUE { $$ = new Constant("TRUE",root->findType("_bool")->ntype);}
+  | x_FALSE { $$ = new Constant("FALSE", root->findType("_bool")->ntype);}
   ;
   
 variable

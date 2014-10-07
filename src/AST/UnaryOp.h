@@ -40,8 +40,6 @@ class UnaryOp : public Expression {
 
   virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
       
-      
-      //aqui se debe hacer un if-else-if con los posibles operadores + * -
       Instruction *inst = new Instruction();
       inst->leftop = exp->toTAC(tac, symtab);
       inst->result = tac->labelmaker->getlabel(TEMPORAL);
@@ -60,6 +58,14 @@ class UnaryOp : public Expression {
   
   }
 
+  virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
+                      std::string truelabel, std::string falselabel)
+  {
+
+    exp->condition_toTAC(tac,symtab, falselabel, truelabel);  
+
+
+  }
 
 };
 

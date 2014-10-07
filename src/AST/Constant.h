@@ -31,6 +31,28 @@ class Constant : public Expression {
     
     return value;
   }
+  
+  virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
+                      std::string truelabel, std::string falselabel)
+  {
+
+    if(value=="TRUE"){
+    
+      tac->push_quad(new Instruction(JUMP_LABEL, truelabel));
+      tac->new_block();
+
+    
+    }else if(value=="FALSE"){
+    
+      tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+      tac->new_block();
+    
+    } else {}  
+
+
+  }
+  
+  
 };
 
 #endif

@@ -25,14 +25,16 @@
 #define FTOI_LABEL             "FTOI"
 #define MUL_LABEL              "MUL "
 #define DIV_LABEL              "DIV "
-#define EQUAL_ZERO_LABEL       "EQZ " //if salto
+#define EQUAL_ZERO_LABEL       "EQZ "  //false
 #define EQUAL_LABEL            "EQ  "
-#define NEQUAL_ZERO_LABEL      "NEQZ" //if salto
+#define NEQUAL_ZERO_LABEL      "NEQZ" //true
 #define NEQUAL_LABEL           "NEQ "
 #define LESS_LABEL             "LESS"
 #define GREATER_LABEL          "GRET"
 #define GEQ_LABEL              "GEQ "
 #define LEQ_LABEL              "LEQ "
+#define AND_LABEL              "AND "
+#define OR_LABEL               "OR  "
 #define ASSIGN_LABEL           ":=  "
 #define ASSIGN_ARRAY_LABEL     ":=[]"
 #define ASSIGN_TO_ARRAY_LABEL  "[]:="

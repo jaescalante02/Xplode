@@ -198,6 +198,18 @@ class Variable : public Expression {
 
   } 
 
+
+  virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
+                      std::string truelabel, std::string falselabel)
+  {
+
+    std::string cond = this->toTAC(tac,symtab);
+    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, truelabel));
+    tac->new_block();
+      
+
+  }
+
   void firstcheck(SymTable *symtb){
   
   /*   Symbol *tempsymv, *tempsymt=NULL;

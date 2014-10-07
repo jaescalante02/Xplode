@@ -40,10 +40,9 @@ class ForStatement : public CompoundStatement {
     tac->push_quad(new Label(ini));
     increment->toTAC(tac,symtab,cont_label,break_label);
     tac->push_quad(new Label(primer_for));    
-    std::string cond = condition->toTAC(tac, symtab);
-    tac->push_quad(new Instruction(EQUAL_ZERO_LABEL, cond, end));
-    tac->new_block();  
-    tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+    std::string medio = tac->labelmaker->getlabel(LABEL_LABEL);
+    condition->condition_toTAC(tac, symtab, medio, end);
+    tac->push_quad(new Label(medio));
     block->toTAC(tac, ini, end);
     tac->push_quad(new Instruction(JUMP_LABEL,ini));
     tac->new_block();
