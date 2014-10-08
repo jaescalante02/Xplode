@@ -143,6 +143,8 @@ public:
     TAC_Program *tac = new TAC_Program(name);
     
     block->toTAC(tac, EMPTY_LABEL, EMPTY_LABEL);
+    tac->push_quad(new Instruction(EXIT_LABEL));
+    tac->new_block();
     
     std::list<Node *>::iterator iter;
     Statement *st;

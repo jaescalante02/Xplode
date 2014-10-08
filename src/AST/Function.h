@@ -11,6 +11,7 @@
 #include "../Symbol.h"
 #include "Block.h"
 #include "TypeDeclaration.h"
+#include "FunctionType.h"
 #include "TupleType.h"
 #include "../Token.h"
 
@@ -87,9 +88,15 @@ class Function : public CompoundStatement {
              std::string break_label)
   {
   
+    tac->putcomment("FUNCTION", line, column, EMPTY_LABEL);
     tac->push_quad(new Label(fname));
     block->toTAC(tac, cont_label, break_label);
-  
+    FunctionType *fun = ( FunctionType *) ntype;
+    if(fun->returnType->numtype!=TYPE_VOID)
+      tac->push_quad(new Instruction(RETURN_LABEL,"0"));
+    else
+      tac->push_quad(new Instruction(RETURN_LABEL));
+    tac->new_block();
   
   
   

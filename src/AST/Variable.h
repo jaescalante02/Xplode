@@ -75,8 +75,9 @@ class Variable : public Expression {
 
      if((varList->size()==1) && (indexList->size()==0)){
      
-     return (*itvar)->value;
-     
+        std::string low((*itvar)->value);
+        std::transform(low.begin(), low.end(), low.begin(), ::tolower);
+        return low;     
      }
 
      
@@ -192,8 +193,9 @@ class Variable : public Expression {
      res = inst->result;  
      tac->push_quad(inst);
 
-
-     return res;
+     std::string low(res);
+     std::transform(low.begin(), low.end(), low.begin(), ::tolower);
+     return low;
         
 
   } 
@@ -206,7 +208,9 @@ class Variable : public Expression {
     std::string cond = this->toTAC(tac,symtab);
     tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, truelabel));
     tac->new_block();
-      
+    tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+    tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+    tac->new_block();  
 
   }
 

@@ -68,6 +68,21 @@ class FunctionExpression : public Expression {
   }
 
 
+  virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
+                      std::string truelabel, std::string falselabel)
+  {
+
+    std::string cond = this->toTAC(tac,symtab);
+    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, truelabel));
+    tac->new_block();
+    tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+    tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+    tac->new_block();
+      
+
+  }
+
+
 };
 
 

@@ -18,6 +18,8 @@ extern ErrorLog *errorlog;
 
 #define NO_SAVE_SIZE false
 
+#define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
+
 class SymTable {
 
     public:

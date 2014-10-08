@@ -27,6 +27,13 @@ class FunctionStatement : public Statement {
     exp->firstcheck(symtb);
   }
 
+
+  void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label){
+
+    exp->toTAC(tac, symtab);
+
+  }
+
 };
 
 #endif

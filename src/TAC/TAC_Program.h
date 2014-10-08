@@ -55,11 +55,26 @@ class TAC_Program {
     std::ofstream out(fname.c_str());
 
     for(int i =0;i<(*blocks).size();i++){
-         out << ((*blocks)[i])->toString()<<std::endl; 
+         out << ((*blocks)[i])->toString()<<std::endl;
+         out << "# ------------------------------------------------------\n"; 
 
     }
     out.close();
   
+  
+  
+  
+  }
+
+  void putcomment(std::string tpblock, int line, int column, std::string end_block){
+  
+    std::stringstream msj;
+    
+    msj << tpblock<<" situado en "<<line<<":"<<column;
+    if(end_block!=EMPTY_LABEL)
+      msj<< ", termina en la etiqueta " << end_block;
+ 
+    this->push_quad(new Comment(msj.str()));  
   
   
   

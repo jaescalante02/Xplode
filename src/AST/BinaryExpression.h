@@ -111,6 +111,9 @@ class BinaryExpression : public Expression {
         inst->rightop = truelabel;
         tac->push_quad(inst);
         tac->new_block();
+        tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->new_block();
       }
       else if(opname=="<="){
 
@@ -119,6 +122,9 @@ class BinaryExpression : public Expression {
         inst->leftop = rexp->toTAC(tac, symtab);
         inst->rightop = truelabel;
         tac->push_quad(inst);
+        tac->new_block();
+        tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
         tac->new_block();
 
         
@@ -130,6 +136,9 @@ class BinaryExpression : public Expression {
         inst->rightop = truelabel;
         tac->push_quad(inst);
         tac->new_block();
+        tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->new_block();
 
       }
       else if(opname=="!="){
@@ -139,6 +148,9 @@ class BinaryExpression : public Expression {
         inst->leftop = rexp->toTAC(tac, symtab);
         inst->rightop = truelabel;
         tac->push_quad(inst);
+        tac->new_block();
+        tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
         tac->new_block();
 
       }
@@ -150,6 +162,9 @@ class BinaryExpression : public Expression {
         inst->rightop = truelabel;
         tac->push_quad(inst);
         tac->new_block();
+        tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->new_block();
 
       }
       else if(opname==">"){
@@ -159,6 +174,9 @@ class BinaryExpression : public Expression {
         inst->leftop = rexp->toTAC(tac, symtab);
         inst->rightop = truelabel;
         tac->push_quad(inst);
+        tac->new_block();
+        tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
+        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
         tac->new_block();
 
       }

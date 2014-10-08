@@ -391,7 +391,9 @@ proc_type_list
 def_function  
   : init_block x_FUNCTION declared_function block {
 
-    $$ = new Function(actual, name, $3, $4);  
+    $$ = new Function(actual, name, $3, $4); 
+    $$->line= $2->line;
+    $$->column= $2->column;  
     pila.pop();
     actual = pila.top();
     inFunction = false;
@@ -467,7 +469,7 @@ function_parameters
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
-    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false));
+    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false, true));
     $$ = t;
   
   }
@@ -487,7 +489,7 @@ function_parameters
   
     TupleType *t = new TupleType();
     t->add($2,$3->value);
-    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false, true));
     $$ = t;
   
   }  
@@ -506,7 +508,7 @@ function_pars
   
     TupleType *t = new TupleType(); 
     t->add($2,$3->value);
-    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false));    
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false, true));    
     $$ = t;
     } //falta var
     
@@ -524,7 +526,7 @@ function_pars
   
     TupleType *t = (TupleType *) $1;
     t->add($3,$4->value);
-    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false));    
+    actual->insert(new Symbol(false,$4->value,(TypeDeclaration *) $3,$4->line,$4->column,false, true));    
     $$ = t;
   
   } //falta var
@@ -574,7 +576,9 @@ type
 
 block  
   : init_block x_LBRACE declaration_list statement_list x_RBRACE {
-    $$ = new Block(actual,$3,$4); 
+    $$ = new Block(actual,$3,$4);
+    $$->line=$2->line; 
+    $$->column=$2->column; 
     int aux = actual->totaloffset;
     pila.pop();
     actual = pila.top();
@@ -583,6 +587,8 @@ block
   | init_block x_LBRACE statement_list x_RBRACE {
   
     $$ = new Block(actual, $3); 
+    $$->line=$2->line; 
+    $$->column=$2->column; 
     int aux = actual->totaloffset;
     pila.pop();
     actual = pila.top();
@@ -708,7 +714,10 @@ statement_compound
 
 statement_for
   : init_breakable x_FOR x_LPAR for_init x_SEMICOLON for_condition x_SEMICOLON for_increment x_RPAR block {
+    
     $$ = new ForStatement($4,$6,$8,$10);
+    $$->line= $2->line;
+    $$->column= $2->column; 
     inBlock--;
   }
   | init_breakable x_FOR error block { yyclearin; $$ = new Statement(); inBlock--; }
@@ -736,7 +745,13 @@ for_increment
   ;
 
 statement_while
-  : init_breakable x_WHILE x_LPAR while_condition x_RPAR block {$$ = new  WhileStatement($4,$6); inBlock--;}
+  : init_breakable x_WHILE x_LPAR while_condition x_RPAR block 
+    {
+      $$ = new  WhileStatement($4,$6); 
+      $$->line= $2->line;
+      $$->column= $2->column;  
+      inBlock--;
+    }
   | init_breakable x_WHILE error block {  yyclearin; $$ = new Statement(); inBlock--; }
   ;
 

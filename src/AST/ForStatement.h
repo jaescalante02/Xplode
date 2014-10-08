@@ -30,10 +30,12 @@ class ForStatement : public CompoundStatement {
   
   virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
 
-    tac->push_quad(new Label(tac->labelmaker->getlabel(FOR_LABEL)));
     std::string ini = tac->labelmaker->getlabel(LABEL_LABEL);
     std::string end = tac->labelmaker->getlabel(END_LABEL);
     std::string primer_for = tac->labelmaker->getlabel(LABEL_LABEL);
+
+    tac->putcomment("FOR", line, column, end);
+    tac->push_quad(new Label(tac->labelmaker->getlabel(FOR_LABEL)));
     init->toTAC(tac,symtab,cont_label,break_label);
     tac->push_quad(new Instruction(JUMP_LABEL,primer_for));
     tac->new_block();

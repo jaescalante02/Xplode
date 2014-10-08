@@ -4,12 +4,12 @@ function int suma(int x, int y, ...){
 return x+y;
 }
 
-function void resta(int m){
+function bool resta(int m){
 
 let int x;
 
 x:=1;
-return;
+return true;
 
 }
 
@@ -23,12 +23,7 @@ begin
   let bla[10] x;
   let int[10][20] m;
   
-  for(y:=0;((y<3) || (1<2)); y:=y+1){
-  
-  write(4);
-  
-  
-  }
+  resta(Y);
   
  
 end

@@ -49,7 +49,7 @@ class UnaryOp : public Expression {
       }
       else if(opname=="NOT"){
       
-        inst->op = SUB_LABEL;
+        inst->op = NOT_LABEL;
       } else {}
       
       tac->push_quad(inst);

@@ -42,6 +42,7 @@ class WhileStatement : public CompoundStatement {
     std::string init = tac->labelmaker->getlabel(WHILE_LABEL);
     std::string medio = tac->labelmaker->getlabel(LABEL_LABEL);
     std::string end = tac->labelmaker->getlabel(END_LABEL);
+    tac->putcomment("WHILE", line, column, end);
     tac->push_quad(new Label(init));
     condition->condition_toTAC(tac, symtab, medio, end);
     tac->push_quad(new Label(medio));

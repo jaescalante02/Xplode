@@ -35,6 +35,7 @@ class Symbol {
         bool istype;
         int offset;
         int column;
+        bool porref;
 
         
         /* define defined
@@ -46,7 +47,7 @@ class Symbol {
         5 proc       
         */
 
-        Symbol(bool h, std::string n, TypeDeclaration *t, int l, int c,bool i){
+        Symbol(bool h, std::string n, TypeDeclaration *t, int l, int c,bool i, bool pr=false){
 
             name=n;
             ntype = t;
@@ -55,6 +56,7 @@ class Symbol {
             offset = 0; 
             hidden = h;
             istype = i;
+            porref = pr;
             //defined = e;
             //dimensions = d;
             //pt = p;

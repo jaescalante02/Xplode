@@ -4,8 +4,6 @@
 #include <list>
 #include <stdio.h>
 
-#define toLower(phrase) std::transform(phrase.begin(), phrase.end(), phrase.begin(), ::tolower)
-
         SymTable::SymTable(){
 
            table = new std::map<std::string, Symbol *>;
