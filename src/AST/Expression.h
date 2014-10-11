@@ -27,6 +27,9 @@ class Expression : public Node {
   virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
                       std::string truelabel, std::string falselabel){}  
 
+
+ virtual Instruction *lval_toTAC(TAC_Program *tac, SymTable *symtab){}
+
 };
 
 #endif

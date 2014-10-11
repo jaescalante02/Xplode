@@ -1,0 +1,25 @@
+program
+
+begin
+
+let int[20][20] arr;
+let int i, j, result;
+
+result:=0;
+
+for(i:=0;i<20; i:=i+1){
+
+  for(i:=0;i<20; i:=i+1){
+
+    result:=result+arr[i][j];
+    
+    if(result>100) {break;}
+
+  }
+
+  if(result>100) {break;}
+
+}
+
+
+end

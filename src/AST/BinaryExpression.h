@@ -48,16 +48,29 @@ class BinaryExpression : public Expression {
       inst->rightop = rexp->toTAC(tac, symtab);
       inst->result = tac->labelmaker->getlabel(TEMPORAL);      
       if(opname=="+"){
-        inst->op = ADD_LABEL;
+        if(lexp->ntype->numtype==TYPE_INT)
+          inst->op = ADD_INT_LABEL;
+        else
+          inst->op = ADD_FLOAT_LABEL;  
+          
       }
       else if(opname=="-"){
-        inst->op = SUB_LABEL;
+        if(lexp->ntype->numtype==TYPE_INT)
+          inst->op = SUB_INT_LABEL;
+        else
+          inst->op = SUB_FLOAT_LABEL; 
       }
       else if(opname=="/"){
-        inst->op = DIV_LABEL;
+        if(lexp->ntype->numtype==TYPE_INT)
+          inst->op = DIV_INT_LABEL;
+        else
+          inst->op = DIV_FLOAT_LABEL;
       }
       else if(opname=="*"){
-        inst->op = MUL_LABEL;
+        if(lexp->ntype->numtype==TYPE_INT)
+          inst->op = MUL_INT_LABEL;
+        else
+          inst->op = MUL_FLOAT_LABEL;
       }else if(opname=="**"){
         inst->op = POWER_LABEL;
       } else if(opname=="=="){

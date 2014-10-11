@@ -1,17 +1,18 @@
-	_str13_9 --> "hola"
+	_str15_9 --> "SI"
 
 
 
 # ------------------------------------------------------
-
-
 #../xpcode/unitarios/assign.xp
-l1:
+_l1:
 INIT:
-		WR   _str13_9 9 
-		ADD  t1 13 0
-		:=[] t2 z t1
-		WR   t2 6 
+		WR   _str15_9 9 
+		READ _t1 2 
+		MULI _t2 j 4
+		[]:= foo _t2 _t1
+		ADDF _t3 f ff
+		ADDF _t4 _t3 1e-15
+		:=   f _t4 
 		EXIT   
 
 # ------------------------------------------------------

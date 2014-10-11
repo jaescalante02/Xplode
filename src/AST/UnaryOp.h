@@ -45,7 +45,10 @@ class UnaryOp : public Expression {
       inst->result = tac->labelmaker->getlabel(TEMPORAL);
             
       if(opname=="UMINUS"){
-        inst->op = UMINUS_LABEL;
+        if(exp->ntype->numtype==TYPE_INT)
+          inst->op = UMINUS_INT_LABEL;
+        else
+          inst->op = UMINUS_FLOAT_LABEL;
       }
       else if(opname=="NOT"){
       

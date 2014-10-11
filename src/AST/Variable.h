@@ -112,12 +112,12 @@ class Variable : public Expression {
         ++itindex;
         tipo = tipo->ntype;
         int i=1;
-        //std::cout << "holi\n";
+
 
         
         while(i<index->size()){
           //
-          inst=new Instruction(MUL_LABEL);
+          inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
           std::stringstream aux;
           aux << (*index)[i];
@@ -126,19 +126,20 @@ class Variable : public Expression {
           tac->push_quad(inst);
           res = inst->result;
           
-          inst=new Instruction(ADD_LABEL);
+          inst=new Instruction(ADD_INT_LABEL);
           inst->leftop = res;
           inst->rightop = itindex->second->toTAC(tac, symtab);
           inst->result = tac->labelmaker->getlabel(TEMPORAL); 
           res = inst->result;     
           tac->push_quad(inst);
           tipo = tipo->ntype;
-          
+                   
           itindex++;                          
           i++;
+          if((itvar == varList->end())&&(itindex==indexList->end())) break;
         }
-          //std::cout << "Pase 3\n"; 
-          inst=new Instruction(MUL_LABEL);
+
+          inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
           std::stringstream aux;
           aux << tipo->size;
@@ -147,14 +148,8 @@ class Variable : public Expression {
           tac->push_quad(inst);
           res = inst->result;
 
-          //inst=new Instruction(ADD_LABEL);
-          //inst->leftop = res_fin;
-          //inst->rightop = res;
-          //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
-          //tac->push_quad(inst);
-          //res=inst->result;
-        
-       
+
+              
       } else if (tipo->haveattributes()) {
       
         ++itvar;
@@ -171,7 +166,7 @@ class Variable : public Expression {
         
         }else { 
         
-          inst=new Instruction(ADD_LABEL);
+          inst=new Instruction(ADD_INT_LABEL);
           inst->result = tac->labelmaker->getlabel(TEMPORAL);      
           inst->leftop = res;
           std::stringstream aux;
@@ -224,6 +219,158 @@ class Variable : public Expression {
     tac->new_block();  
 
   }
+
+
+  Instruction *lval_toTAC(TAC_Program *tac, SymTable *symtab){
+
+     std::list<Xplode::Token *>::iterator itvar;
+     std::list<std::pair<int, Expression *> >::iterator itindex;
+     itvar = varList->begin();
+     int tamitvar=varList->size(), contitvar=1;
+     itindex = indexList->begin();
+     int tamitindex=indexList->size(), contitindex=1;
+     std::string res;
+     Instruction *inst;
+
+     if((varList->size()==1) && (indexList->size()==0)){
+ 
+        inst = new Instruction(ASSIGN_LABEL);
+        std::string low((*itvar)->value);
+        std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
+        inst->result = low;      
+        inst->leftop =  EMPTY_LABEL;
+        inst->rightop = EMPTY_LABEL; 
+        return inst;     
+     }
+
+     
+     Symbol *base_sym, *sym = symtab->find((*itvar)->value);
+     base_sym= sym;
+     
+     //Instruction *inst = new Instruction(ASSIGN_LABEL);
+     //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+     //inst->leftop = sym->name;
+     res= EMPTY_LABEL;
+     //tac->push_quad(inst);
+     TypeDeclaration *tipo = sym->ntype; 
+        
+     while(itvar != varList->end()){
+     
+
+      
+      if(tipo->isarray()){
+
+        ++itvar;
+        ++contitvar;
+        if((itvar == varList->end())&&(itindex==indexList->end())) break;
+        
+        ArrayType *arrtp = (ArrayType *) tipo;
+        std::vector<int> *index= arrtp->takeindex();
+        std::string res_fin=res;
+        
+        res = itindex->second->toTAC(tac, symtab);
+        ++itindex;
+        tipo = tipo->ntype;
+        int i=1;
+        //std::cout << "holi\n";
+
+        
+        while(i<index->size()){
+          //
+          inst=new Instruction(MUL_INT_LABEL);
+          inst->leftop = res;
+          std::stringstream aux;
+          aux << (*index)[i];
+          inst->rightop = aux.str();
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          tac->push_quad(inst);
+          res = inst->result;
+          
+          inst=new Instruction(ADD_INT_LABEL);
+          inst->leftop = res;
+          inst->rightop = itindex->second->toTAC(tac, symtab);
+          inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+          res = inst->result;     
+          tac->push_quad(inst);
+          tipo = tipo->ntype;
+          
+          itindex++;                          
+          i++;
+          if((itvar == varList->end())&&(itindex==indexList->end())) break; 
+        }
+          //std::cout << "Pase 3\n"; 
+          inst=new Instruction(MUL_INT_LABEL);
+          inst->leftop = res;
+          std::stringstream aux;
+          aux << tipo->size;
+          inst->rightop = aux.str();
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          tac->push_quad(inst);
+          res = inst->result;
+
+          //inst=new Instruction(ADD_LABEL);
+          //inst->leftop = res_fin;
+          //inst->rightop = res;
+          //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          //tac->push_quad(inst);
+          //res=inst->result;
+        
+       
+      } else if (tipo->haveattributes()) {
+      
+        ++itvar;
+        ++contitvar;
+        if((itvar == varList->end())&&(itindex==indexList->end())) break;   
+        TupleType *tup= (TupleType *) tipo;
+        std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value);
+        if(res==EMPTY_LABEL){
+        
+          std::stringstream aux;
+          aux << info->second;
+          res = aux.str();
+          
+        
+        }else { 
+        
+          inst=new Instruction(ADD_INT_LABEL);
+          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->leftop = res;
+          std::stringstream aux;
+          aux << info->second;
+          inst->rightop = aux.str();
+          tac->push_quad(inst); 
+          res= inst->result;
+        } 
+        
+        tipo = info->first;
+        //std::cout << (long) tipo<< std::endl;
+      
+      } else {
+      
+        ++itvar;
+        ++contitvar;
+      
+                    
+      }
+     
+      
+      
+     }
+
+
+     inst = new Instruction(ASSIGN_TO_ARRAY_LABEL);
+
+     std::string low(base_sym->name);
+     std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
+     inst->result = low;      
+     inst->leftop = res;
+     inst->rightop = EMPTY_LABEL;     
+
+     return inst;
+        
+
+  } 
+
 
   void firstcheck(SymTable *symtb){
   
