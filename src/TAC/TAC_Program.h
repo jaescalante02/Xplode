@@ -25,6 +25,7 @@ class TAC_Program {
   
   std::vector<TAC_Block* > *blocks;
   LabelMaker *labelmaker;
+  std::map<std::string, std::string> strings;
   
   TAC_Program(std::string name){
   
@@ -53,6 +54,17 @@ class TAC_Program {
   
     std::string fname(name+TAC_EXTENSION);
     std::ofstream out(fname.c_str());
+    
+    for(std::map<std::string, std::string>::iterator it = strings.begin(); 
+        it != strings.end(); ++it){
+     
+        
+       out<< "\t" << it->first << " --> " << it->second << std::endl;
+          
+        
+    }
+
+    out << "\n\n\n# ------------------------------------------------------\n\n\n"; 
 
     for(int i =0;i<(*blocks).size();i++){
          out << ((*blocks)[i])->toString()<<std::endl;
@@ -64,6 +76,12 @@ class TAC_Program {
   
   
   
+  }
+
+  void push_string(std::string var, std::string str){
+  
+    strings[var]=str;
+    
   }
 
   void putcomment(std::string tpblock, int line, int column, std::string end_block){

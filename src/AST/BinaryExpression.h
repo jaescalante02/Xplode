@@ -58,23 +58,31 @@ class BinaryExpression : public Expression {
       }
       else if(opname=="*"){
         inst->op = MUL_LABEL;
+      }else if(opname=="**"){
+        inst->op = POWER_LABEL;
       } else if(opname=="=="){
-        inst->op = EQUAL_LABEL;
+        inst->op = OP_EQUAL_LABEL;
       }
       else if(opname=="!="){
-        inst->op = NEQUAL_LABEL;
+        inst->op = OP_NEQUAL_LABEL;
       }
       else if(opname=="<="){
-        inst->op = LEQ_LABEL;
+        inst->op = OP_LEQ_LABEL;
       }
       else if(opname==">="){
-        inst->op = GEQ_LABEL;
+        inst->op = OP_GEQ_LABEL;
       }
       else if(opname==">"){
-        inst->op = GREATER_LABEL;
+        inst->op = OP_GREATER_LABEL;
       }
       else if(opname=="<"){
-        inst->op = LESS_LABEL;
+        inst->op = OP_LESS_LABEL;
+      }
+      else if(opname=="AND"){
+        inst->op = AND_LABEL;
+      }
+      else if(opname=="OR"){
+        inst->op = OR_LABEL;
       }
       else {}
       

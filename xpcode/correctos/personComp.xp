@@ -9,14 +9,14 @@ type person{
 
 function void printPerson(var person p){
   write("Person Data is : ");
-  write(p.id," ", p.name, " ",p.height, " ", p.weight);
+  //write(p.id," ", p.name, " ",p.height, " ", p.weight);
 }
 
 function void readPerson(var person p){
   read(p.id);
   read(p.height);
   read(p.weight);
-  read(p.name);
+ // read(p.name);
 }
 
 function bool personComp(var person a, var person b){

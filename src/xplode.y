@@ -68,6 +68,7 @@
   #include "AST/Variable.h"
   #include "AST/WhileStatement.h"
   #include "AST/WriteStatement.h"
+  #include "AST/StringType.h"  
   #include "Symbol.h"
   #include "SymTable.h"
   #include "ErrorLog.h"	
@@ -867,7 +868,8 @@ printable
   
       char id[20];
       sprintf(id, "%d_%d", $1->line, $1->column);
-      $$ = new Constant($1->value,root->findType("_string")->ntype);
+      std::string aux("_str"+std::string(id));
+      $$ = new StringType(aux, $1->value,root->findType("_string")->ntype);
       root->insertString(new Symbol(true, std::string("_str"+std::string(id)),root->findType("_string")->ntype, $1->line, $1->column, false),
       $1->value.size()-1); //tam(incluye 2 comillas dobles) - 2 + 1 (espacio para el \0)
   } 
@@ -1437,7 +1439,7 @@ variable
       //buscar el tipo de variable, verificar tipo del union o type
       Variable *v  = (Variable *) $1;
       TypeDeclaration *t = v->ntype, *tp = root->findType("_error")->ntype;
-      //std::cout<<(long)t<< "ENTRA ACAAAA\n";
+
       if(!t->haveattributes()){
       
         errorlog->addError(33,line,column,NULL);//no tiene operador .
@@ -1464,6 +1466,31 @@ variable
         
         if(it==tup->names->end()) errorlog->addError(34,line,column,&id); //no exist ele atrr
       
+        if(tp->isarray()){
+      
+          ArrayType *arrt = (ArrayType *) tp; 
+          std::list<std::pair<int, Expression *> >::iterator it;
+          
+          for(it=v2->indexList->begin(); it!=v2->indexList->end();++it){
+          
+            if((*it).second->ntype->numtype!=TYPE_INT) errorlog->addError(31,line,column,NULL); //no es entero
+          
+            if(tp->isarray()){
+            
+            ArrayType *arrt = (ArrayType *) tp;
+            tp = arrt->ntype;
+            
+            }else{
+            
+            errorlog->addError(32,line,column,NULL); // no es un arreglo
+            
+            
+            }
+          
+          }
+      
+        }
+        
       } 
       
       v->ntype = tp;
