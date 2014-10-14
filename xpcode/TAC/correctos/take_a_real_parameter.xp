@@ -1,0 +1,37 @@
+program
+
+function void wtf_this_parameters(var int[][][] par1, bool par2){
+
+  return;
+
+}
+
+
+type oracle {
+
+  int[2][2][2][2][2] ahok;
+  bool entero;
+  int caracter;
+
+}
+
+
+type dummy{
+
+   int tni;
+   bool loob;
+   oracle elcaro;
+
+}
+
+begin
+
+let dummy yo;
+
+
+wtf_this_parameters(yo.elcaro.ahok[yo.tni][1], yo.elcaro.entero);
+//wtf_this_parameters();
+
+
+
+end

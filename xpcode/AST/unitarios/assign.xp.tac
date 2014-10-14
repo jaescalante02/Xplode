@@ -1,19 +1,25 @@
-	_str15_9 --> "SI"
+	_str6_38 --> "CHAO"
 
 
 
 # ------------------------------------------------------
-#../xpcode/unitarios/assign.xp
+#../xpcode/AST/unitarios/assign.xp
 _l1:
 INIT:
-		WR   _str15_9 9 
-		READ _t1 2 
-		MULI _t2 j 4
-		[]:= foo _t2 _t1
-		ADDF _t3 f ff
-		ADDF _t4 _t3 1e-15
-		:=   f _t4 
+		:=[] _t1 z 0
+		PARM _t1  
+		CALL _t2 a 1
+		ADDI _t3 13 0
+		:=[] _t4 z _t3
+		PARM _t4  
+		CALL _t5 a 1
 		EXIT   
+
+# ------------------------------------------------------
+#FUNCTION situado en 6:1
+a:
+		WR   _str6_38 9 
+		RET    
 
 # ------------------------------------------------------
 

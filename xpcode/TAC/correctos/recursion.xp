@@ -1,0 +1,29 @@
+program
+
+function int factorial(int n){
+
+  if(n==1){ return 1;}
+  if(n<1){
+    write("No intentes explotar aunque programes en Xplode!");
+    return -1;
+  } 
+
+  return factorial(n-1)*n;
+
+
+}
+
+
+
+begin
+
+let int n, res;
+
+
+  read(n);
+  res:= factorial(n);
+  write("Permutaciones totales: ", res); 
+
+
+
+end

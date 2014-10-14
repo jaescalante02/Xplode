@@ -1,0 +1,11 @@
+program
+
+begin
+
+let int[5] foo, bar, baz, qux;
+let int i, j, k;
+
+  foo[k] := bar[i] + baz[qux[j]];
+
+
+end

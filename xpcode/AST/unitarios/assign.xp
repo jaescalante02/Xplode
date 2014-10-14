@@ -3,18 +3,22 @@ program
 type ble{char[8] a; bool b; int c; int e;}
 type bla{char[8] f; bool g; int h; ble d;}
 
+function void a(var char[] x){ write("CHAO");}
+
 begin
   let int i,j,k;
   //let float k;
   //let bla[10] x;
   //let int[10][20] m;
-  //let bla z;
+  let bla z;
   let int[3] foo, baz, bar, qux;
   let float f,ff;
+  let char[4][4][4][4] dd;
   
-  write("SI");
-  read(foo[j]);
-  f:=f+ff+1e-15;
+  a(z.f);
+  a(z.d.a);
+  
+
   
  
 end

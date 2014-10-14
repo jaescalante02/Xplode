@@ -814,6 +814,9 @@ statement_assign
       if($1->ntype!=$3->ntype) errorlog->addError(37,$2->line,$2->column,NULL);
       if(!$1->ntype->isprimitive()) errorlog->addError(40,$2->line,$2->column,NULL);
       $$ = new AssignStatement($1,$3); 
+      $$->line = $2->line;
+      $$->column = $2->column;
+      
   }
   | variable error { yyclearin; errorlog->addError(18,line,column,NULL); $$ = new Statement(); }
   ;
@@ -1542,6 +1545,7 @@ function
               while((t->isarray())||(t2->isarray())){              
                 t= t->ntype;
                 t2= t2->ntype;
+                if((!t->isarray())||(!t2->isarray())) break;
               }
               if((t->ntype!=t2->ntype)||(t->numtype!=t2->numtype)) errorlog->addError(37,line,column,&$1->value);
  
@@ -1592,6 +1596,8 @@ function
       
       $$ = new FunctionExpression($1->value,$3); 
       $$->ntype = tp;
+      $$->line = $1->line;
+      $$->column = $1->column; 
   }
   | x_ID x_LPAR x_RPAR {$$ = new FunctionExpression($1->value); }
   ;

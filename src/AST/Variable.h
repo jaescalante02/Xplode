@@ -68,8 +68,11 @@ class Variable : public Expression {
   virtual std::string toTAC(TAC_Program *tac, SymTable *symtab){
 
      std::list<Xplode::Token *>::iterator itvar;
+     std::list<Xplode::Token *>::iterator itvaraux;
      std::list<std::pair<int, Expression *> >::iterator itindex;
      itvar = varList->begin();
+     itvaraux = varList->begin();
+     ++itvaraux;
      int tamitvar=varList->size(), contitvar=1;
      itindex = indexList->begin();
      int tamitindex=indexList->size(), contitindex=1;
@@ -82,7 +85,6 @@ class Variable : public Expression {
         return low;     
      }
 
-     //std::cout << "holi111\n";
      
      Symbol *base_sym, *sym = symtab->find((*itvar)->value);
      base_sym= sym;
@@ -100,9 +102,9 @@ class Variable : public Expression {
       
       if(tipo->isarray()){
 
-        ++itvar;
-        ++contitvar;
-        if((itvar == varList->end())&&(itindex==indexList->end())) break;
+        //++itvar;
+        //++contitvar;
+        if((itvaraux == varList->end())&&(itindex==indexList->end())) break;
         
         ArrayType *arrtp = (ArrayType *) tipo;
         std::vector<int> *index= arrtp->takeindex();
@@ -116,7 +118,8 @@ class Variable : public Expression {
 
         
         while(i<index->size()){
-          //
+        
+          if((itvaraux == varList->end())&&(itindex==indexList->end())) break;
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
           std::stringstream aux;
@@ -136,7 +139,7 @@ class Variable : public Expression {
                    
           itindex++;                          
           i++;
-          if((itvar == varList->end())&&(itindex==indexList->end())) break;
+
         }
 
           inst=new Instruction(MUL_INT_LABEL);
@@ -148,15 +151,33 @@ class Variable : public Expression {
           tac->push_quad(inst);
           res = inst->result;
 
+          if(res_fin!=EMPTY_LABEL){
+          
+            inst=new Instruction(ADD_INT_LABEL);
+            inst->leftop = res;
+            inst->rightop = res_fin;
+            inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+            res = inst->result;     
+            tac->push_quad(inst);
+                      
+          
+          }
+        
+
 
               
       } else if (tipo->haveattributes()) {
       
+
+      
         ++itvar;
         ++contitvar;
-        if((itvar == varList->end())&&(itindex==indexList->end())) break;   
+        ++itvaraux;
+        if((itvar == varList->end())&&(itindex==indexList->end())) break;  
+
         TupleType *tup= (TupleType *) tipo;
         std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value);
+
         if(res==EMPTY_LABEL){
         
           std::stringstream aux;
@@ -174,14 +195,16 @@ class Variable : public Expression {
           inst->rightop = aux.str();
           tac->push_quad(inst); 
           res= inst->result;
+
         } 
         
         tipo = info->first;
-        //std::cout << (long) tipo<< std::endl;
+       // std::cout << (long) tipo<< std::endl;
       
       } else {
       
         ++itvar;
+        ++itvaraux;
         ++contitvar;
       
                     
@@ -224,8 +247,11 @@ class Variable : public Expression {
   Instruction *lval_toTAC(TAC_Program *tac, SymTable *symtab){
 
      std::list<Xplode::Token *>::iterator itvar;
+     std::list<Xplode::Token *>::iterator itvaraux;
      std::list<std::pair<int, Expression *> >::iterator itindex;
      itvar = varList->begin();
+     itvaraux = varList->begin();
+     ++itvaraux;
      int tamitvar=varList->size(), contitvar=1;
      itindex = indexList->begin();
      int tamitindex=indexList->size(), contitindex=1;
@@ -260,9 +286,8 @@ class Variable : public Expression {
       
       if(tipo->isarray()){
 
-        ++itvar;
-        ++contitvar;
-        if((itvar == varList->end())&&(itindex==indexList->end())) break;
+
+        if((itvaraux == varList->end())&&(itindex==indexList->end())) break;
         
         ArrayType *arrtp = (ArrayType *) tipo;
         std::vector<int> *index= arrtp->takeindex();
@@ -272,11 +297,12 @@ class Variable : public Expression {
         ++itindex;
         tipo = tipo->ntype;
         int i=1;
-        //std::cout << "holi\n";
+
 
         
         while(i<index->size()){
-          //
+
+          if((itvaraux == varList->end())&&(itindex==indexList->end())) break; 
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
           std::stringstream aux;
@@ -296,9 +322,9 @@ class Variable : public Expression {
           
           itindex++;                          
           i++;
-          if((itvar == varList->end())&&(itindex==indexList->end())) break; 
+
         }
-          //std::cout << "Pase 3\n"; 
+
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
           std::stringstream aux;
@@ -308,17 +334,23 @@ class Variable : public Expression {
           tac->push_quad(inst);
           res = inst->result;
 
-          //inst=new Instruction(ADD_LABEL);
-          //inst->leftop = res_fin;
-          //inst->rightop = res;
-          //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
-          //tac->push_quad(inst);
-          //res=inst->result;
+          if(res_fin!=EMPTY_LABEL){
+          
+            inst=new Instruction(ADD_INT_LABEL);
+            inst->leftop = res;
+            inst->rightop = res_fin;
+            inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+            res = inst->result;     
+            tac->push_quad(inst);
+                      
+          
+          }
         
        
       } else if (tipo->haveattributes()) {
       
         ++itvar;
+        ++itvaraux;        
         ++contitvar;
         if((itvar == varList->end())&&(itindex==indexList->end())) break;   
         TupleType *tup= (TupleType *) tipo;
@@ -348,6 +380,7 @@ class Variable : public Expression {
       } else {
       
         ++itvar;
+        ++itvaraux;        
         ++contitvar;
       
                     
