@@ -1,0 +1,42 @@
+program
+
+type cadena{
+
+int codigo;
+bool tieneLab;
+
+}
+
+proc bool esMejorCadena(cadena, cadena);
+
+
+function bool comparar_cadenas(var cadena c1, var cadena c2, var esMejorCadena f){
+
+  return f(c1, c2);
+
+
+}
+
+function bool porcodigo(var cadena c1, var cadena c2){
+
+  return c1.codigo>c2.codigo;
+
+}
+
+function bool porlab(var cadena c1, var cadena c2){
+
+  return c1.tieneLab;
+
+
+}
+
+begin
+
+let cadena lenguajes, bases, diseno;
+
+  
+  write(comparar_cadenas(lenguajes, bases, porcodigo));
+  write(comparar_cadenas(lenguajes, diseno, porlab));
+
+
+end
