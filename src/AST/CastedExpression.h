@@ -35,13 +35,13 @@ class CastedExpression : public Expression {
   
   }
 
-  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){
       
       
       //aqui se debe hacer un if-else-if con los posibles operadores + * -
       Instruction *inst = new Instruction();
       inst->leftop = exp->toTAC(tac, symtab);
-      inst->result = tac->labelmaker->getlabel(TEMPORAL);
+      inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));
             
       if(cname=="ITOC"){
       

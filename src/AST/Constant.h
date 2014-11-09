@@ -27,9 +27,9 @@ class Constant : public Expression {
 
   void firstcheck(SymTable *symtb){}
   
-  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
-    
-    return value;
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){
+        
+    return new Quad_Constant(atoi(value.c_str()));
   }
   
   virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
@@ -38,13 +38,13 @@ class Constant : public Expression {
 
     if(value=="TRUE"){
     
-      tac->push_quad(new Instruction(JUMP_LABEL, truelabel));
+      tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(truelabel)));
       tac->new_block();
 
     
     }else if(value=="FALSE"){
     
-      tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+      tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
       tac->new_block();
     
     } else {}  

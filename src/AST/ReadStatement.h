@@ -34,12 +34,10 @@ class ReadStatement : public Statement {
 
   virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label ){
 
-    std::stringstream aux;
-    std::string auxstr = tac->labelmaker->getlabel(TEMPORAL);
-    aux<<var->ntype->numtype;
-    tac->push_quad(new Instruction(READ_LABEL, auxstr, aux.str()));
+    Quad_Expression *auxstr = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));
+    tac->push_quad(new Instruction(READ_LABEL, auxstr, new Quad_Constant(var->ntype->numtype)));
     Instruction *inst = var->lval_toTAC(tac,symtab);
-    if(inst->leftop==EMPTY_LABEL){
+    if(inst->leftop==NULL){
 
       inst->leftop = auxstr;
     }else{  

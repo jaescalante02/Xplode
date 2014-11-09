@@ -39,14 +39,14 @@ class BinaryExpression : public Expression {
   
   }
 
-  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){
       
       
       //aqui se debe hacer un if-else-if con los posibles operadores + * -
       Instruction *inst = new Instruction();
       inst->leftop = lexp->toTAC(tac, symtab);
       inst->rightop = rexp->toTAC(tac, symtab);
-      inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+      inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
       if(opname=="+"){
         if(lexp->ntype->numtype==TYPE_INT)
           inst->op = ADD_INT_LABEL;
@@ -129,11 +129,11 @@ class BinaryExpression : public Expression {
         Instruction *inst = new Instruction(LESS_LABEL);
         inst->result = lexp->toTAC(tac, symtab);
         inst->leftop = rexp->toTAC(tac, symtab);
-        inst->rightop = truelabel;
+        inst->rightop = new Quad_Variable(truelabel);
         tac->push_quad(inst);
         tac->new_block();
         tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
         tac->new_block();
       }
       else if(opname=="<="){
@@ -141,11 +141,11 @@ class BinaryExpression : public Expression {
         Instruction *inst = new Instruction(LEQ_LABEL);
         inst->result = lexp->toTAC(tac, symtab);
         inst->leftop = rexp->toTAC(tac, symtab);
-        inst->rightop = truelabel;
+        inst->rightop = new Quad_Variable(truelabel);
         tac->push_quad(inst);
         tac->new_block();
         tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
         tac->new_block();
 
         
@@ -154,11 +154,11 @@ class BinaryExpression : public Expression {
         Instruction *inst = new Instruction(EQUAL_LABEL);
         inst->result = lexp->toTAC(tac, symtab);
         inst->leftop = rexp->toTAC(tac, symtab);
-        inst->rightop = truelabel;
+        inst->rightop = new Quad_Variable(truelabel);
         tac->push_quad(inst);
         tac->new_block();
         tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
         tac->new_block();
 
       }
@@ -167,11 +167,11 @@ class BinaryExpression : public Expression {
         Instruction *inst = new Instruction(NEQUAL_LABEL);
         inst->result = lexp->toTAC(tac, symtab);
         inst->leftop = rexp->toTAC(tac, symtab);
-        inst->rightop = truelabel;
+        inst->rightop = new Quad_Variable(truelabel);
         tac->push_quad(inst);
         tac->new_block();
         tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
         tac->new_block();
 
       }
@@ -180,11 +180,11 @@ class BinaryExpression : public Expression {
         Instruction *inst = new Instruction(GEQ_LABEL);
         inst->result = lexp->toTAC(tac, symtab);
         inst->leftop = rexp->toTAC(tac, symtab);
-        inst->rightop = truelabel;
+        inst->rightop = new Quad_Variable(truelabel);
         tac->push_quad(inst);
         tac->new_block();
         tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
         tac->new_block();
 
       }
@@ -193,11 +193,11 @@ class BinaryExpression : public Expression {
         Instruction *inst = new Instruction(GREATER_LABEL);
         inst->result = lexp->toTAC(tac, symtab);
         inst->leftop = rexp->toTAC(tac, symtab);
-        inst->rightop = truelabel;
+        inst->rightop = new Quad_Variable(truelabel);
         tac->push_quad(inst);
         tac->new_block();
         tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-        tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+        tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
         tac->new_block();
 
       }

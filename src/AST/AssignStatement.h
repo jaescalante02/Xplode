@@ -39,10 +39,10 @@ class AssignStatement : public Statement {
   virtual void toTAC(TAC_Program *tac, SymTable* symtab, std::string cont_label, std::string break_label){
     Instruction *inst;
 
-    std::string auxstr = rvalue->toTAC(tac, symtab);
+    Quad_Expression* auxstr = rvalue->toTAC(tac, symtab);
     inst = lvalue->lval_toTAC(tac, symtab);
 
-    if(inst->leftop==EMPTY_LABEL){
+    if(inst->leftop==NULL){
 
       inst->leftop = auxstr;
     }else{  

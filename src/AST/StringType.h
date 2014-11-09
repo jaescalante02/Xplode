@@ -30,11 +30,11 @@ class StringType : public Expression {
 
   void firstcheck(SymTable *symtb){}
   
-  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){
     
     tac->push_string(value, str);
     
-    return value;
+    return new Quad_Variable(value);
   }
     
 };

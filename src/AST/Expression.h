@@ -13,6 +13,7 @@
 #include "../SymTable.h"
 #include "TypeDeclaration.h"
 #include "../TAC/TAC_Program.h"
+#include "../TAC/Quad_Expression.h"
 
 class Expression : public Node {
   public:
@@ -22,7 +23,7 @@ class Expression : public Node {
 
   virtual void firstcheck(SymTable *symtb){ }
 
-  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){}
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){}
   
   virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 
                       std::string truelabel, std::string falselabel){}  

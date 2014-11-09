@@ -93,7 +93,7 @@ class Function : public CompoundStatement {
     block->toTAC(tac, cont_label, break_label);
     FunctionType *fun = ( FunctionType *) ntype;
     if(fun->returnType->numtype!=TYPE_VOID)
-      tac->push_quad(new Instruction(RETURN_LABEL,"0"));
+      tac->push_quad(new Instruction(RETURN_LABEL, new Quad_Variable("0")));
     else
       tac->push_quad(new Instruction(RETURN_LABEL));
     tac->new_block();

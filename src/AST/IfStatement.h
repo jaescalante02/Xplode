@@ -71,7 +71,7 @@ class IfStatement : public CompoundStatement {
     if(elseBlock != NULL){ 
 
       std::string end = tac->labelmaker->getlabel(END_LABEL);        
-      tac->push_quad(new Instruction(JUMP_LABEL, end));
+      tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(end)));
       tac->new_block();
       tac->putcomment("ELSE", elseBlock->line, elseBlock->column, end);
       tac->push_quad(new Label(medio));        

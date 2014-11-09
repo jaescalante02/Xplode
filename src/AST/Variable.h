@@ -65,7 +65,7 @@ class Variable : public Expression {
   
   }
 
-  virtual std::string toTAC(TAC_Program *tac, SymTable *symtab){
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable *symtab){
 
      std::list<Xplode::Token *>::iterator itvar;
      std::list<Xplode::Token *>::iterator itvaraux;
@@ -76,13 +76,13 @@ class Variable : public Expression {
      int tamitvar=varList->size(), contitvar=1;
      itindex = indexList->begin();
      int tamitindex=indexList->size(), contitindex=1;
-     std::string res;
+     Quad_Expression* res = NULL;
 
      if((varList->size()==1) && (indexList->size()==0)){
      
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);
-        return low;     
+        return new Quad_Variable(low, 5);     
      }
 
      
@@ -92,7 +92,7 @@ class Variable : public Expression {
      //Instruction *inst = new Instruction(ASSIGN_LABEL);
      //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
      //inst->leftop = sym->name;
-     res= EMPTY_LABEL;
+     //res= EMPTY_LABEL;
      //tac->push_quad(inst);
      TypeDeclaration *tipo = sym->ntype; 
         
@@ -108,7 +108,7 @@ class Variable : public Expression {
         
         ArrayType *arrtp = (ArrayType *) tipo;
         std::vector<int> *index= arrtp->takeindex();
-        std::string res_fin=res;
+        Quad_Expression* res_fin=res;
         
         res = itindex->second->toTAC(tac, symtab);
         ++itindex;
@@ -122,17 +122,15 @@ class Variable : public Expression {
           if((itvaraux == varList->end())&&(itindex==indexList->end())) break;
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
-          std::stringstream aux;
-          aux << (*index)[i];
-          inst->rightop = aux.str();
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->rightop = new Quad_Constant((*index)[i]);
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
           tac->push_quad(inst);
           res = inst->result;
           
           inst=new Instruction(ADD_INT_LABEL);
           inst->leftop = res;
           inst->rightop = itindex->second->toTAC(tac, symtab);
-          inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL)); 
           res = inst->result;     
           tac->push_quad(inst);
           tipo = tipo->ntype;
@@ -144,19 +142,17 @@ class Variable : public Expression {
 
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
-          std::stringstream aux;
-          aux << tipo->size;
-          inst->rightop = aux.str();
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->rightop = new Quad_Constant(tipo->size);
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
           tac->push_quad(inst);
           res = inst->result;
 
-          if(res_fin!=EMPTY_LABEL){
+          if(res_fin!=NULL){
           
             inst=new Instruction(ADD_INT_LABEL);
             inst->leftop = res;
             inst->rightop = res_fin;
-            inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+            inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL)); 
             res = inst->result;     
             tac->push_quad(inst);
                       
@@ -178,21 +174,16 @@ class Variable : public Expression {
         TupleType *tup= (TupleType *) tipo;
         std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value);
 
-        if(res==EMPTY_LABEL){
+        if(res==NULL){
         
-          std::stringstream aux;
-          aux << info->second;
-          res = aux.str();
-          
-        
+          res = new Quad_Constant(info->second);
+                  
         }else { 
         
           inst=new Instruction(ADD_INT_LABEL);
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
           inst->leftop = res;
-          std::stringstream aux;
-          aux << info->second;
-          inst->rightop = aux.str();
+          inst->rightop = new Quad_Constant(info->second);
           tac->push_quad(inst); 
           res= inst->result;
 
@@ -216,15 +207,13 @@ class Variable : public Expression {
 
 
      inst = new Instruction(ASSIGN_ARRAY_LABEL);
-     inst->result = tac->labelmaker->getlabel(TEMPORAL);      
-     inst->leftop = base_sym->name;
+     inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
+     inst->leftop = new Quad_Variable(base_sym->name);
      inst->rightop = res;
      res = inst->result;  
      tac->push_quad(inst);
 
-     std::string low(res);
-     std::transform(low.begin(), low.end(), low.begin(), ::tolower);
-     return low;
+     return res;
         
 
   } 
@@ -234,11 +223,11 @@ class Variable : public Expression {
                       std::string truelabel, std::string falselabel)
   {
 
-    std::string cond = this->toTAC(tac,symtab);
-    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, truelabel));
+    Quad_Expression* cond = this->toTAC(tac,symtab);
+    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, new Quad_Variable(truelabel)));
     tac->new_block();
     tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-    tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+    tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
     tac->new_block();  
 
   }
@@ -255,7 +244,7 @@ class Variable : public Expression {
      int tamitvar=varList->size(), contitvar=1;
      itindex = indexList->begin();
      int tamitindex=indexList->size(), contitindex=1;
-     std::string res;
+     Quad_Expression* res=NULL;
      Instruction *inst;
 
      if((varList->size()==1) && (indexList->size()==0)){
@@ -263,9 +252,9 @@ class Variable : public Expression {
         inst = new Instruction(ASSIGN_LABEL);
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-        inst->result = low;      
-        inst->leftop =  EMPTY_LABEL;
-        inst->rightop = EMPTY_LABEL; 
+        inst->result = new Quad_Variable(low, 15);      
+        inst->leftop =  NULL;
+        inst->rightop = NULL; 
         return inst;     
      }
 
@@ -276,7 +265,7 @@ class Variable : public Expression {
      //Instruction *inst = new Instruction(ASSIGN_LABEL);
      //inst->result = tac->labelmaker->getlabel(TEMPORAL);      
      //inst->leftop = sym->name;
-     res= EMPTY_LABEL;
+     //res= EMPTY_LABEL;
      //tac->push_quad(inst);
      TypeDeclaration *tipo = sym->ntype; 
         
@@ -291,7 +280,7 @@ class Variable : public Expression {
         
         ArrayType *arrtp = (ArrayType *) tipo;
         std::vector<int> *index= arrtp->takeindex();
-        std::string res_fin=res;
+        Quad_Expression* res_fin=res;
         
         res = itindex->second->toTAC(tac, symtab);
         ++itindex;
@@ -305,17 +294,15 @@ class Variable : public Expression {
           if((itvaraux == varList->end())&&(itindex==indexList->end())) break; 
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
-          std::stringstream aux;
-          aux << (*index)[i];
-          inst->rightop = aux.str();
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->rightop = new Quad_Constant( (*index)[i]);
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
           tac->push_quad(inst);
           res = inst->result;
           
           inst=new Instruction(ADD_INT_LABEL);
           inst->leftop = res;
           inst->rightop = itindex->second->toTAC(tac, symtab);
-          inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL)); 
           res = inst->result;     
           tac->push_quad(inst);
           tipo = tipo->ntype;
@@ -327,19 +314,17 @@ class Variable : public Expression {
 
           inst=new Instruction(MUL_INT_LABEL);
           inst->leftop = res;
-          std::stringstream aux;
-          aux << tipo->size;
-          inst->rightop = aux.str();
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->rightop = new Quad_Constant(tipo->size);
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
           tac->push_quad(inst);
           res = inst->result;
 
-          if(res_fin!=EMPTY_LABEL){
+          if(res_fin!=NULL){
           
             inst=new Instruction(ADD_INT_LABEL);
             inst->leftop = res;
             inst->rightop = res_fin;
-            inst->result = tac->labelmaker->getlabel(TEMPORAL); 
+            inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL)); 
             res = inst->result;     
             tac->push_quad(inst);
                       
@@ -355,21 +340,16 @@ class Variable : public Expression {
         if((itvar == varList->end())&&(itindex==indexList->end())) break;   
         TupleType *tup= (TupleType *) tipo;
         std::pair<TypeDeclaration*, int> *info = tup->takeattribute((*itvar)->value);
-        if(res==EMPTY_LABEL){
+        if(res==NULL){
         
-          std::stringstream aux;
-          aux << info->second;
-          res = aux.str();
-          
+          res = new Quad_Constant(info->second);          
         
         }else { 
         
           inst=new Instruction(ADD_INT_LABEL);
-          inst->result = tac->labelmaker->getlabel(TEMPORAL);      
+          inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
           inst->leftop = res;
-          std::stringstream aux;
-          aux << info->second;
-          inst->rightop = aux.str();
+          inst->rightop = new Quad_Constant(info->second);          
           tac->push_quad(inst); 
           res= inst->result;
         } 
@@ -395,9 +375,9 @@ class Variable : public Expression {
 
      std::string low(base_sym->name);
      std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-     inst->result = low;      
+     inst->result = new Quad_Variable(low, 17);      
      inst->leftop = res;
-     inst->rightop = EMPTY_LABEL;     
+     inst->rightop = NULL;     
 
      return inst;
         

@@ -41,7 +41,7 @@ class ReturnStatement : public Statement {
     
     } else {
     
-      std::string ret = exp->toTAC(tac, symtab);    
+      Quad_Expression* ret = exp->toTAC(tac, symtab);    
       tac->push_quad(new Instruction(RETURN_LABEL, ret));
     }
 

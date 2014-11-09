@@ -40,7 +40,7 @@ class FunctionExpression : public Expression {
   
   }
 
-  virtual std::string toTAC(TAC_Program *tac, SymTable *symtab){
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable *symtab){
   
 
     std::list<Expression *>::reverse_iterator iter;
@@ -57,11 +57,9 @@ class FunctionExpression : public Expression {
     }
 
     inst = new Instruction(CALL_LABEL);
-    inst->result = tac->labelmaker->getlabel(TEMPORAL); 
-    inst->leftop = fname;
-    std::stringstream aux;
-    aux << cont;
-    inst->rightop = aux.str();
+    inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL)); 
+    inst->leftop = new Quad_Variable(fname);
+    inst->rightop = new Quad_Constant(cont);
     tac->push_quad(inst);
     return inst->result;
     
@@ -72,11 +70,11 @@ class FunctionExpression : public Expression {
                       std::string truelabel, std::string falselabel)
   {
 
-    std::string cond = this->toTAC(tac,symtab);
-    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, truelabel));
+    Quad_Expression* cond = this->toTAC(tac,symtab);
+    tac->push_quad(new Instruction(NEQUAL_ZERO_LABEL, cond, new Quad_Variable(truelabel)));
     tac->new_block();
     tac->push_quad(new Label(tac->labelmaker->getlabel(LABEL_LABEL)));
-    tac->push_quad(new Instruction(JUMP_LABEL, falselabel));
+    tac->push_quad(new Instruction(JUMP_LABEL, new Quad_Variable(falselabel)));
     tac->new_block();
       
 

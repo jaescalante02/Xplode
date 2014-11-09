@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "Quad.h"
+#include "Quad_Variable.h"
+#include "Quad_Constant.h"
 #include "Label.h"
 
 #ifndef X_INSTRUCTION
@@ -16,13 +18,20 @@
 class Instruction: public Quad {
   public:
   
-  std::string result;
-  std::string leftop;
-  std::string rightop;
+  Quad_Expression* result;
+  Quad_Expression* leftop;
+  Quad_Expression* rightop;
   
-  Instruction(){}
-  Instruction(std::string o, std::string rs=EMPTY_LABEL, std::string l=EMPTY_LABEL, 
-       std::string r=EMPTY_LABEL){
+  Instruction(){
+    
+        result = NULL;
+        leftop = NULL;
+        rightop = NULL; 
+  
+  
+  }
+  Instruction(std::string o, Quad_Expression* rs=NULL, Quad_Expression* l=NULL, 
+       Quad_Expression* r=NULL){
   
     op = o;
     result = rs;
@@ -32,8 +41,21 @@ class Instruction: public Quad {
   }
 
   std::string toString(){
-  
-    return "\t\t"+op+" "+result+" "+leftop+" "+rightop +"\n";
+    if((result==NULL) && (rightop==NULL) && (leftop==NULL)){
+    
+      return "\t\t"+op+"\n";
+    } else if ((rightop==NULL) && (leftop==NULL)) {
+    
+    
+      return "\t\t"+op+" "+result->toString()+"\n";
+    } else if (rightop==NULL) {
+    
+    
+      return "\t\t"+op+" "+result->toString()+" "+leftop->toString()+"\n";
+    } else
+    
+      return "\t\t"+op+" "+result->toString()+" "+leftop->toString()+" "+rightop->toString() +"\n";
+      
   }
 
     

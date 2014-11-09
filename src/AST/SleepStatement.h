@@ -34,7 +34,7 @@ class SleepStatement : public Statement {
              std::string break_label)
   {
 
-  std::string arg = var->toTAC(tac, symtab);
+  Quad_Expression* arg = var->toTAC(tac, symtab);
   tac->push_quad(new Instruction(SLEEP_LABEL, arg));
   //comentario para acompanar
 

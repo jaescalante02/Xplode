@@ -38,11 +38,11 @@ class UnaryOp : public Expression {
   void firstcheck(SymTable *symtb){
   }
 
-  virtual std::string toTAC(TAC_Program *tac, SymTable* symtab){
+  virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){
       
       Instruction *inst = new Instruction();
       inst->leftop = exp->toTAC(tac, symtab);
-      inst->result = tac->labelmaker->getlabel(TEMPORAL);
+      inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));
             
       if(opname=="UMINUS"){
         if(exp->ntype->numtype==TYPE_INT)

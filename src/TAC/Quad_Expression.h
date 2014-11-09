@@ -7,27 +7,18 @@
 #include <cstdlib>
 #include <stdio.h>
 
-#ifndef X_QUAD
-#define X_QUAD
+#ifndef X_QUADEXP
+#define X_QUADEXP
 
 
-class Quad {
+class Quad_Expression{
   public:
   
-  std::string op;
 
 
-  Quad(){}  
+  Quad_Expression(){}  
   
-  Quad(std::string o){
-  
-    op = o;
-
-  
-  }
-  
-  
-  virtual std::string toString(){}
+  virtual std::string toString(){ return "";}
 
     
 };
