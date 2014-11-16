@@ -58,6 +58,7 @@ class Instruction: public Quad {
       
   }
 
+  virtual bool isinstruction(){ return true; }
     
 };
 

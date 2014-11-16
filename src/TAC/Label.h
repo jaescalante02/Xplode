@@ -69,8 +69,6 @@
 class Label: public Quad {
   public:
   
-  std::string op;
-
     
   Label(std::string o){
   
@@ -82,6 +80,8 @@ class Label: public Quad {
   
     return op+":\n";
   }
+ 
+  virtual bool islabel(){ return true; } 
     
 };
 

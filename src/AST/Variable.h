@@ -77,16 +77,17 @@ class Variable : public Expression {
      itindex = indexList->begin();
      int tamitindex=indexList->size(), contitindex=1;
      Quad_Expression* res = NULL;
+     Symbol *base_sym, *sym = symtab->find((*itvar)->value);
 
      if((varList->size()==1) && (indexList->size()==0)){
      
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);
-        return new Quad_Variable(low, 5);     
+        return new Quad_Variable(low, sym->offset);     
      }
 
      
-     Symbol *base_sym, *sym = symtab->find((*itvar)->value);
+     
      base_sym= sym;
      Instruction *inst;
      //Instruction *inst = new Instruction(ASSIGN_LABEL);
@@ -208,7 +209,7 @@ class Variable : public Expression {
 
      inst = new Instruction(ASSIGN_ARRAY_LABEL);
      inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
-     inst->leftop = new Quad_Variable(base_sym->name);
+     inst->leftop = new Quad_Variable(base_sym->name, base_sym->offset);
      inst->rightop = res;
      res = inst->result;  
      tac->push_quad(inst);
@@ -246,20 +247,21 @@ class Variable : public Expression {
      int tamitindex=indexList->size(), contitindex=1;
      Quad_Expression* res=NULL;
      Instruction *inst;
+     Symbol *base_sym, *sym = symtab->find((*itvar)->value);
 
      if((varList->size()==1) && (indexList->size()==0)){
  
         inst = new Instruction(ASSIGN_LABEL);
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-        inst->result = new Quad_Variable(low, 15);      
+        inst->result = new Quad_Variable(low, sym->offset);      
         inst->leftop =  NULL;
         inst->rightop = NULL; 
         return inst;     
      }
 
      
-     Symbol *base_sym, *sym = symtab->find((*itvar)->value);
+
      base_sym= sym;
      
      //Instruction *inst = new Instruction(ASSIGN_LABEL);
@@ -375,7 +377,7 @@ class Variable : public Expression {
 
      std::string low(base_sym->name);
      std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-     inst->result = new Quad_Variable(low, 17);      
+     inst->result = new Quad_Variable(low, base_sym->offset );      
      inst->leftop = res;
      inst->rightop = NULL;     
 

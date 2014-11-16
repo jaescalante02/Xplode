@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include "Quad.h"
 
-
-
 #ifndef X_TACBLOCK
 #define X_TACBLOCK
 
@@ -45,6 +43,7 @@ class TAC_Block {
     return buffer.str();
   
   }  
+
     
 };
 

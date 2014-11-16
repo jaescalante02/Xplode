@@ -11,7 +11,7 @@
 #include "TAC/Quad.h"
 #include "TAC/TAC_Block.h"
 #include "TAC/TAC_Program.h"
-
+#include "MIPS/MIPS_Program.h"
 
 
 
@@ -96,7 +96,11 @@ int main(int argc, char * argv[]) {
     TAC_Program *tac; 
     tac= program->toTAC(program_name); 
     tac->tofile(program_name);
-        
+    
+    MIPS_Program *assembler = new MIPS_Program();
+    assembler->create(tac);
+    assembler->tofile(program_name);
+                    
     //if (st) program->printTable(); 
     return 0;
 

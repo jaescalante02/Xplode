@@ -29,6 +29,9 @@ class Quad {
   
   virtual std::string toString(){}
 
+  virtual bool isinstruction(){ return false; }
+  
+  virtual bool islabel(){ return false; }    
     
 };
 

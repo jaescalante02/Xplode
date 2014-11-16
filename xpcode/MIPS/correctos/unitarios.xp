@@ -1,0 +1,6 @@
+program
+begin
+
+write("Hello world!\n");
+
+end
