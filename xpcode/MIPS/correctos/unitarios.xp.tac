@@ -1,12 +1,25 @@
-	_str4_7 --> "Hello world!\n"
+	_str8_50 --> " "
+	_str8_59 --> "\n"
+	_str8_7 --> "Imprime el resultado de 7+8 y 8-7: "
 
 
 
 # ------------------------------------------------------
+
 #../xpcode/MIPS/correctos/unitarios.xp
+
 _l1:
 INIT:
-		WR   _str4_7 9
+		ALLC 8
+		:=   a_0(0) 7
+		:=   b_4(4) 8
+		WR   _str8_7 9
+		ADDI _t1 a_0(0) b_4(4)
+		WR   _t1 2
+		WR   _str8_50 9
+		SUBI _t2 b_4(4) a_0(0)
+		WR   _t2 2
+		WR   _str8_59 9
 		EXIT
 
 # ------------------------------------------------------

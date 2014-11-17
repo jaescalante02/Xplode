@@ -142,6 +142,7 @@ public:
   
     TAC_Program *tac = new TAC_Program(name);
     
+    tac->push_quad(new Instruction(ALLOC_LABEL, new Quad_Constant(block->table->totaloffset))); 
     block->toTAC(tac, EMPTY_LABEL, EMPTY_LABEL);
     tac->push_quad(new Instruction(EXIT_LABEL));
     tac->new_block();

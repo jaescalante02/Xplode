@@ -33,6 +33,7 @@ class Quad_Constant : public Quad_Expression {
     return aux.str();
   }
 
+  virtual bool isconstant(){ return true;}
     
 };
 

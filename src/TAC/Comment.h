@@ -23,7 +23,7 @@ class Comment: public Quad {
 
   std::string toString(){
   
-    return "#"+op+"\n";
+    return "\n#"+op+"\n\n";
   }
     
 };

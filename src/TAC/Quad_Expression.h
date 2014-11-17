@@ -19,6 +19,8 @@ class Quad_Expression{
   Quad_Expression(){}  
   
   virtual std::string toString(){ return "";}
+  
+  virtual bool isconstant(){ return false;}
 
     
 };

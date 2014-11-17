@@ -15,6 +15,7 @@
 #define LABEL_LABEL            "_l"
 #define COMMENT_LABEL          "#"
 #define INIT_LABEL             "INIT"
+#define ALLOC_LABEL            "ALLC"
 #define ADD_INT_LABEL          "ADDI"
 #define ADD_FLOAT_LABEL        "ADDF"
 #define SUB_INT_LABEL          "SUBI"

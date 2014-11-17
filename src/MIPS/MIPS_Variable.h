@@ -12,8 +12,6 @@
 #define X_MIPSVAR
 
 
-
-
 class MIPS_Variable: public MIPS_Argument {
   public:
   
@@ -24,6 +22,15 @@ class MIPS_Variable: public MIPS_Argument {
     name=n;
   
   }
+ 
+  MIPS_Variable(int n){
+
+    std::stringstream aux;
+    aux << n;
+    name = aux.str();  
+  
+  }
+ 
  
   std::string toString(){ 
   

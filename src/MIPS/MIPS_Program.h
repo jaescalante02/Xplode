@@ -14,10 +14,13 @@
 #include "MIPS_Offset.h"
 #include "MIPS_Instruction.h"
 #include "MIPS_Label.h"
+
 #include "../TAC/TAC_Program.h"
 
 #ifndef X_MIPSPROGRAM
 #define X_MIPSPROGRAM
+
+#include "MIPS_Reg_Allocator.h"
 
 #define MIPS_EXTENSION ".s"
 
@@ -27,9 +30,14 @@ class MIPS_Program {
   
   std::vector<MIPS_Instruction* > instructions;
   std::map<std::string, std::string> strings;
+  MIPS_Reg_Allocator *allocator;
   
 
-  MIPS_Program(){}
+  MIPS_Program(){
+  
+    allocator = new MIPS_Reg_Allocator();
+  
+  }
 
   void create(TAC_Program *tac){
   
@@ -42,6 +50,14 @@ class MIPS_Program {
       }
   
   }
+  
+  void add(MIPS_Instruction *inst){
+  
+    instructions.push_back(inst);
+  
+  
+  }
+  
   
   void tofile(std::string name){
   
@@ -101,13 +117,33 @@ class MIPS_Program {
   
     if(inst->op==EXIT_LABEL){
     
-      exittoMIPS(inst);
+      exit_toMIPS(inst);
     
     
-    } if(inst->op==WRITE_LABEL){
+    } else if(inst->op==WRITE_LABEL){
     
     
-      writetoMIPS(inst);    
+      write_toMIPS(inst);    
+    
+    } else if(inst->op==ALLOC_LABEL){
+    
+    
+      alloc_toMIPS(inst);    
+    
+    } else if(inst->op==ADD_INT_LABEL){
+    
+    
+      addint_toMIPS(inst);    
+    
+    } else if(inst->op==ASSIGN_LABEL){
+    
+    
+      assign_toMIPS(inst);    
+    
+    }else if(inst->op==SUB_INT_LABEL){
+    
+    
+      subint_toMIPS(inst);    
     
     }
   
@@ -120,8 +156,56 @@ class MIPS_Program {
   
   
   }
+
+  void assign_toMIPS(Instruction *inst){
   
-  void exittoMIPS(Instruction *inst){
+  MIPS_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
+                           Rd, Rl));
+  
+  
+  }
+
+  void subint_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+  
+    instructions.push_back(new MIPS_Instruction(SUB_REGISTER_MIPS,
+                           Rd, Rl, Rr));
+  
+  
+  }
+  
+  void addint_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+  
+    instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rd, Rl, Rr));
+  
+  
+  }  
+  
+  void alloc_toMIPS(Instruction *inst){
+  
+    Quad_Constant *cons = (Quad_Constant *) inst->result;
+    
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-cons->num)));
+  
+  
+  
+  }
+  
+  void exit_toMIPS(Instruction *inst){
   
   
     instructions.push_back(new MIPS_Instruction(LI_MIPS,
@@ -133,7 +217,7 @@ class MIPS_Program {
   
   }
 
-  void writetoMIPS(Instruction *inst){
+  void write_toMIPS(Instruction *inst){
   
   
     Quad_Constant *aux= (Quad_Constant *) inst->leftop;
@@ -149,11 +233,31 @@ class MIPS_Program {
                              new MIPS_Variable(SYSCALL_WRITE_STRING_NUMBER)));
                                        
       instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));    
+    } else if(aux->num==TYPE_INT){
+    
+      MIPS_Register *Rd;  
+      this->allocator->getreg(this, inst, &Rd);
+      
+      Quad_Variable *instvar= (Quad_Variable *) inst->result;
+      instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
+                             new MIPS_Register(ARGUMENT_REGISTER),           
+                             Rd));
+                             
+      instructions.push_back(new MIPS_Instruction(LI_MIPS, 
+                             new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
+                             new MIPS_Variable(SYSCALL_WRITE_INT_NUMBER)));
+                                       
+      instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));    
+    
+    
     }
   
   }
     
 };
+
+
+#include "MIPS_Reg_Allocator.cpp"
 
 #endif
 

@@ -22,9 +22,18 @@ class Quad_Variable : public Quad_Expression {
 
   Quad_Variable(){}  
   
-  Quad_Variable(std::string v, int off= NO_OFFSET_NUM){
-  
-    var = v;
+  Quad_Variable(std::string v, int off= NO_OFFSET_NUM){  
+    
+    if(off==NO_OFFSET_NUM){
+    
+      var=v;
+    
+    }else{
+    
+      std::stringstream aux;
+      aux << off;    
+     var = v+"_"+aux.str();  
+    } 
     offset = off;
   
   }
