@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "Quad_Expression.h"
+#include "Label.h"
 
 #ifndef X_QUADVAR
 #define X_QUADVAR
@@ -46,6 +47,14 @@ class Quad_Variable : public Quad_Expression {
     std::stringstream aux;
     aux << offset;
     return var + "(" + aux.str() + ")";
+  }
+
+  bool istemporal(){
+  
+  if((var.find(TEMPORAL)==0)&&(offset==NO_OFFSET_NUM)) return true;
+  
+  return false;
+  
   }
 
     

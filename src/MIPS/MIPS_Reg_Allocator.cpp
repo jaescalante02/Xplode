@@ -27,15 +27,16 @@
   void MIPS_Reg_Allocator::getreg(MIPS_Program *assembler, Instruction *inst, MIPS_Register **Rd, 
                                   MIPS_Register **Rl, MIPS_Register **Rr){
   
-  
-    *Rd = register_alloc(assembler, inst->result);
-    if ((inst->leftop)&&(Rl))
-        *Rl = register_alloc(assembler, inst->leftop);
+
     if ((inst->rightop)&&(Rr))  
-        *Rr = register_alloc(assembler, inst->rightop);
+        *Rr = register_alloc(assembler, inst->rightop);  
+    if ((inst->leftop)&&(Rl))
+        *Rl = register_alloc(assembler, inst->leftop);        
+    if(Rd) *Rd = register_alloc(assembler, inst->result);
+
  
  
-    //caso Constant
+    //Caso Constant
 
         
     if(inst->result->isconstant()) free.push(*Rd);
@@ -43,6 +44,10 @@
     if((inst->leftop) &&(Rl) && (inst->leftop->isconstant())) free.push(*Rl);
 
     if((inst->rightop) && (Rr) && (inst->rightop->isconstant())) free.push(*Rr);    
+    
+    //Caso temporal
+    
+    
     
    
   }

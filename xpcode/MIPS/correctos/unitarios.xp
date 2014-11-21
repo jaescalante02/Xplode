@@ -1,10 +1,20 @@
 program
 begin
 
-let int a, b;
+let int[20] a;
+let int i;
 
-a:=7;
-b:=8;
-write("Imprime el resultado de 7+8 y 8-7: ", a+b," ",b-a, "\n");
+i:=0;
+
+while(i<20){
+
+a[i]:= i + 8;
+i:=i+1;
+}
+
+write("a[4]=", a[4], "\n");
+write("a[11]=", a[11], "\n");
+write("a[4]=", a[4], "\n");
+write("i=", i, "\n");
 
 end

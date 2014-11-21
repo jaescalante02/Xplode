@@ -140,10 +140,80 @@ class MIPS_Program {
     
       assign_toMIPS(inst);    
     
-    }else if(inst->op==SUB_INT_LABEL){
+    } else if(inst->op==SUB_INT_LABEL){
     
     
       subint_toMIPS(inst);    
+    
+    } else if(inst->op==MUL_INT_LABEL){
+    
+    
+      multint_toMIPS(inst);    
+    
+    } else if(inst->op==DIV_INT_LABEL){
+    
+    
+      divint_toMIPS(inst);    
+    
+    } else if(inst->op==READ_LABEL){
+    
+    
+      read_toMIPS(inst);    
+    
+    } else if(inst->op==LESS_LABEL){
+    
+    
+      less_toMIPS(inst);    
+    
+    } else if(inst->op==JUMP_LABEL){
+    
+    
+      jump_toMIPS(inst);    
+    
+    } else if(inst->op==LEQ_LABEL){
+    
+    
+      lesseq_toMIPS(inst);    
+    
+    } else if(inst->op==EQUAL_LABEL){
+    
+    
+      equal_toMIPS(inst);    
+    
+    } else if(inst->op==NEQUAL_LABEL){
+    
+    
+      nequal_toMIPS(inst);    
+    
+    } else if(inst->op==GREATER_LABEL){
+    
+    
+      greater_toMIPS(inst);    
+    
+    } else if(inst->op==GEQ_LABEL){
+    
+    
+      greatereq_toMIPS(inst);    
+    
+    } else if(inst->op==UMINUS_INT_LABEL){
+    
+    
+      uminusint_toMIPS(inst);    
+    
+    } else if(inst->op==ASSIGN_TO_ARRAY_LABEL){
+    
+    
+      assigntoarray_toMIPS(inst);    
+    
+    } else if(inst->op==ASSIGN_TO_ARRAY_LABEL){
+    
+    
+      assigntoarray_toMIPS(inst);    
+    
+    } else if(inst->op==ASSIGN_ARRAY_LABEL){
+    
+    
+      assignfromarray_toMIPS(inst);    
     
     }
   
@@ -157,14 +227,194 @@ class MIPS_Program {
   
   }
 
+  void jump_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->result;
+  
+    this->allocator->getreg(this, inst, &Rd);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_MIPS,
+                           new MIPS_Variable(instvar->var)));    
+  
+  
+  
+  }
+
+  void equal_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rl, *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_EQUAL_MIPS,
+                           Rd, Rl, new MIPS_Variable(instvar->var)));    
+  
+  
+  
+  }
+
+  void nequal_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rl, *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_NEQUAL_MIPS,
+                           Rd, Rl, new MIPS_Variable(instvar->var)));    
+  
+  
+  
+  }
+  
+  void less_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rl, *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_LESS_MIPS,
+                           Rd, Rl, new MIPS_Variable(instvar->var)));    
+  
+  
+  
+  }
+  
+  void greater_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rl, *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_GREATER_MIPS,
+                           Rd, Rl, new MIPS_Variable(instvar->var)));    
+  
+  
+  
+  }  
+
+  void lesseq_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rl, *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_LESS_EQ_MIPS,
+                           Rd, Rl, new MIPS_Variable(instvar->var)));  
+  
+  
+  }
+
+  void greatereq_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rl, *Rd;
+  Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(JUMP_GREATER_EQ_MIPS,
+                           Rd, Rl, new MIPS_Variable(instvar->var)));  
+  
+  
+  }
+
   void assign_toMIPS(Instruction *inst){
   
-  MIPS_Register *Rr, *Rl, *Rd;
+  MIPS_Register *Rl, *Rd;
   
     this->allocator->getreg(this, inst, &Rd, &Rl);
   
     instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
                            Rd, Rl));
+  
+  
+  }
+
+  void assigntoarray_toMIPS(Instruction *inst){
+    //caso global falta
+    MIPS_Register *Rr, *Rl, *Rd;
+        
+    this->allocator->getreg(this, inst, NULL, &Rl, &Rr);
+ 
+    Quad_Variable *var = (Quad_Variable *) inst->result;
+
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Rl, Rl, new MIPS_Variable(var->offset))); 
+
+    instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rl, Rl, SP_REGISTER)); 
+
+
+  
+    instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rr, new MIPS_Offset(Rl->number)));    
+  
+  
+  }
+  
+  void assignfromarray_toMIPS(Instruction *inst){
+  
+    MIPS_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getreg(this, inst, &Rd, NULL, &Rr);
+ 
+    Quad_Variable *var = (Quad_Variable *) inst->leftop;
+
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Rr, Rr, new MIPS_Variable(var->offset))); 
+
+    instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rr, Rr, SP_REGISTER)); 
+
+
+  
+    instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           Rd, new MIPS_Offset(Rr->number)));
+    
+
+  }
+
+
+  void uminusint_toMIPS(Instruction *inst){
+  
+    MIPS_Register *Rd, *Rl;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+  
+    instructions.push_back(new MIPS_Instruction(UMINUSINT_MIPS,
+                           Rd, Rl));
+  
+  
+  }
+
+  void divint_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+  
+    instructions.push_back(new MIPS_Instruction(DIV_REGISTER_MIPS,
+                           Rl, Rr));
+  
+    instructions.push_back(new MIPS_Instruction(MOVE_FROM_LO_MIPS, Rd));
+  
+  
+  }
+
+
+  void multint_toMIPS(Instruction *inst){
+  
+  MIPS_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+  
+    instructions.push_back(new MIPS_Instruction(MUL_REGISTER_MIPS,
+                           Rd, Rl, Rr));
   
   
   }
@@ -253,6 +503,34 @@ class MIPS_Program {
     }
   
   }
+  
+  void read_toMIPS(Instruction *inst){
+  
+  
+    Quad_Constant *aux= (Quad_Constant *) inst->leftop;
+    if(aux->num==TYPE_INT){
+    
+      MIPS_Register *Rd;  
+      this->allocator->getreg(this, inst, &Rd);
+                                   
+      instructions.push_back(new MIPS_Instruction(LI_MIPS, 
+                             new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
+                             new MIPS_Variable(SYSCALL_READ_INT_NUMBER)));
+                                       
+      instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));  
+      
+      Quad_Variable *instvar= (Quad_Variable *) inst->result;
+      instructions.push_back(new MIPS_Instruction(MOVE_MIPS,           
+                             Rd, new MIPS_Register(RESULT_REGISTER)));  
+    
+    
+    }
+
+  
+  
+  }
+
+  
     
 };
 

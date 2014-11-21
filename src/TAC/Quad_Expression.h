@@ -22,6 +22,8 @@ class Quad_Expression{
   
   virtual bool isconstant(){ return false;}
 
+  virtual bool istemporal(){ return false; }
+
     
 };
 

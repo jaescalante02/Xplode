@@ -15,10 +15,10 @@
 #define LABEL_LABEL            "_l"
 #define COMMENT_LABEL          "#"
 #define INIT_LABEL             "INIT"
-#define ALLOC_LABEL            "ALLC"
-#define ADD_INT_LABEL          "ADDI"
+#define ALLOC_LABEL            "ALLC"//
+#define ADD_INT_LABEL          "ADDI"//
 #define ADD_FLOAT_LABEL        "ADDF"
-#define SUB_INT_LABEL          "SUBI"
+#define SUB_INT_LABEL          "SUBI"//
 #define SUB_FLOAT_LABEL        "SUBF"
 #define UMINUS_INT_LABEL       "NEGI"
 #define UMINUS_FLOAT_LABEL     "NEGF"
@@ -27,37 +27,37 @@
 #define CTOI_LABEL             "CTOI"
 #define ITOF_LABEL             "ITOF"
 #define FTOI_LABEL             "FTOI"
-#define MUL_INT_LABEL          "MULI"
+#define MUL_INT_LABEL          "MULI"//
 #define MUL_FLOAT_LABEL        "MULF"
 #define POWER_LABEL            "POW "
-#define DIV_INT_LABEL          "DIVI"
+#define DIV_INT_LABEL          "DIVI"//
 #define DIV_FLOAT_LABEL        "DIVF"
-#define EQUAL_ZERO_LABEL       "EQZ "  //false
-#define EQUAL_LABEL            "EQ  "
+#define EQUAL_ZERO_LABEL       "EQZ "    //false
+#define EQUAL_LABEL            "EQ  "//
 #define OP_EQUAL_LABEL         "==  "
-#define NEQUAL_ZERO_LABEL      "NEQZ" //true
-#define NEQUAL_LABEL           "NEQ "
+#define NEQUAL_ZERO_LABEL      "NEQZ"   //true
+#define NEQUAL_LABEL           "NEQ "//
 #define OP_NEQUAL_LABEL        "!=  "
-#define LESS_LABEL             "LESS"
+#define LESS_LABEL             "LESS"//
 #define OP_LESS_LABEL          "<   "
-#define GREATER_LABEL          "GRET"
+#define GREATER_LABEL          "GRET"//
 #define OP_GREATER_LABEL       ">   "
-#define GEQ_LABEL              "GEQ "
+#define GEQ_LABEL              "GEQ "//
 #define OP_GEQ_LABEL           ">=  "
-#define LEQ_LABEL              "LEQ "
+#define LEQ_LABEL              "LEQ "//
 #define OP_LEQ_LABEL           "<=  "
 #define AND_LABEL              "AND "
 #define OR_LABEL               "OR  "
-#define ASSIGN_LABEL           ":=  "
+#define ASSIGN_LABEL           ":=  "//
 #define ASSIGN_ARRAY_LABEL     ":=[]"
 #define ASSIGN_TO_ARRAY_LABEL  "[]:="
 #define CALL_LABEL             "CALL"
 #define PARAM_LABEL            "PARM"
-#define JUMP_LABEL             "JUMP"
+#define JUMP_LABEL             "JUMP"//
 #define RETURN_LABEL           "RET "
-#define WRITE_LABEL            "WR  "
-#define READ_LABEL             "READ"
-#define EXIT_LABEL             "EXIT"
+#define WRITE_LABEL            "WR  "//
+#define READ_LABEL             "READ"//
+#define EXIT_LABEL             "EXIT"//
 #define SLEEP_LABEL            "ZZZZ"
 #define TEMPORAL               "_t"
 #define FOR_LABEL              "_for"

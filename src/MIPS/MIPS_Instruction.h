@@ -12,19 +12,35 @@
 #ifndef X_MIPSINST
 #define X_MIPSINST
 
-#define LA_MIPS "la"
-#define LI_MIPS "li"
-#define SYSCALL_MIPS "syscall"
-#define ADD_REGISTER_MIPS "add"
-#define ADD_CONSTANT_MIPS "addi"
-#define SUB_REGISTER_MIPS "sub" 
-#define MOVE_MIPS "move"
-#define SYSCALL_NUMBER_REGISTER 2
-#define SYSCALL_EXIT_NUMBER "10"
-#define SYSCALL_WRITE_STRING_NUMBER 4
-#define SYSCALL_WRITE_INT_NUMBER 1
-#define ARGUMENT_REGISTER 4
-#define SP_REGISTER new MIPS_Register(29)
+#define LA_MIPS                           "la"
+#define LI_MIPS                           "li"
+#define STOREW_MIPS                       "sw"
+#define LOADW_MIPS                        "lw"
+//#define LO_REGISTER_MIPS                  "Lo"
+#define SYSCALL_MIPS                      "syscall"
+#define UMINUSINT_MIPS                    "neg"
+#define ADD_REGISTER_MIPS                 "add"
+#define ADD_CONSTANT_MIPS                 "addi"
+#define SUB_REGISTER_MIPS                 "sub" 
+#define MUL_REGISTER_MIPS                 "mul" 
+#define DIV_REGISTER_MIPS                 "div" 
+#define MOVE_MIPS                         "move"
+#define MOVE_FROM_LO_MIPS                 "mflo"
+#define JUMP_MIPS                         "b"
+#define JUMP_EQUAL_MIPS                   "beq"
+#define JUMP_NEQUAL_MIPS                  "bne"
+#define JUMP_LESS_MIPS                    "blt"
+#define JUMP_GREATER_MIPS                 "bgt"
+#define JUMP_LESS_EQ_MIPS                 "ble"
+#define JUMP_GREATER_EQ_MIPS              "bge"
+#define SYSCALL_NUMBER_REGISTER           2
+#define SYSCALL_EXIT_NUMBER               "10"
+#define SYSCALL_WRITE_STRING_NUMBER       4
+#define SYSCALL_WRITE_INT_NUMBER          1
+#define SYSCALL_READ_INT_NUMBER           5
+#define ARGUMENT_REGISTER                 4
+#define RESULT_REGISTER                   2
+#define SP_REGISTER                       new MIPS_Register(29)
 
 class MIPS_Instruction {
   public:
