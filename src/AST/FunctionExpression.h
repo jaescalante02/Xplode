@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <list> 
 #include <map>
+#include <set> 
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
@@ -16,6 +17,8 @@ class FunctionExpression : public Expression {
   public:
   std::string fname;
   std::list<Expression *> *argList; 
+  std::set<int> *reference; 
+  
   FunctionExpression(std::string n, std::list<Expression *> *a = 0){fname = n; argList = a; }
   void print(int tab){
    std::cout << std::string(tab, ' ') << "FUNCTION \n";
@@ -47,12 +50,14 @@ class FunctionExpression : public Expression {
     int cont=0;
     Instruction *inst;
 
-    for(iter = argList->rbegin();iter != argList->rend() ;++iter){
+    int cont2 = argList->size();
+
+    for(iter = argList->rbegin();iter != argList->rend() ;++iter, --cont2){
   
-      inst = new Instruction(PARAM_LABEL);
+      inst = new Instruction((reference->count(cont2)>0)?PARAM_REF_LABEL:PARAM_LABEL);
       inst->result = (*iter)->toTAC(tac, symtab);
       tac->push_quad(inst);
-      cont++;
+      ++cont;
 
     }
 
@@ -64,6 +69,8 @@ class FunctionExpression : public Expression {
     return inst->result;
     
   }
+
+  
 
 
   virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 

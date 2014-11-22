@@ -205,15 +205,20 @@ class MIPS_Program {
     
       assigntoarray_toMIPS(inst);    
     
-    } else if(inst->op==ASSIGN_TO_ARRAY_LABEL){
-    
-    
-      assigntoarray_toMIPS(inst);    
-    
-    } else if(inst->op==ASSIGN_ARRAY_LABEL){
+    }  else if(inst->op==ASSIGN_ARRAY_LABEL){
     
     
       assignfromarray_toMIPS(inst);    
+    
+    } else if(inst->op==PARAM_LABEL){
+    
+    
+      param_toMIPS(inst);    
+    
+    } else if(inst->op==CALL_LABEL){
+    
+    
+      call_toMIPS(inst);    
     
     }
   
@@ -223,9 +228,45 @@ class MIPS_Program {
   
   void exttoMIPS(Instruction *inst){
   
+
+  }
+
+  void param_toMIPS(Instruction *inst){
   
+    MIPS_Register *Rr, *Rl, *Rd;
+        
+    this->allocator->getreg(this, inst, &Rd);
+    
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+                                 
+    instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rd, new MIPS_Offset(29)));
   
   }
+
+  void call_toMIPS(Instruction *inst){
+  
+    MIPS_Register *Rr, *Rl, *Rd;
+        //Rr lo quite numero de parametros
+    this->allocator->getreg(this, inst, &Rd, &Rl);
+
+    Quad_Variable *instvar= (Quad_Variable *) inst->leftop;
+
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+
+    instructions.push_back(new MIPS_Instruction(LA_MIPS, Rl, 
+                                              new MIPS_Variable(instvar->var)));  
+
+    instructions.push_back(new MIPS_Instruction(JUMP_FUNCTION_MIPS, Rl));  
+
+
+    this->allocator->flush();
+  }  
+  
 
   void jump_toMIPS(Instruction *inst){
   

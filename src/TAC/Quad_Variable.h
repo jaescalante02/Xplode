@@ -20,22 +20,29 @@ class Quad_Variable : public Quad_Expression {
   
   std::string var;
   int offset;
+  bool ref;
+  bool arg;
+  int tam;
 
   Quad_Variable(){}  
   
-  Quad_Variable(std::string v, int off= NO_OFFSET_NUM){  
+  Quad_Variable(std::string v, int off= NO_OFFSET_NUM, bool r=false, bool a=false, int t=0){  
     
     if(off==NO_OFFSET_NUM){
     
       var=v;
     
-    }else{
+    }else {
     
       std::stringstream aux;
       aux << off;    
      var = v+"_"+aux.str();  
     } 
+    
     offset = off;
+    ref=r;
+    arg=a;
+    tam=t;
   
   }
   
@@ -45,8 +52,8 @@ class Quad_Variable : public Quad_Expression {
     if (offset==NO_OFFSET_NUM) return var;
   
     std::stringstream aux;
-    aux << offset;
-    return var + "(" + aux.str() + ")";
+    aux << var << "(" << offset << ")(r->" << ref << ")(arg->" << arg <<")(tam=" <<tam <<")";
+    return aux.str();
   }
 
   bool istemporal(){

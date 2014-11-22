@@ -147,6 +147,17 @@
           return ((*table).count(var)>0);
         } 
 
+        void SymTable::tableofargs(){
+        
+            std::map<std::string, Symbol *>::iterator pos;
+            for (pos = (*table).begin(); pos != (*table).end(); ++pos) {
+            
+              pos->second->isarg = true;            
+            }
+
+        
+        }
+
 
 
 

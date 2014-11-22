@@ -83,7 +83,7 @@ class Variable : public Expression {
      
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);
-        return new Quad_Variable(low, sym->offset);     
+        return new Quad_Variable(low, sym->offset, sym->porref, sym->isarg, sym->ntype->size);     
      }
 
      
@@ -209,7 +209,7 @@ class Variable : public Expression {
 
      inst = new Instruction(ASSIGN_ARRAY_LABEL);
      inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
-     inst->leftop = new Quad_Variable(base_sym->name, base_sym->offset);
+     inst->leftop = new Quad_Variable(base_sym->name, base_sym->offset, base_sym->porref, base_sym->isarg, tipo->size);
      inst->rightop = res;
      res = inst->result;  
      tac->push_quad(inst);
@@ -254,7 +254,7 @@ class Variable : public Expression {
         inst = new Instruction(ASSIGN_LABEL);
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-        inst->result = new Quad_Variable(low, sym->offset);      
+        inst->result = new Quad_Variable(low, sym->offset, sym->porref, sym->isarg, sym->ntype->size);      
         inst->leftop =  NULL;
         inst->rightop = NULL; 
         return inst;     

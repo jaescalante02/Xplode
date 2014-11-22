@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <list> 
 #include <map>
+#include <set>
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
@@ -27,6 +28,7 @@ class Function : public CompoundStatement {
   std::string returnType;
   std::string fname;
 
+
   Function(SymTable *s,std::string name,Node *t,Node *b) { 
 
     symtb = s;
@@ -35,6 +37,11 @@ class Function : public CompoundStatement {
     fname =name; 
     //parameters = (TupleType *) p; 
     block  = (Block *) b;
+    
+    FunctionType *f = (FunctionType *) t;
+    f->withreference(symtb);    
+    symtb->tableofargs();
+    
     //if (parameters != 0){
     //  block->table->add(parameters);
     //}
@@ -90,6 +97,7 @@ class Function : public CompoundStatement {
   
     tac->putcomment("FUNCTION", line, column, EMPTY_LABEL);
     tac->push_quad(new Label(fname));
+    tac->push_quad(new Instruction(ALLOC_FUNC_LABEL, new Quad_Constant(block->table->totaloffset - symtb->totaloffset)));
     block->toTAC(tac, cont_label, break_label);
     FunctionType *fun = ( FunctionType *) ntype;
     if(fun->returnType->numtype!=TYPE_VOID)

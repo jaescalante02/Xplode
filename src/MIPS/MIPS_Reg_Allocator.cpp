@@ -32,7 +32,7 @@
         *Rr = register_alloc(assembler, inst->rightop);  
     if ((inst->leftop)&&(Rl))
         *Rl = register_alloc(assembler, inst->leftop);        
-    if(Rd) *Rd = register_alloc(assembler, inst->result);
+    if(Rd) *Rd = lvalue_register_alloc(assembler, inst->result);
 
  
  
@@ -41,7 +41,7 @@
         
     if(inst->result->isconstant()) free.push(*Rd);
         
-    if((inst->leftop) &&(Rl) && (inst->leftop->isconstant())) free.push(*Rl);
+    if((inst->leftop) && (Rl) && (inst->leftop->isconstant())) free.push(*Rl);
 
     if((inst->rightop) && (Rr) && (inst->rightop->isconstant())) free.push(*Rr);    
     
@@ -81,6 +81,18 @@
       MIPS_Register *reg = free.front();
       free.pop();
       used_registers[var->var] = reg;
+
+      if(var->offset!=NO_OFFSET_NUM){
+        assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           reg, reg, new MIPS_Variable(var->offset))); 
+
+        assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           reg, reg, SP_REGISTER)); 
+  
+        assembler->add(new MIPS_Instruction(LOADW_MIPS,
+                           reg, new MIPS_Offset(reg->number)));
+      }
+      
       return reg;
           
     }
@@ -91,4 +103,68 @@
   
   }
    
+
+  MIPS_Register *MIPS_Reg_Allocator::lvalue_register_alloc(MIPS_Program *assembler, Quad_Expression *exp){
+
+
+
+    if(exp->isconstant()){
+    
+      MIPS_Register *reg = free.front();
+      free.pop();      
+      Quad_Constant *cons = (Quad_Constant *) exp;
+      assembler->add(new MIPS_Instruction(LI_MIPS, reg, 
+                           new MIPS_Variable(cons->num)));
+    
+      return reg;
+    }
+ 
+    //Estoy asumiendo que tengo registros
+
+    Quad_Variable* var = (Quad_Variable *) exp;
+    
+    if(used_registers.count(var->var)>0){
+
+      return used_registers[var->var];
+
+    } else {
+    
+      MIPS_Register *reg = free.front();
+      free.pop();
+      used_registers[var->var] = reg;
+      
+
+      
+      return reg;
+          
+    }
+          
+    
+  
+  
+  
+  }
+
+  void MIPS_Reg_Allocator::flush(){
+
+    std::map<std::string, MIPS_Register *>::iterator it;
+    
+    
+    for(it=used_registers.begin();it!=used_registers.begin(); ++it){
+    
+      free.push(it->second);
+    
+    }
+    
+    used_registers.clear();
+
+
+  }
+
+
+
+
+
+
+
 

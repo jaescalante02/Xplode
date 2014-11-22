@@ -33,6 +33,7 @@
 #define JUMP_GREATER_MIPS                 "bgt"
 #define JUMP_LESS_EQ_MIPS                 "ble"
 #define JUMP_GREATER_EQ_MIPS              "bge"
+#define JUMP_FUNCTION_MIPS                "jal"
 #define SYSCALL_NUMBER_REGISTER           2
 #define SYSCALL_EXIT_NUMBER               "10"
 #define SYSCALL_WRITE_STRING_NUMBER       4

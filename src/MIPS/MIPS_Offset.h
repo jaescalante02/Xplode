@@ -29,7 +29,7 @@ class MIPS_Offset: public MIPS_Argument {
   
   std::stringstream aux;
   
-  aux << "0($"<<number<<")";
+  aux << "4($"<<number<<")";
   
   return aux.str();
   

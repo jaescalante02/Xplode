@@ -36,6 +36,7 @@ class Symbol {
         int offset;
         int column;
         bool porref;
+        bool isarg;
 
         
         /* define defined
@@ -57,6 +58,7 @@ class Symbol {
             hidden = h;
             istype = i;
             porref = pr;
+            isarg = false;
             //defined = e;
             //dimensions = d;
             //pt = p;

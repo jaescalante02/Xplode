@@ -3,11 +3,13 @@
 #include <stdio.h>
 #include <list> 
 #include <map>
+#include <set>
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
 #include "Node.h"
 #include "TypeDeclaration.h"
+#include "TupleType.h"
 
 #ifndef X_FUNCTYPE
 #define X_FUNCTYPE
@@ -19,6 +21,7 @@ class FunctionType : public TypeDeclaration {
   public:
 
     TypeDeclaration *returnType, *arguments, *extend;
+    std::set<int> *reference; 
     
     FunctionType(Node *ret, Node *args,Node *e) {
 
@@ -48,6 +51,15 @@ class FunctionType : public TypeDeclaration {
       if (extend!=NULL){
         std::cout << std::string(tab, ' ') << "extend: " << (long int) extend << std::endl;
      }
+    }
+    
+    
+    void withreference(SymTable *symtb){
+    
+      TupleType *tt = (TupleType *) arguments;
+      reference = tt->withreference(symtb);
+    
+    
     }
 
 

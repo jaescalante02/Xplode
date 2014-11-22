@@ -51,6 +51,8 @@ class SymTable {
         Symbol *findall(std::string variable);
         
         SymTable *getRoot();
+        
+        void tableofargs();
              
 };
 

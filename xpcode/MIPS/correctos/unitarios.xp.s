@@ -1,12 +1,7 @@
 .data
-_str15_22:  .asciiz "\n"
-_str15_7:  .asciiz "a[4]="
-_str16_24:  .asciiz "\n"
-_str16_7:  .asciiz "a[11]="
-_str17_22:  .asciiz "\n"
-_str17_7:  .asciiz "a[4]="
-_str18_16:  .asciiz "\n"
-_str18_7:  .asciiz "i="
+_str39_30:  .asciiz "\n"
+_str7_46:  .asciiz "\n"
+_str7_7:  .asciiz "Llamada a la función exitosa a="
 
 .text
 
@@ -27,76 +22,96 @@ _l3:
 		b _end1
 _l2:
 
-		li $9 8
-		add $10 $6 $9
-		li $11 4
-		mul $12 $6 $11
-		addi $12 $12 0
-		add $12 $12 $29
-		sw $10 0($12)
-		li $13 1
-		add $14 $6 $13
-		move $6 $14
-		li $15 20
-		blt $6 $15 _l2
+		li $9 4
+		mul $10 $6 $9
+		addi $10 $10 0
+		add $10 $10 $29
+		sw $6 4($10)
+		li $11 1
+		add $12 $6 $11
+		move $6 $12
+		li $13 20
+		blt $6 $13 _l2
 _l4:
 
 		b _end1
 _end1:
 
-		la $4 _str15_7
-		li $2 4
-		syscall
-		li $16 4
-		li $17 4
-		mul $18 $17 $16
-		addi $18 $18 0
-		add $18 $18 $29
-		lw $19 0($18)
-		move $4 $19
+		li $14 4
+		li $15 2
+		mul $16 $15 $14
+		addi $16 $16 0
+		add $16 $16 $29
+		lw $17 4($16)
+		move $4 $17
 		li $2 1
 		syscall
-		la $4 _str15_22
-		li $2 4
-		syscall
-		la $4 _str16_7
-		li $2 4
-		syscall
-		li $20 4
-		li $21 11
-		mul $22 $21 $20
-		addi $22 $22 0
-		add $22 $22 $29
-		lw $23 0($22)
-		move $4 $23
+		li $18 4
+		li $19 3
+		mul $20 $19 $18
+		addi $20 $20 0
+		add $20 $20 $29
+		lw $21 4($20)
+		move $4 $21
 		li $2 1
 		syscall
-		la $4 _str16_24
-		li $2 4
-		syscall
-		la $4 _str17_7
-		li $2 4
-		syscall
-		li $24 4
-		li $25 4
-		mul $5 $25 $24
-		addi $5 $5 0
-		add $5 $5 $29
-		lw $7 0($5)
-		move $4 $7
+		li $22 4
+		li $23 11
+		mul $24 $23 $22
+		addi $24 $24 0
+		add $24 $24 $29
+		lw $25 4($24)
+		move $4 $25
 		li $2 1
 		syscall
-		la $4 _str17_22
-		li $2 4
-		syscall
-		la $4 _str18_7
-		li $2 4
-		syscall
-		move $4 $6
+		li $5 4
+		li $7 2
+		mul $9 $7 $5
+		addi $9 $9 0
+		add $9 $9 $29
+		lw $11 4($9)
+		move $4 $11
 		li $2 1
 		syscall
-		la $4 _str18_16
+		la $4 _str39_30
 		li $2 4
 		syscall
 		li $2 10
 		syscall
+f:
+
+		la $4 _str7_7
+		li $2 4
+		syscall
+		move $4 $13
+		li $2 1
+		syscall
+		la $4 _str7_46
+		li $2 4
+		syscall
+_if1:
+
+		li $15 2
+		li $14 2
+		beq $14 $15 _l5
+_l6:
+
+		b _els1
+_l5:
+
+_if2:
+
+		li $18 3
+		li $23 3
+		beq $23 $18 _l7
+_l8:
+
+		b _els2
+_l7:
+
+		li $7 7
+		move $5 $7
+_els2:
+
+_els1:
+

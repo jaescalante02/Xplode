@@ -44,7 +44,7 @@
   #include "AST/ForStatement.h"
   #include "AST/Function.h"
   #include "AST/FunctionExpression.h"
-  #include "AST/FunctionParameter.h"
+  //#include "AST/FunctionParameter.h"
   #include "AST/FunctionStatement.h"
   #include "AST/IfStatement.h"
   #include "AST/Program.h"
@@ -89,6 +89,7 @@
 	std::stack<SymTable *> pila;
 	int inBlock = 0;
 	bool inFunction = false;
+	bool argument_table = false;
 	FunctionType *actualfun;
 	std::string name;
 }
@@ -412,6 +413,7 @@ declared_function
         $$ = f;
         root->insert(f->toSymbol($2), NO_SAVE_SIZE);
         inFunction = true;
+        argument_table = true;
     
     
     
@@ -509,7 +511,7 @@ function_pars
   
     TupleType *t = new TupleType(); 
     t->add($2,$3->value);
-    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column,false, true));    
+    actual->insert(new Symbol(false,$3->value,(TypeDeclaration *) $2,$3->line,$3->column, false, true));    
     $$ = t;
     } //falta var
     
@@ -619,7 +621,8 @@ init_block
   
     SymTable *aux = new SymTable();
     aux->setFather(actual);
-    aux->totaloffset = (actual==root)?0:actual->totaloffset;
+    aux->totaloffset = ((actual==root)|| (argument_table))?0:actual->totaloffset;
+    argument_table = false;    
     actual = aux;
     pila.push(actual);
   }
@@ -1517,6 +1520,7 @@ function
   
       Symbol *s = actual->find($1->value);
       TypeDeclaration *tp = root->findType("_error")->ntype;
+      FunctionType *f;
       if(!s){
       
         errorlog->addError(35,line,column,&$1->value);
@@ -1529,7 +1533,7 @@ function
           
         } else {
         
-          FunctionType *f = (FunctionType *) s->ntype;
+          f = (FunctionType *) s->ntype;
           TupleType *t = (TupleType *) f->arguments;
           std::list<Expression *>::iterator it = $3->begin();
           std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
@@ -1594,7 +1598,11 @@ function
       
       }
       
-      $$ = new FunctionExpression($1->value,$3); 
+      FunctionExpression *fun = new FunctionExpression($1->value,$3);
+      fun->reference = f->reference;
+            
+      $$ =  fun;      
+
       $$->ntype = tp;
       $$->line = $1->line;
       $$->column = $1->column; 

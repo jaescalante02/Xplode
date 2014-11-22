@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <list> 
 #include <map>
+#include <set>
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
@@ -131,6 +132,30 @@ class TupleType : public TypeDeclaration {
       }
 
     }
+
+    std::set<int> *withreference(SymTable *symtb){
+    
+      std::set<int> *sett = new std::set<int>();
+      std::list< std::string>::iterator it1;
+      int i=1;
+
+      for( it1 = names->begin(); it1 != names->end() ; ++it1, ++i){
+          Symbol *s = symtb->find(*it1);
+          
+          if(s->porref){
+          
+            //std::cout << *it1 << std::endl;
+            sett->insert(i); 
+          
+          }
+          
+      }
+
+    return sett;
+    
+    
+    }
+
 
 };
 

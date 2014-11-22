@@ -16,6 +16,7 @@
 #define COMMENT_LABEL          "#"
 #define INIT_LABEL             "INIT"
 #define ALLOC_LABEL            "ALLC"//
+#define ALLOC_FUNC_LABEL       "ALLF"
 #define ADD_INT_LABEL          "ADDI"//
 #define ADD_FLOAT_LABEL        "ADDF"
 #define SUB_INT_LABEL          "SUBI"//
@@ -53,6 +54,7 @@
 #define ASSIGN_TO_ARRAY_LABEL  "[]:="
 #define CALL_LABEL             "CALL"
 #define PARAM_LABEL            "PARM"
+#define PARAM_REF_LABEL        "PARF"
 #define JUMP_LABEL             "JUMP"//
 #define RETURN_LABEL           "RET "
 #define WRITE_LABEL            "WR  "//

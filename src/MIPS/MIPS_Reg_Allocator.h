@@ -36,8 +36,9 @@ class MIPS_Reg_Allocator {
   
   MIPS_Register *register_alloc(MIPS_Program *assembler, Quad_Expression *exp);
   
-  
+  MIPS_Register *lvalue_register_alloc(MIPS_Program *assembler, Quad_Expression *exp);  
 
+  void flush();
  
 };
 
