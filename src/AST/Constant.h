@@ -28,8 +28,8 @@ class Constant : public Expression {
   void firstcheck(SymTable *symtb){}
   
   virtual Quad_Expression* toTAC(TAC_Program *tac, SymTable* symtab){
-        
-    return new Quad_Constant(atoi(value.c_str()));
+     
+    return new Quad_Constant(atoi(value.c_str()), value);
   }
   
   virtual void condition_toTAC(TAC_Program *tac, SymTable* symtab, 

@@ -32,7 +32,7 @@
 #define SIZE_FLOAT 4
 #define SIZE_POINTER 4
 
-#define ALIGNMENT 1
+#define ALIGNMENT 4
 
 class TypeDeclaration: public Node {
 

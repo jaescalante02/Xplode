@@ -482,6 +482,8 @@ class Variable : public Expression {
   */
   }
 
+ virtual bool isvariable(){ return true;}
+
 };
 
 

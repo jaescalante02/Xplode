@@ -37,9 +37,7 @@ class Function : public CompoundStatement {
     fname =name; 
     //parameters = (TupleType *) p; 
     block  = (Block *) b;
-    
-    FunctionType *f = (FunctionType *) t;
-    f->withreference(symtb);    
+      
     symtb->tableofargs();
     
     //if (parameters != 0){
@@ -97,7 +95,8 @@ class Function : public CompoundStatement {
   
     tac->putcomment("FUNCTION", line, column, EMPTY_LABEL);
     tac->push_quad(new Label(fname));
-    tac->push_quad(new Instruction(ALLOC_FUNC_LABEL, new Quad_Constant(block->table->totaloffset - symtb->totaloffset)));
+    tac->push_quad(new Instruction(ALLOC_FUNC_LABEL, new Quad_Constant(block->table->totaloffset+
+                                                ALIGNMENT-(block->table->totaloffset)%ALIGNMENT)));
     block->toTAC(tac, cont_label, break_label);
     FunctionType *fun = ( FunctionType *) ntype;
     if(fun->returnType->numtype!=TYPE_VOID)

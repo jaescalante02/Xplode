@@ -27,18 +27,24 @@ class MIPS_Reg_Allocator {
   
   std::queue<MIPS_Register *> free;
   std::map<std::string, MIPS_Register * > used_registers;
+  std::map<std::string, Quad_Variable * > variables_alloc;
 
     
   MIPS_Reg_Allocator();
   
-  void getreg(MIPS_Program *assembler, Instruction *inst, MIPS_Register **Rd, 
-                                  MIPS_Register **Rl=NULL, MIPS_Register **Rr=NULL);
+  void getreg(MIPS_Program *assembler, Quad_Expression *expd, MIPS_Register **Rd, 
+                                       Quad_Expression *expl ,MIPS_Register **Rl, 
+                                       Quad_Expression *expr=NULL, MIPS_Register **Rr=NULL);
   
   MIPS_Register *register_alloc(MIPS_Program *assembler, Quad_Expression *exp);
   
   MIPS_Register *lvalue_register_alloc(MIPS_Program *assembler, Quad_Expression *exp);  
 
-  void flush();
+  MIPS_Register *takeregister();
+
+  void flush(MIPS_Program *assembler);
+
+  void clear();
  
 };
 

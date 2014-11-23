@@ -24,26 +24,27 @@
   
   }
   
-  void MIPS_Reg_Allocator::getreg(MIPS_Program *assembler, Instruction *inst, MIPS_Register **Rd, 
-                                  MIPS_Register **Rl, MIPS_Register **Rr){
+  void MIPS_Reg_Allocator::getreg(MIPS_Program *assembler, Quad_Expression *expd, MIPS_Register **Rd, 
+                                       Quad_Expression *expl ,MIPS_Register **Rl, 
+                                       Quad_Expression *expr, MIPS_Register **Rr){
   
 
-    if ((inst->rightop)&&(Rr))  
-        *Rr = register_alloc(assembler, inst->rightop);  
-    if ((inst->leftop)&&(Rl))
-        *Rl = register_alloc(assembler, inst->leftop);        
-    if(Rd) *Rd = lvalue_register_alloc(assembler, inst->result);
+    if ((expr)&&(Rr))  
+        *Rr = register_alloc(assembler, expr);  
+    if ((expl)&&(Rl))
+        *Rl = register_alloc(assembler, expl);        
+    if(Rd) *Rd = lvalue_register_alloc(assembler, expd);
 
  
  
     //Caso Constant
 
         
-    if(inst->result->isconstant()) free.push(*Rd);
+    if((expd) && (expd->isconstant())) free.push(*Rd);
         
-    if((inst->leftop) && (Rl) && (inst->leftop->isconstant())) free.push(*Rl);
+    if((expl) && (Rl) &&  (expl->isconstant())) free.push(*Rl);
 
-    if((inst->rightop) && (Rr) && (inst->rightop->isconstant())) free.push(*Rr);    
+    if((expr) && (Rr) && (expr->isconstant())) free.push(*Rr);    
     
     //Caso temporal
     
@@ -81,13 +82,14 @@
       MIPS_Register *reg = free.front();
       free.pop();
       used_registers[var->var] = reg;
+      variables_alloc[var->var] = var;
 
       if(var->offset!=NO_OFFSET_NUM){
         assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
-                           reg, reg, new MIPS_Variable(var->offset))); 
+                           reg, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
 
         assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
-                           reg, reg, SP_REGISTER)); 
+                           reg, reg, (var->arg)?FP_REGISTER:SP_REGISTER)); 
   
         assembler->add(new MIPS_Instruction(LOADW_MIPS,
                            reg, new MIPS_Offset(reg->number)));
@@ -132,6 +134,7 @@
       MIPS_Register *reg = free.front();
       free.pop();
       used_registers[var->var] = reg;
+      variables_alloc[var->var] = var;      
       
 
       
@@ -145,26 +148,56 @@
   
   }
 
-  void MIPS_Reg_Allocator::flush(){
+  MIPS_Register *MIPS_Reg_Allocator::takeregister(){
+  
+    return free.front();
+    
+  }
+
+  void MIPS_Reg_Allocator::flush(MIPS_Program *assembler){
 
     std::map<std::string, MIPS_Register *>::iterator it;
+    //asumo que tengo reg
+    MIPS_Register *Reg= free.front();
+
+    for(it=used_registers.begin();it!=used_registers.end(); ++it){
+      
+      if(variables_alloc[it->first]->offset!=NO_OFFSET_NUM){
+
+        Quad_Variable* var = (Quad_Variable *) variables_alloc[it->first];
+      
+        assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Reg, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
+
+        assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Reg, Reg, (var->arg)?FP_REGISTER:SP_REGISTER)); 
+  
+        assembler->add(new MIPS_Instruction(STOREW_MIPS,
+                           it->second, new MIPS_Offset(Reg->number)));  
+      
+      
+      
+      }
+      
+
     
+    }
     
-    for(it=used_registers.begin();it!=used_registers.begin(); ++it){
-    
+  }
+
+  void MIPS_Reg_Allocator::clear(){
+
+    std::map<std::string, MIPS_Register *>::iterator it;
+   
+    for(it=used_registers.begin();it!=used_registers.end(); ++it){
+            
       free.push(it->second);
     
     }
     
     used_registers.clear();
+    variables_alloc.clear();
 
 
   }
-
-
-
-
-
-
-
 

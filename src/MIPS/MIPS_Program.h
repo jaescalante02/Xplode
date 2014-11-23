@@ -130,7 +130,17 @@ class MIPS_Program {
     
       alloc_toMIPS(inst);    
     
-    } else if(inst->op==ADD_INT_LABEL){
+    } else if(inst->op==DEALLOC_LABEL){
+    
+    
+      dealloc_toMIPS(inst);    
+    
+    } else if(inst->op==ALLOC_FUNC_LABEL){
+    
+    
+      allocfun_toMIPS(inst);    
+    
+    }else if(inst->op==ADD_INT_LABEL){
     
     
       addint_toMIPS(inst);    
@@ -215,10 +225,20 @@ class MIPS_Program {
     
       param_toMIPS(inst);    
     
+    } else if(inst->op==PARAM_REF_LABEL){
+    
+    
+      paramref_toMIPS(inst);    
+    
     } else if(inst->op==CALL_LABEL){
     
     
       call_toMIPS(inst);    
+    
+    } else if(inst->op==RETURN_LABEL){
+    
+    
+      return_toMIPS(inst);    
     
     }
   
@@ -231,11 +251,75 @@ class MIPS_Program {
 
   }
 
+  void return_toMIPS(Instruction *inst){
+
+    MIPS_Register *Rd=NULL;
+
+    this->allocator->getreg(this, NULL, NULL, inst->result, &Rd);  
+  
+    if(inst->result){
+    
+      instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rd, new MIPS_Offset(30, 0)));      
+        
+    }
+  
+    instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           RA_REGISTER, new MIPS_Offset(30, -4)));  
+  
+    instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
+                           SP_REGISTER, FP_REGISTER));
+
+
+    instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           FP_REGISTER, new MIPS_Offset(30, -8)));
+
+
+    instructions.push_back(new MIPS_Instruction(JUMP_RETURN_MIPS, RA_REGISTER));
+    
+    this->allocator->clear();
+
+
+  }
+
+  void allocfun_toMIPS(Instruction *inst){
+  
+    Quad_Constant *cons = (Quad_Constant *) inst->result;
+    
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+ 
+    instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           RA_REGISTER, new MIPS_Offset(29)));    
+
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+
+    instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           FP_REGISTER, new MIPS_Offset(29))); 
+
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           FP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(12)));
+    
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-cons->num)));
+  
+  
+  
+  }
+
   void param_toMIPS(Instruction *inst){
   
-    MIPS_Register *Rr, *Rl, *Rd;
+    MIPS_Register *Rd;
         
-    this->allocator->getreg(this, inst, &Rd);
+    this->allocator->getreg(this, NULL, NULL, inst->result, &Rd);  
+    
+    Quad_Constant *cons = (Quad_Constant *) inst->leftop;
+    if(cons->num==1)     this->allocator->flush(this);
     
     instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            SP_REGISTER, SP_REGISTER, 
@@ -246,11 +330,37 @@ class MIPS_Program {
   
   }
 
+  void paramref_toMIPS(Instruction *inst){
+  
+    MIPS_Register *Rb, *Rd = this->allocator->takeregister();
+
+    Quad_Variable *var = (Quad_Variable *) inst->result;            
+    Quad_Constant *cons = (Quad_Constant *) inst->leftop;
+    Quad_Constant *cons2 = (Quad_Constant *) inst->rightop;    
+    if(cons->num==1)  this->allocator->flush(this);
+    
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+                                 
+    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Rd, ZERO_REGISTER, new MIPS_Variable(var->offset+cons2->num))); 
+
+    Rb = (var->arg)?FP_REGISTER:SP_REGISTER;
+
+    instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rd, Rd, Rb)); 
+  
+    instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rd, new MIPS_Offset(Rb->number)));
+  
+  }
+
   void call_toMIPS(Instruction *inst){
   
-    MIPS_Register *Rr, *Rl, *Rd;
+    MIPS_Register  *Rl;
         //Rr lo quite numero de parametros
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+    this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl);  
 
     Quad_Variable *instvar= (Quad_Variable *) inst->leftop;
 
@@ -261,21 +371,21 @@ class MIPS_Program {
     instructions.push_back(new MIPS_Instruction(LA_MIPS, Rl, 
                                               new MIPS_Variable(instvar->var)));  
 
-    instructions.push_back(new MIPS_Instruction(JUMP_FUNCTION_MIPS, Rl));  
 
 
-    this->allocator->flush();
+    instructions.push_back(new MIPS_Instruction(JUMP_FUNCTION_MIPS, Rl)); 
+        
+    this->allocator->clear();
+
+
   }  
   
 
   void jump_toMIPS(Instruction *inst){
   
-  MIPS_Register *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->result;
-  
-    this->allocator->getreg(this, inst, &Rd);
-  
-    instructions.push_back(new MIPS_Instruction(JUMP_MIPS,
+    
+  instructions.push_back(new MIPS_Instruction(JUMP_MIPS,
                            new MIPS_Variable(instvar->var)));    
   
   
@@ -287,7 +397,7 @@ class MIPS_Program {
   MIPS_Register *Rl, *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+    this->allocator->getreg(this, NULL, NULL, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(JUMP_EQUAL_MIPS,
                            Rd, Rl, new MIPS_Variable(instvar->var)));    
@@ -301,7 +411,7 @@ class MIPS_Program {
   MIPS_Register *Rl, *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+    this->allocator->getreg(this, NULL, NULL, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(JUMP_NEQUAL_MIPS,
                            Rd, Rl, new MIPS_Variable(instvar->var)));    
@@ -315,7 +425,7 @@ class MIPS_Program {
   MIPS_Register *Rl, *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+    this->allocator->getreg(this, NULL, NULL, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(JUMP_LESS_MIPS,
                            Rd, Rl, new MIPS_Variable(instvar->var)));    
@@ -329,7 +439,7 @@ class MIPS_Program {
   MIPS_Register *Rl, *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+    this->allocator->getreg(this, NULL, NULL, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(JUMP_GREATER_MIPS,
                            Rd, Rl, new MIPS_Variable(instvar->var)));    
@@ -343,7 +453,7 @@ class MIPS_Program {
   MIPS_Register *Rl, *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+      this->allocator->getreg(this, NULL, NULL, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(JUMP_LESS_EQ_MIPS,
                            Rd, Rl, new MIPS_Variable(instvar->var)));  
@@ -356,7 +466,7 @@ class MIPS_Program {
   MIPS_Register *Rl, *Rd;
   Quad_Variable *instvar= (Quad_Variable *) inst->rightop;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+      this->allocator->getreg(this, NULL, NULL, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(JUMP_GREATER_EQ_MIPS,
                            Rd, Rl, new MIPS_Variable(instvar->var)));  
@@ -368,7 +478,7 @@ class MIPS_Program {
   
   MIPS_Register *Rl, *Rd;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+      this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
                            Rd, Rl));
@@ -378,9 +488,9 @@ class MIPS_Program {
 
   void assigntoarray_toMIPS(Instruction *inst){
     //caso global falta
-    MIPS_Register *Rr, *Rl, *Rd;
+    MIPS_Register *Rr, *Rl;
         
-    this->allocator->getreg(this, inst, NULL, &Rl, &Rr);
+    this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl, inst->rightop, &Rr);  
  
     Quad_Variable *var = (Quad_Variable *) inst->result;
 
@@ -395,14 +505,14 @@ class MIPS_Program {
     instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
                            Rr, new MIPS_Offset(Rl->number)));    
   
-  
+
   }
   
   void assignfromarray_toMIPS(Instruction *inst){
   
-    MIPS_Register *Rr, *Rl, *Rd;
+    MIPS_Register *Rr, *Rd;
   
-    this->allocator->getreg(this, inst, &Rd, NULL, &Rr);
+      this->allocator->getreg(this, inst->result, &Rd, inst->rightop, &Rr);  
  
     Quad_Variable *var = (Quad_Variable *) inst->leftop;
 
@@ -425,7 +535,7 @@ class MIPS_Program {
   
     MIPS_Register *Rd, *Rl;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl);
+    this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl);  
   
     instructions.push_back(new MIPS_Instruction(UMINUSINT_MIPS,
                            Rd, Rl));
@@ -437,7 +547,7 @@ class MIPS_Program {
   
   MIPS_Register *Rr, *Rl, *Rd;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+    this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
   
     instructions.push_back(new MIPS_Instruction(DIV_REGISTER_MIPS,
                            Rl, Rr));
@@ -451,8 +561,8 @@ class MIPS_Program {
   void multint_toMIPS(Instruction *inst){
   
   MIPS_Register *Rr, *Rl, *Rd;
-  
-    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+
+    this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
   
     instructions.push_back(new MIPS_Instruction(MUL_REGISTER_MIPS,
                            Rd, Rl, Rr));
@@ -464,7 +574,7 @@ class MIPS_Program {
   
   MIPS_Register *Rr, *Rl, *Rd;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+    this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
   
     instructions.push_back(new MIPS_Instruction(SUB_REGISTER_MIPS,
                            Rd, Rl, Rr));
@@ -476,7 +586,8 @@ class MIPS_Program {
   
   MIPS_Register *Rr, *Rl, *Rd;
   
-    this->allocator->getreg(this, inst, &Rd, &Rl, &Rr);
+
+    this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
   
     instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            Rd, Rl, Rr));
@@ -494,6 +605,23 @@ class MIPS_Program {
   
   
   
+  }
+  
+  void dealloc_toMIPS(Instruction *inst){
+  
+      Quad_Constant *cons = (Quad_Constant *) inst->leftop;
+
+      MIPS_Register *Rd;  
+      this->allocator->getreg(this, inst->result, &Rd, NULL, NULL);
+      
+      instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           Rd, new MIPS_Offset(29, 0)));
+    
+      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(cons->num)));
+  
+
   }
   
   void exit_toMIPS(Instruction *inst){
@@ -527,7 +655,7 @@ class MIPS_Program {
     } else if(aux->num==TYPE_INT){
     
       MIPS_Register *Rd;  
-      this->allocator->getreg(this, inst, &Rd);
+      this->allocator->getreg(this, NULL, NULL, inst->result, &Rd);
       
       Quad_Variable *instvar= (Quad_Variable *) inst->result;
       instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
@@ -552,7 +680,7 @@ class MIPS_Program {
     if(aux->num==TYPE_INT){
     
       MIPS_Register *Rd;  
-      this->allocator->getreg(this, inst, &Rd);
+      this->allocator->getreg(this, inst->result, &Rd, NULL, NULL);
                                    
       instructions.push_back(new MIPS_Instruction(LI_MIPS, 
                              new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
@@ -567,7 +695,7 @@ class MIPS_Program {
     
     }
 
-  
+
   
   }
 

@@ -409,6 +409,7 @@ declared_function
         name = $2->value;
         TupleType *t = (TupleType *) $4;
         FunctionType *f = new FunctionType($1,$4,t->extend);
+        f->withreference(actual);
         actualfun = f;
         $$ = f;
         root->insert(f->toSymbol($2), NO_SAVE_SIZE);
@@ -1537,10 +1538,13 @@ function
           TupleType *t = (TupleType *) f->arguments;
           std::list<Expression *>::iterator it = $3->begin();
           std::list< std::pair<TypeDeclaration*, int>* >::iterator it2;
+          int cont_param=1;
 
-          for(it2=t->types->begin();it2!=t->types->end();++it2){
+          for(it2=t->types->begin();it2!=t->types->end();++it2, ++cont_param){
         
             if(it==$3->end()) break;
+          
+            if((f->reference->count(cont_param)>0)&& (!(*it)->isvariable())) errorlog->addError(0,0,0, NULL);
           
             if((*it)->ntype->isarray()){
             

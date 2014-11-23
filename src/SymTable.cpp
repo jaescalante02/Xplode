@@ -50,8 +50,16 @@
             
               (*table)[lowsymbol] = s;
               if(save){
-                s->offset = totaloffset;
-                totaloffset += s->ntype->size;
+              
+                if((totaloffset+s->ntype->size)/ALIGNMENT==totaloffset/ALIGNMENT){
+                  s->offset = totaloffset;
+                  totaloffset += s->ntype->size;
+                } else {
+                  if((totaloffset%ALIGNMENT)!=0) totaloffset+= ALIGNMENT - (totaloffset%ALIGNMENT);
+                  s->offset = totaloffset;
+                  totaloffset += s->ntype->size;
+                
+                }
               }
               return;
             }  
@@ -74,7 +82,7 @@
             toLower(lowsymbol);
             (*table)[lowsymbol] = s;
             s->offset = totaloffset;
-            totaloffset += tam;
+            //totaloffset += tam;
         
         
         }

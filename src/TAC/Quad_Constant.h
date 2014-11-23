@@ -16,11 +16,13 @@ class Quad_Constant : public Quad_Expression {
   public:
   
   int num;
+  std::string val;
 
   Quad_Constant(){}  
   
-  Quad_Constant(int n){
+  Quad_Constant(int n, std::string v=""){
   
+    val = v;
     num = n;
   
   }
@@ -28,9 +30,9 @@ class Quad_Constant : public Quad_Expression {
   
   std::string toString(){ 
     
-    std::stringstream aux;
-    aux << num;
-    return aux.str();
+    //std::stringstream aux;
+    //aux << num;
+    return val;
   }
 
   virtual bool isconstant(){ return true;}

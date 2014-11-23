@@ -47,25 +47,39 @@ class FunctionExpression : public Expression {
   
 
     std::list<Expression *>::reverse_iterator iter;
-    int cont=0;
+    int cont=0, tam_dealloc = 0;
     Instruction *inst;
+    int acum = 0;
 
     int cont2 = argList->size();
 
     for(iter = argList->rbegin();iter != argList->rend() ;++iter, --cont2){
   
+      ++cont;
+
       inst = new Instruction((reference->count(cont2)>0)?PARAM_REF_LABEL:PARAM_LABEL);
       inst->result = (*iter)->toTAC(tac, symtab);
+      inst->leftop = new Quad_Constant(cont);
+      inst->rightop = new Quad_Constant(tam_dealloc);      
       tac->push_quad(inst);
-      ++cont;
+      
+      if(reference->count(cont2)>0) tam_dealloc += 4;
+      else tam_dealloc += (*iter)->ntype->size; 
 
     }
 
     inst = new Instruction(CALL_LABEL);
-    inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL)); 
+    Quad_Variable *q = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));  
+    inst->result = q;
     inst->leftop = new Quad_Variable(fname);
     inst->rightop = new Quad_Constant(cont);
     tac->push_quad(inst);
+
+    inst = new Instruction(DEALLOC_LABEL);
+    inst->result = q;
+    inst->leftop = new Quad_Constant(tam_dealloc);
+    tac->push_quad(inst);    
+    
     return inst->result;
     
   }

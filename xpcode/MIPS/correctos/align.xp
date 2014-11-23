@@ -1,0 +1,63 @@
+program
+
+function int fib(var int num, int r, var int g){
+  let char t, t2;
+  let int j, k;
+  let char t3;
+
+  if(num<2){
+
+    return 1;
+
+  }
+
+  j:=fib(num, 8, k);
+  k:=fib(num, 8, k);
+  return k + j;
+
+}
+
+begin
+
+//let int i, j;
+
+//read(j);
+
+//write("fibonacci[", j ,"]=", fib(j, 8, i), "\n");
+
+//--------------------
+let int i1, i2;
+
+if(2==2){
+
+let int i3, i4;
+
+if(true){
+let char c1, c3, c4;
+let int i9, i0;
+let char c2;
+
+write(" ");
+
+}
+
+write(" ");
+
+} else {
+
+let int i5, i6;
+
+write(" ");
+
+}
+
+if(8==8){
+
+let int i7, i8;
+let char c5, c6, c7;
+
+write(" ");
+
+}
+
+end

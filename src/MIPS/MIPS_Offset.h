@@ -18,9 +18,11 @@ class MIPS_Offset: public MIPS_Argument {
   public:
   
   int number; 
+  int reg;
     
-  MIPS_Offset(int n){
+  MIPS_Offset(int r, int n=4){
   
+    reg = r;
     number=n;
   
   }
@@ -29,7 +31,7 @@ class MIPS_Offset: public MIPS_Argument {
   
   std::stringstream aux;
   
-  aux << "4($"<<number<<")";
+  aux << number<<"($"<<reg<<")";
   
   return aux.str();
   

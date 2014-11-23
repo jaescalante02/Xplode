@@ -1,42 +1,13 @@
 program
 
-function void f(int a, int aa){
-
-let int b, c, d;
-
-write("Llamada a la función exitosa a=", a, "\n");
-
-if(2==2){
-
-let int m,n,o;
-
-if(3==3){
-
-let int x,y,z;
-
-x:=7;
-
-}
-
-
-}
-
-
-}
-
 begin
 
-let int[20] a;
-let int i;
+let char i, j;
 
-i:=0;
-while(i<20){
+read(j);
+i:='w';
 
-a[i]:=i;
-i:=i+1;
-}
+write("j=", j ,"i=", i, "\n");
 
-write(a[2],a[3],a[11], a[2], "\n");
-//f(i, i);
 
 end

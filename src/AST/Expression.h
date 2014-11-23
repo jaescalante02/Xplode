@@ -31,6 +31,8 @@ class Expression : public Node {
 
  virtual Instruction *lval_toTAC(TAC_Program *tac, SymTable *symtab){}
 
+ virtual bool isvariable(){ return false;}
+
 };
 
 #endif
