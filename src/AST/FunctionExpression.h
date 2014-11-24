@@ -4,6 +4,7 @@
 #include <list> 
 #include <map>
 #include <set> 
+#include <vector>
 #include <algorithm>
 #include <cstdlib>
 #include <stdio.h>
@@ -47,14 +48,14 @@ class FunctionExpression : public Expression {
   
 
     std::list<Expression *>::reverse_iterator iter;
+    std::vector<Instruction *>::iterator iter2;
+    std::vector<Instruction *> ins;
     int cont=0, tam_dealloc = 0;
     Instruction *inst;
     int acum = 0;
 
     int cont2 = argList->size();
 
-    inst = new Instruction(BEGIN_FUNCTION_LABEL);
-    tac->push_quad(inst);
     for(iter = argList->rbegin();iter != argList->rend() ;++iter, --cont2){
   
       ++cont;
@@ -63,12 +64,23 @@ class FunctionExpression : public Expression {
       inst->result = (*iter)->toTAC(tac, symtab);
       inst->leftop = new Quad_Constant((*iter)->ntype->numtype);
       inst->rightop = new Quad_Constant(tam_dealloc);      
-      tac->push_quad(inst);
+      ins.push_back(inst);
       
       if(reference->count(cont2)>0) tam_dealloc += 4;
       else tam_dealloc += (*iter)->ntype->size; 
 
     }
+
+    inst = new Instruction(BEGIN_FUNCTION_LABEL);
+    tac->push_quad(inst);
+    
+    for(iter2=ins.begin(); iter2 != ins.end() ;++iter2){
+    
+      tac->push_quad(*iter2);    
+       
+    }
+
+
 
     inst = new Instruction(CALL_LABEL);
     Quad_Variable *q = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));  

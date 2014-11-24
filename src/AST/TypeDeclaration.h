@@ -27,10 +27,10 @@
 //SIZE
 
 #define SIZE_INT   4
-#define SIZE_BOOL  1
-#define SIZE_CHAR  1
+#define SIZE_BOOL  4
+#define SIZE_CHAR  4
 #define SIZE_FLOAT 4
-#define SIZE_POINTER 4
+//#define SIZE_POINTER 4
 
 #define ALIGNMENT 4
 

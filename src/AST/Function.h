@@ -95,8 +95,8 @@ class Function : public CompoundStatement {
   
     tac->putcomment("FUNCTION", line, column, EMPTY_LABEL);
     tac->push_quad(new Label(fname));
-    tac->push_quad(new Instruction(ALLOC_FUNC_LABEL, new Quad_Constant(block->table->totaloffset+
-                                                ALIGNMENT-(block->table->totaloffset)%ALIGNMENT)));
+    int c = ((block->table->totaloffset)%ALIGNMENT)?(ALIGNMENT-((block->table->totaloffset)%ALIGNMENT)):0;
+    tac->push_quad(new Instruction(ALLOC_FUNC_LABEL, new Quad_Constant(block->table->totaloffset+c)));
     block->toTAC(tac, cont_label, break_label);
     FunctionType *fun = ( FunctionType *) ntype;
     if(fun->returnType->numtype!=TYPE_VOID)

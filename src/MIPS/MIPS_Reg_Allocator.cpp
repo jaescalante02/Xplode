@@ -122,14 +122,28 @@
       variables_alloc[var->var] = var;
 
       if(var->offset!=NO_OFFSET_NUM){
+      
+
+      
         assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            reg, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
 
         assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            reg, reg, (var->arg)?FP_REGISTER:SP_REGISTER)); 
   
+  
         assembler->add(new MIPS_Instruction(LOADW_MIPS,
                            reg, new MIPS_Offset(reg->number)));
+                           
+        if(var->ref){
+        
+          assembler->add(new MIPS_Instruction(LOADW_MIPS,
+                           reg, new MIPS_Offset(reg->number, 0)));        
+        
+        
+        }                   
+                           
+                          
       }
       
       return reg;
@@ -291,14 +305,35 @@
 
         Quad_Variable* var = (Quad_Variable *) variables_alloc[it->first];
       
-        assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+        if(var->ref){
+        
+          assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            Reg, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
 
-        assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
+          assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            Reg, Reg, (var->arg)?FP_REGISTER:SP_REGISTER)); 
   
-        assembler->add(new MIPS_Instruction(STOREW_MIPS,
+          assembler->add(new MIPS_Instruction(LOADW_MIPS,
+                           Reg, new MIPS_Offset(Reg->number)));
+
+        
+          assembler->add(new MIPS_Instruction(STOREW_MIPS,
+                           it->second, new MIPS_Offset(Reg->number, 0))); 
+        
+        
+        } else {
+      
+          assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Reg, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
+
+          assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Reg, Reg, (var->arg)?FP_REGISTER:SP_REGISTER)); 
+  
+          assembler->add(new MIPS_Instruction(STOREW_MIPS,
                            it->second, new MIPS_Offset(Reg->number)));  
+      
+      
+        }
       
       
       
