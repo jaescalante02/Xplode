@@ -21,6 +21,13 @@
     
       free.push(new MIPS_Register(i));    
     }
+    
+    for(int i=MIN_FREGISTER;i<=MAX_FREGISTER; ++i){
+    
+      if(i==12) continue;
+    
+      freef.push(new MIPS_Float_Register(i));    
+    }
   
   }
   
@@ -52,6 +59,36 @@
     
    
   }
+
+//float  
+  void MIPS_Reg_Allocator::getregf(MIPS_Program *assembler, Quad_Expression *expd, MIPS_Float_Register **Rd, 
+                                       Quad_Expression *expl ,MIPS_Float_Register **Rl, 
+                                       Quad_Expression *expr, MIPS_Float_Register **Rr){
+  
+
+    if ((expr)&&(Rr))  
+        *Rr = register_allocf(assembler, expr);  
+    if ((expl)&&(Rl))
+        *Rl = register_allocf(assembler, expl);        
+    if(Rd) *Rd = lvalue_register_allocf(assembler, expd);
+
+ 
+ 
+    //Caso Constant
+
+        
+    if((expd) && (expd->isconstant())) freef.push(*Rd);
+        
+    if((expl) && (Rl) &&  (expl->isconstant())) freef.push(*Rl);
+
+    if((expr) && (Rr) && (expr->isconstant())) freef.push(*Rr);    
+    
+    //Caso temporal
+    
+    
+    
+   
+  }
   
   
   MIPS_Register *MIPS_Reg_Allocator::register_alloc(MIPS_Program *assembler, Quad_Expression *exp){
@@ -64,7 +101,7 @@
       free.pop();      
       Quad_Constant *cons = (Quad_Constant *) exp;
       assembler->add(new MIPS_Instruction(LI_MIPS, reg, 
-                           new MIPS_Variable(cons->num)));
+                           new MIPS_Variable(cons->val)));
     
       return reg;
     }
@@ -98,7 +135,51 @@
       return reg;
           
     }
+
+}          
+//float
+  MIPS_Float_Register *MIPS_Reg_Allocator::register_allocf(MIPS_Program *assembler, Quad_Expression *exp){
+
+    if(exp->isconstant()){
+    
+      MIPS_Float_Register *reg = freef.front();
+      freef.pop();      
+      Quad_Constant *cons = (Quad_Constant *) exp;
+      assembler->add(new MIPS_Instruction(LI_FLOAT_MIPS, reg, 
+                           new MIPS_Variable(cons->val)));
+    
+      return reg;
+    }
+ 
+    //Estoy asumiendo que tengo registros
+
+    Quad_Variable* var = (Quad_Variable *) exp;
+    
+    if(used_fregisters.count(var->var)>0){
+
+      return used_fregisters[var->var];
+
+    } else {
+    
+      MIPS_Float_Register *reg = freef.front();
+      freef.pop();
+      used_fregisters[var->var] = reg;
+      variables_alloc[var->var] = var;
+
+      if(var->offset!=NO_OFFSET_NUM){
+        assembler->add(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           reg, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
+
+        assembler->add(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           reg, reg, (var->arg)?FP_REGISTER:SP_REGISTER)); 
+  
+        assembler->add(new MIPS_Instruction(LOADW_MIPS,
+                           reg, new MIPS_Offset(reg->number)));
+      }
+      
+      return reg;
           
+    }
     
   
   
@@ -116,7 +197,7 @@
       free.pop();      
       Quad_Constant *cons = (Quad_Constant *) exp;
       assembler->add(new MIPS_Instruction(LI_MIPS, reg, 
-                           new MIPS_Variable(cons->num)));
+                           new MIPS_Variable(cons->val)));
     
       return reg;
     }
@@ -147,6 +228,50 @@
   
   
   }
+
+//float
+ MIPS_Float_Register *MIPS_Reg_Allocator::lvalue_register_allocf(MIPS_Program *assembler, Quad_Expression *exp){
+
+
+
+    if(exp->isconstant()){
+    
+      MIPS_Float_Register *reg = freef.front();
+      freef.pop();      
+      Quad_Constant *cons = (Quad_Constant *) exp;
+      assembler->add(new MIPS_Instruction(LI_FLOAT_MIPS, reg, 
+                           new MIPS_Variable(cons->val)));
+    
+      return reg;
+    }
+ 
+    //Estoy asumiendo que tengo registros
+
+    Quad_Variable* var = (Quad_Variable *) exp;
+    
+    if(used_fregisters.count(var->var)>0){
+
+      return used_fregisters[var->var];
+
+    } else {
+    
+      MIPS_Float_Register *reg = freef.front();
+      freef.pop();
+      used_fregisters[var->var] = reg;
+      variables_alloc[var->var] = var;      
+      
+
+      
+      return reg;
+          
+    }
+          
+    
+  
+  
+  
+  }
+
 
   MIPS_Register *MIPS_Reg_Allocator::takeregister(){
   

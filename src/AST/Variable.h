@@ -83,7 +83,7 @@ class Variable : public Expression {
      
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);
-        return new Quad_Variable(low, sym->offset, sym->porref, sym->isarg, sym->ntype->size);     
+        return new Quad_Variable(low, sym->offset, sym->porref, sym->isarg, sym->ntype->size, sym->ntype->numtype);     
      }
 
      
@@ -209,7 +209,7 @@ class Variable : public Expression {
 
      inst = new Instruction(ASSIGN_ARRAY_LABEL);
      inst->result = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));      
-     inst->leftop = new Quad_Variable(base_sym->name, base_sym->offset, base_sym->porref, base_sym->isarg, tipo->size);
+     inst->leftop = new Quad_Variable(base_sym->name, base_sym->offset, base_sym->porref, base_sym->isarg, tipo->size, tipo->numtype);
      inst->rightop = res;
      res = inst->result;  
      tac->push_quad(inst);
@@ -254,7 +254,7 @@ class Variable : public Expression {
         inst = new Instruction(ASSIGN_LABEL);
         std::string low((*itvar)->value);
         std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-        inst->result = new Quad_Variable(low, sym->offset, sym->porref, sym->isarg, sym->ntype->size);      
+        inst->result = new Quad_Variable(low, sym->offset, sym->porref, sym->isarg, sym->ntype->size, sym->ntype->numtype);      
         inst->leftop =  NULL;
         inst->rightop = NULL; 
         return inst;     
@@ -376,8 +376,8 @@ class Variable : public Expression {
      inst = new Instruction(ASSIGN_TO_ARRAY_LABEL);
 
      std::string low(base_sym->name);
-     std::transform(low.begin(), low.end(), low.begin(), ::tolower);     
-     inst->result = new Quad_Variable(low, base_sym->offset );      
+     std::transform(low.begin(), low.end(), low.begin(), ::tolower);
+     inst->result = new Quad_Variable(low, base_sym->offset, base_sym->porref, base_sym->isarg, tipo->size, tipo->numtype );      
      inst->leftop = res;
      inst->rightop = NULL;     
 

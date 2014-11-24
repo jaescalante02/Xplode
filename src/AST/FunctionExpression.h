@@ -53,13 +53,15 @@ class FunctionExpression : public Expression {
 
     int cont2 = argList->size();
 
+    inst = new Instruction(BEGIN_FUNCTION_LABEL);
+    tac->push_quad(inst);
     for(iter = argList->rbegin();iter != argList->rend() ;++iter, --cont2){
   
       ++cont;
 
       inst = new Instruction((reference->count(cont2)>0)?PARAM_REF_LABEL:PARAM_LABEL);
       inst->result = (*iter)->toTAC(tac, symtab);
-      inst->leftop = new Quad_Constant(cont);
+      inst->leftop = new Quad_Constant((*iter)->ntype->numtype);
       inst->rightop = new Quad_Constant(tam_dealloc);      
       tac->push_quad(inst);
       
@@ -75,7 +77,7 @@ class FunctionExpression : public Expression {
     inst->rightop = new Quad_Constant(cont);
     tac->push_quad(inst);
 
-    inst = new Instruction(DEALLOC_LABEL);
+    inst = new Instruction(END_FUNCTION_LABEL);
     inst->result = q;
     inst->leftop = new Quad_Constant(tam_dealloc);
     tac->push_quad(inst);    

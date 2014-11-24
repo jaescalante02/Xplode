@@ -130,10 +130,10 @@ class MIPS_Program {
     
       alloc_toMIPS(inst);    
     
-    } else if(inst->op==DEALLOC_LABEL){
+    } else if(inst->op==END_FUNCTION_LABEL){
     
     
-      dealloc_toMIPS(inst);    
+      endfun_toMIPS(inst);    
     
     } else if(inst->op==ALLOC_FUNC_LABEL){
     
@@ -220,10 +220,15 @@ class MIPS_Program {
     
       assignfromarray_toMIPS(inst);    
     
+    } else if(inst->op==BEGIN_FUNCTION_LABEL){
+    
+    
+      beginfun_toMIPS(inst); 
+    
     } else if(inst->op==PARAM_LABEL){
     
     
-      param_toMIPS(inst);    
+      param_toMIPS(inst);   
     
     } else if(inst->op==PARAM_REF_LABEL){
     
@@ -240,13 +245,85 @@ class MIPS_Program {
     
       return_toMIPS(inst);    
     
+    } else if(inst->op==ADD_FLOAT_LABEL){
+    
+    
+      addfloat_toMIPS(inst);    
+    
+    } else if(inst->op==SUB_FLOAT_LABEL){
+    
+    
+      subfloat_toMIPS(inst);    
+    
+    } else if(inst->op==MUL_FLOAT_LABEL){
+    
+    
+      mulfloat_toMIPS(inst);    
+    
+    } else if(inst->op==DIV_FLOAT_LABEL){
+    
+    
+      divfloat_toMIPS(inst);    
+    
     }
+    
   
   
   
   }
   
   void exttoMIPS(Instruction *inst){
+  
+
+  }
+  
+  void addfloat_toMIPS(Instruction *inst){
+
+    MIPS_Float_Register *Rr, *Rl, *Rd;
+  
+
+    this->allocator->getregf(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
+  
+    instructions.push_back(new MIPS_Instruction(ADD_FLOAT_MIPS,
+                           Rd, Rl, Rr));
+  
+
+  }
+
+  void subfloat_toMIPS(Instruction *inst){
+
+    MIPS_Float_Register *Rr, *Rl, *Rd;
+  
+    this->allocator->getregf(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
+  
+    instructions.push_back(new MIPS_Instruction(SUB_FLOAT_MIPS,
+                           Rd, Rl, Rr));
+  
+
+  }
+
+  void mulfloat_toMIPS(Instruction *inst){
+
+    MIPS_Float_Register *Rr, *Rl, *Rd;
+  
+
+    this->allocator->getregf(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
+  
+    instructions.push_back(new MIPS_Instruction(MUL_FLOAT_MIPS,
+                           Rd, Rl, Rr));
+  
+
+  }
+
+  void divfloat_toMIPS(Instruction *inst){
+
+    MIPS_Float_Register *Rr, *Rl, *Rd;
+  
+
+    this->allocator->getregf(this, inst->result, &Rd, inst->leftop, &Rl, inst->rightop, &Rr);  
+  
+    instructions.push_back(new MIPS_Instruction(DIV_FLOAT_MIPS,
+                           Rd, Rl, Rr));
   
 
   }
@@ -312,6 +389,12 @@ class MIPS_Program {
   
   }
 
+  void beginfun_toMIPS(Instruction *inst){
+
+    this->allocator->flush(this);
+  
+  }
+
   void param_toMIPS(Instruction *inst){
   
     MIPS_Register *Rd;
@@ -319,7 +402,7 @@ class MIPS_Program {
     this->allocator->getreg(this, NULL, NULL, inst->result, &Rd);  
     
     Quad_Constant *cons = (Quad_Constant *) inst->leftop;
-    if(cons->num==1)     this->allocator->flush(this);
+
     
     instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            SP_REGISTER, SP_REGISTER, 
@@ -337,7 +420,6 @@ class MIPS_Program {
     Quad_Variable *var = (Quad_Variable *) inst->result;            
     Quad_Constant *cons = (Quad_Constant *) inst->leftop;
     Quad_Constant *cons2 = (Quad_Constant *) inst->rightop;    
-    if(cons->num==1)  this->allocator->flush(this);
     
     instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            SP_REGISTER, SP_REGISTER, 
@@ -475,57 +557,112 @@ class MIPS_Program {
   }
 
   void assign_toMIPS(Instruction *inst){
+    
+    Quad_Variable *var = (Quad_Variable *) inst->result;
   
-  MIPS_Register *Rl, *Rd;
+    if(var->numtype==TYPE_FLOAT){
+
+      MIPS_Float_Register *Rl, *Rd;
+
+      this->allocator->getregf(this, inst->result, &Rd, inst->leftop, &Rl);  
+  
+      instructions.push_back(new MIPS_Instruction(MOVE_FLOAT_MIPS,
+                           Rd, Rl));
+    
+    } else {
+  
+      MIPS_Register *Rl, *Rd;
   
       this->allocator->getreg(this, inst->result, &Rd, inst->leftop, &Rl);  
   
-    instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
+      instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
                            Rd, Rl));
-  
+    }
   
   }
 
   void assigntoarray_toMIPS(Instruction *inst){
     //caso global falta
-    MIPS_Register *Rr, *Rl;
-        
-    this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl, inst->rightop, &Rr);  
- 
-    Quad_Variable *var = (Quad_Variable *) inst->result;
+    
+    Quad_Variable *var = (Quad_Variable *) inst->result;    
+    
+    if(var->numtype!=TYPE_FLOAT){
+    
+      MIPS_Register *Rr, *Rl;
+             
+      this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl, inst->rightop, &Rr);  
 
-    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            Rl, Rl, new MIPS_Variable(var->offset))); 
 
-    instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            Rl, Rl, SP_REGISTER)); 
 
+      instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rr, new MIPS_Offset(Rl->number)));
+                           
+    } else {
+    
+      MIPS_Float_Register *Rr;
+      MIPS_Register *Rl;
+    
+      this->allocator->getregf(this, NULL, NULL, inst->rightop, &Rr);  
+      this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl);  
 
-  
-    instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
-                           Rr, new MIPS_Offset(Rl->number)));    
+      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Rl, Rl, new MIPS_Variable(var->offset))); 
+
+      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rl, Rl, SP_REGISTER)); 
+
+      instructions.push_back(new MIPS_Instruction(STOREW_FLOAT_MIPS,
+                           Rr, new MIPS_Offset(Rl->number)));
+    
+    
+    
+    }                          
   
 
   }
   
   void assignfromarray_toMIPS(Instruction *inst){
-  
-    MIPS_Register *Rr, *Rd;
-  
-      this->allocator->getreg(this, inst->result, &Rd, inst->rightop, &Rr);  
- 
+
     Quad_Variable *var = (Quad_Variable *) inst->leftop;
 
-    instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+    if(var->numtype!=TYPE_FLOAT){
+  
+      MIPS_Register *Rr, *Rd;
+  
+      this->allocator->getreg(this, inst->result, &Rd, inst->rightop, &Rr);  
+
+      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            Rr, Rr, new MIPS_Variable(var->offset))); 
 
-    instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            Rr, Rr, SP_REGISTER)); 
 
-
-  
-    instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+      instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
                            Rd, new MIPS_Offset(Rr->number)));
+                           
+    } else {
+    
+      MIPS_Register *Rr;
+      MIPS_Float_Register *Rd;
+  
+      this->allocator->getregf(this, inst->result, &Rd, NULL, NULL);  
+      this->allocator->getreg(this, NULL, NULL, inst->rightop, &Rr);  
+
+      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Rr, Rr, new MIPS_Variable(var->offset))); 
+
+      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rr, Rr, SP_REGISTER)); 
+
+      instructions.push_back(new MIPS_Instruction(LOADW_FLOAT_MIPS,
+                           Rd, new MIPS_Offset(Rr->number)));    
+    
+    
+    }
     
 
   }
@@ -607,7 +744,7 @@ class MIPS_Program {
   
   }
   
-  void dealloc_toMIPS(Instruction *inst){
+  void endfun_toMIPS(Instruction *inst){
   
       Quad_Constant *cons = (Quad_Constant *) inst->leftop;
 
@@ -669,6 +806,24 @@ class MIPS_Program {
       instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));    
     
     
+    } else if(aux->num==TYPE_FLOAT){
+    
+      MIPS_Float_Register *Rd;  
+      this->allocator->getregf(this, NULL, NULL, inst->result, &Rd);
+      
+      Quad_Variable *instvar= (Quad_Variable *) inst->result;
+
+      instructions.push_back(new MIPS_Instruction(MOVE_FLOAT_MIPS,
+                             new MIPS_Float_Register(ARGUMENT_FREGISTER),           
+                             Rd));
+                             
+      instructions.push_back(new MIPS_Instruction(LI_MIPS, 
+                             new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
+                             new MIPS_Variable(SYSCALL_WRITE_FLOAT_NUMBER)));
+                                       
+      instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));    
+    
+    
     }
   
   }
@@ -691,6 +846,23 @@ class MIPS_Program {
       Quad_Variable *instvar= (Quad_Variable *) inst->result;
       instructions.push_back(new MIPS_Instruction(MOVE_MIPS,           
                              Rd, new MIPS_Register(RESULT_REGISTER)));  
+    
+    
+    } else if (aux->num==TYPE_FLOAT){
+    
+      MIPS_Float_Register *Rd;  
+      this->allocator->getregf(this, inst->result, &Rd, NULL, NULL);
+                                   
+      instructions.push_back(new MIPS_Instruction(LI_MIPS, 
+                             new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
+                             new MIPS_Variable(SYSCALL_READ_FLOAT_NUMBER)));
+                                       
+      instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));  
+      
+      Quad_Variable *instvar= (Quad_Variable *) inst->result;
+
+      instructions.push_back(new MIPS_Instruction(MOVE_FLOAT_MIPS,           
+                             Rd, new MIPS_Float_Register(RESULT_FREGISTER)));  
     
     
     }

@@ -7,21 +7,19 @@
 #include <cstdlib>
 #include <stdio.h>
 #include <fstream>
+#include "MIPS_Register.h"
 
-#ifndef X_MIPSREG
-#define X_MIPSREG
+#ifndef X_MIPSFREG
+#define X_MIPSFREG
 
 
 
 
-class MIPS_Register: public MIPS_Argument {
+class MIPS_Float_Register: public MIPS_Register{
   public:
   
-  int number;
-
-  MIPS_Register(){}
     
-  MIPS_Register(int n){
+  MIPS_Float_Register(int n){
   
     number=n;
   }
@@ -31,7 +29,7 @@ class MIPS_Register: public MIPS_Argument {
   
     std::stringstream aux;
   
-    aux << "$"<<number;
+    aux << "$f"<<number;
   
     return aux.str();
   

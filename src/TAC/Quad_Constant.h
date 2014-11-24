@@ -22,7 +22,17 @@ class Quad_Constant : public Quad_Expression {
   
   Quad_Constant(int n, std::string v=""){
   
-    val = v;
+    if(v==""){
+    
+      std::stringstream aux;
+      aux << n;
+      val = aux.str();
+    
+    } else {
+  
+      val = v;
+    
+    }
     num = n;
   
   }
@@ -30,8 +40,7 @@ class Quad_Constant : public Quad_Expression {
   
   std::string toString(){ 
     
-    //std::stringstream aux;
-    //aux << num;
+
     return val;
   }
 

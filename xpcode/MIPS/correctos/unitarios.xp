@@ -2,12 +2,19 @@ program
 
 begin
 
-let char i, j;
+let int i;
+let float[20] a;
+let float f;
 
-read(j);
-i:='w';
+f:=0.65;
+while(i<20){
 
-write("j=", j ,"i=", i, "\n");
+  a[i]:=f;
+  i:=i+1;
+  f:=f-1.0;
+}
+
+write(a[3],"\n", a[11], "\n", a[4], "\n");
 
 
 end
