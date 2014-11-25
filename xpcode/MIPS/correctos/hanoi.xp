@@ -1,0 +1,32 @@
+program
+
+function void hanoi(int num, int from, int dest, int by){
+
+
+  if(num==1){
+    write("Mover plato de ",from, " a ", dest,"\n");
+    return;
+  }
+  
+  
+  hanoi(num-1,from,by,dest);
+  write("Mover plato de ");
+  write(from);
+  write(" a ");
+  write(dest);
+  write("\n");
+  hanoi(num-1,by,dest,from);
+  
+
+}
+
+begin
+
+let int i, j;
+
+write("Escriba el numero de platos iniciales, que se moveran del plato 1 al 2\n");
+read(j);
+
+hanoi(j,1,2,3);
+
+end

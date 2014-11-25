@@ -1,0 +1,35 @@
+program
+
+function int ack(int m, int n){
+  let int r1;
+
+  if(m==0){
+
+    return n+1;
+
+  }
+  
+  if(n==0){
+
+    return ack(m-1,1);
+
+  }
+  
+  r1 := ack(m,n-1);
+  
+  return ack(m-1,r1);
+
+}
+
+begin
+
+let int i, j;
+
+write("Escriba el primer argumento:\n");
+read(i);
+write("Escriba el segundo argumento:\n");
+read(j);
+
+write("ack(" , i, " , ", j ," )=", ack(i,j), "\n");
+
+end

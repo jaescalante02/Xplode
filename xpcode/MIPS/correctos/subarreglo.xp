@@ -1,0 +1,55 @@
+program
+
+
+
+begin
+
+let char[300] cad1, cad2;
+let int i,j,k,tam1,tam2;
+
+write("Escriba la primera cadena que desea saber si esta contenida en la segunda\n");
+tam1:=0;
+tam2:=0;
+while(true){
+  read(cad1[tam1]);
+  if(cad1[tam1]=='\n'){
+    cad1[tam1]='\0';
+    break;
+  }
+  tam1:=tam1+1;
+}
+write("Escriba la segunda cadena\n");
+read(cad2);
+
+while(true){
+  read(cad2[tam2]);
+  if(cad2[tam2]=='\n'){
+    cad2[tam2]='\0';
+    break;
+  }
+  tam2:=tam2+1;
+}
+
+
+i:=0;
+j:=0;
+
+while(i<tam2){
+  j:=0;
+  while(j<tam1 && i+j<tam2 && cad1[j]==cad2[i+j]){
+    j:=j+1;
+  }
+  if(j==tam1){
+    k:=1;
+  }
+  i:=i+1;
+}
+
+if(k==1){
+  write("Si esta contenida\n");
+}
+else{
+  write("No esta contenida\n");
+}
+
+end

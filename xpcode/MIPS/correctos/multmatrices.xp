@@ -1,0 +1,65 @@
+program
+
+
+
+begin
+
+let int[50][50] mat1, mat2,mat3;
+let int i,j,k,tam,tmp;
+
+write("Escriba la dimension de una matriz cuadrada\n");
+read(tam);
+i:=0;
+j:=0;
+write("Escriba la primera matriz\n");
+while(i<tam){
+  j:=0;
+  while(j<tam){
+    read(mat1[i][j]);
+    j:=j+1;
+  }
+  i:=i+1;
+}
+i:=0;
+j:=0;
+write("Escriba la segunda matriz\n");
+while(i<tam){
+  j:=0;
+  while(j<tam){
+    read(mat2[i][j]);
+    j:=j+1;
+  }
+  i:=i+1;
+}
+
+i:=0;
+j:=0;
+k:=0;
+while(i<tam){
+  while(j<tam){
+    tmp:=0;
+    while(k<tam){
+      tmp:=tmp + mat1[i][k]*mat2[k][j];
+      k:=k+1;
+    }
+    mat3[i][j]:=tmp;
+    j:=j+1;
+  }
+  i:=i+1;
+}
+
+write("Matriz resultante:\n");
+
+i:=0;
+j:=0;
+while(i<tam){
+  j:=0;
+  while(j<tam){
+    write(mat3[i][j]," ");
+    j:=j+1;
+  }
+  write("\n");
+  i:=i+1;
+}
+
+end

@@ -1,0 +1,89 @@
+program
+
+
+begin
+
+let int i, j, fact,nodos,lados,src,dst,arcs,x,y,cost;
+let int[50][50] ady;
+let int[50] costo,pick;
+
+
+
+write("Introduzca el numero de nodos:\n");
+read(nodos);
+
+i:=0;
+j:=0;
+while(i<nodos){
+  j:=0;
+  while(j<nodos){
+    ady[i][j]:=10000000;
+    
+    j:=j+1;
+  }
+  costo[i]:=10000000;
+  pick[i]:=0;
+  i:=i+1;
+}
+
+write("Introduzca el nodo fuente (0-indexed):\n");
+read(src);
+
+write("Introduzca el nodo destino (0-indexed):\n");
+read(dst);
+
+write("Introduzca el numero de arcos:\n");
+read(arcs);
+i:=0;
+write("Ahora debe introducir los arcos\n");
+while(i<arcs){
+  write("Introduzca el fuente de un arco (0-indexed)\n");
+  read(x);
+  write("Introduzca el destino del arco (0-indexed)\n");
+  read(y);
+  write("Introduzca el costo del arco\n");
+  read(cost);
+  ady[x][y]:=cost;
+  
+  i:=i+1;
+}
+costo[src]:=0;
+i:=0;
+
+while(i<src){
+  let int menor,tmp;
+  menor:=-1;
+  tmp:=0;
+  while(tmp<nodos){
+    if(pick[tmp]==0){
+      if(menor==-1){
+        menor:=tmp;
+      }
+      else{
+        if(costo[tmp]<costo[menor]){
+          menor:=tmp;
+        }
+      }
+      
+    }
+    tmp:=tmp+1;
+  }
+  
+  if(menor==-1){
+    break;
+  }
+  tmp:=0;
+  pick[menor]:=1;
+  while(tmp<nodos){
+    if((pick[tmp]==0) && (costo[menor]+ady[menor][tmp]<costo[tmp])){
+      costo[tmp]:=costo[menor]+ady[menor][tmp];
+    }
+    tmp:=tmp+1;
+  }
+    
+  i:=i+1;
+}
+
+write("Camino de menor costo: ",costo[dst],"\n");
+
+end

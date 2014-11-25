@@ -1,0 +1,21 @@
+program
+
+
+begin
+
+let int i, j, fact;
+
+write("Escriba el numero al cual quiere saber el factorial:\n");
+read(j);
+i:=1;
+fact:=1;
+
+while(i<=j){
+
+  fact := fact * i;
+  i:=i+1;
+}
+
+write("fact[", j ,"]=", fact, "\n");
+
+end

@@ -1,0 +1,33 @@
+program
+
+function int fact(int num){
+  let int j;
+
+  if(num==0){
+
+    return 1;
+
+  }
+  
+  if(num==1){
+
+    return 1;
+
+  }
+
+  j:=fact(num-1);
+  
+  return num*j;
+
+}
+
+begin
+
+let int i, j;
+
+write("Escriba el valor al cual quiere saber su factorial:\n");
+read(j);
+
+write("fact[", j ,"]=", fact(j), "\n");
+
+end

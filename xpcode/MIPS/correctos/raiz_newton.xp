@@ -1,0 +1,25 @@
+program
+
+
+begin
+
+let float x,nuevox,y;
+let int i;
+write("Escriba el valor al que le quiere conocer su raiz\n\n");
+read(y);
+
+x:=1.0;
+
+i:=1;
+
+while(i<=100){
+
+  nuevox := (0.5)*(x + y/x);
+  
+  x:= nuevox;
+  i:=i+1;
+}
+
+write("La raiz de ", y ," es: ", x, "\n\n");
+
+end

@@ -1,0 +1,38 @@
+program
+
+
+begin
+
+let int dimension, punto,i;
+let int[30] x,x2;
+
+write("Escriba la dimension del los vectores:\n");
+read(dimension);
+punto:=0;
+
+i:=0;
+
+write("Escriba los valores del primer vector:\n");
+while(i<dimension){
+  read(x[i]);
+  i:=i+1;
+}
+
+i:=0;
+write("Escriba los valores del segundo vector:\n");
+while(i<dimension){
+  read(x2[i]);
+  i:=i+1;
+}
+
+i:=0;
+
+while(i<dimension){
+  punto:= punto + x[i]*x2[i];
+  i:=i+1;
+}
+
+
+write("El producto punto da: ",punto, "\n");
+
+end

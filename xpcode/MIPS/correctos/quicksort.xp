@@ -1,0 +1,63 @@
+program
+
+function void quicksort(int m, int n, var int[] a){
+  let int i,j,v,x;
+  
+  if(n<=m) {
+    return;
+  }
+  
+  i:=m-1;
+  j:=n;
+  v:=a[n];
+  
+  while(true){
+    while(a[i]<v){
+      i:=i+1;
+    }
+    
+    while(a[j]>v){
+      j:=j-1;
+    }
+    if(i>=j) {
+      break;
+    }
+    
+    x = a[i];
+    a[i]=a[j];
+    a[j]=x;
+  }
+  x=a[i];
+  a[i]=a[n];
+  a[n]=x;
+  
+  quicksort(m,j,a);
+  quicksort(i+1,n,a);
+  
+}
+
+begin
+
+let int tam,i;
+let int[50] x,res;
+
+write("Escriba el tamanio del arreglo\n");
+read(tam);
+
+i:=0;
+
+write("Escriba los elementos del arreglo\n");
+while(i<tam){
+  read(x[i]);
+  i:=i+1;
+}
+
+quicksort(0,tam-1,x);
+i:=0;
+write("Arreglo ordenado:\n");
+while(i<tam){
+  write(x[i]," ");
+  i:=i+1;
+}
+write("\n");
+end
