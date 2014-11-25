@@ -36,8 +36,10 @@ i:=0;
 j:=0;
 k:=0;
 while(i<tam){
+  j:=0;
   while(j<tam){
     tmp:=0;
+    k:=0;
     while(k<tam){
       tmp:=tmp + mat1[i][k]*mat2[k][j];
       k:=k+1;

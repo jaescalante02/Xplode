@@ -112,7 +112,16 @@
     
     if(used_registers.count(var->var)>0){
 
-      return used_registers[var->var];
+      MIPS_Register *R=used_registers[var->var];
+      if(variables_alloc[var->var]->istemporal()){
+      
+      free.push(R);
+      variables_alloc.erase(var->var);
+      used_registers.erase(var->var);
+      
+      }
+
+      return R;
 
     } else {
     

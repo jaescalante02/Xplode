@@ -11,16 +11,16 @@ _l1:
 INIT:
 		ALLC 12
 		BFUN
-		PARF cuadrado(0)(r->0)(arg->0)(tam=0)(numtp=8)
-		CALL _t1 prueba(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		PARF cuadrado(0)(r->0)(arg->0)(tam=4)(numtp=8)
+		CALL _t1 prueba(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t1 4
 		BFUN
-		PARF cubo(0)(r->0)(arg->0)(tam=0)(numtp=8)
-		CALL _t2 prueba(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		PARF cubo(0)(r->0)(arg->0)(tam=4)(numtp=8)
+		CALL _t2 prueba(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t2 4
 		BFUN
-		PARF fib(0)(r->0)(arg->0)(tam=0)(numtp=8)
-		CALL _t3 prueba(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		PARF fib(0)(r->0)(arg->0)(tam=4)(numtp=8)
+		CALL _t3 prueba(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t3 4
 		EXIT
 
@@ -32,7 +32,7 @@ prueba:
 		ALLF 4
 		BFUN
 		PARM 6 2 0
-		CALL _t4 f(0)(r->1)(arg->1)(tam=0)(numtp=8) 1
+		CALL _t4 f(0)(r->1)(arg->1)(tam=4)(numtp=8) 1
 		EFUN _t4 4
 		:=   i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t4
 		WR   _str11_9 9
@@ -84,13 +84,13 @@ _els1:
 		SUBI _t8 num_0(0)(r->0)(arg->1)(tam=4)(numtp=2) 1
 		BFUN
 		PARM _t8 2 0
-		CALL _t9 fib(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		CALL _t9 fib(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t9 4
 		:=   j_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t9
 		SUBI _t10 num_0(0)(r->0)(arg->1)(tam=4)(numtp=2) 2
 		BFUN
 		PARM _t10 2 0
-		CALL _t11 fib(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		CALL _t11 fib(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t11 4
 		:=   k_4(4)(r->0)(arg->0)(tam=4)(numtp=2) _t11
 		ADDI _t12 k_4(4)(r->0)(arg->0)(tam=4)(numtp=2) j_0(0)(r->0)(arg->0)(tam=4)(numtp=2)

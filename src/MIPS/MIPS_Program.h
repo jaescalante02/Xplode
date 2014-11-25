@@ -46,6 +46,7 @@ class MIPS_Program {
       for(int i =0;i<tac->blocks->size();i++){
   
        this->blocktoMIPS(tac->blocks->at(i));
+       //std::cout << i << std::endl;
     
       }
   

@@ -34,6 +34,7 @@ class FunctionType : public TypeDeclaration {
 
     Symbol *toSymbol(Xplode::Token *s){
     
+    this->size = 4;
     return new Symbol(true,s->value,this,s->line,s->column,false);
     
     

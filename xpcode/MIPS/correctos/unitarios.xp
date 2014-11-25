@@ -1,20 +1,28 @@
 program
 
+function void prueba(var int[] b){
+
+
+write(b[7]);
+
+
+
+
+}
+
+
+
+
 
 
 begin
 
-let char a;
+let int[20] a;
 
-if(false){
+a[7]:=98;
 
-write("true\n");
-
-}else{
-
-write("false\n");
-
-}
-
+write(a[7]);
+prueba(a);
+write(a[7]);
 
 end

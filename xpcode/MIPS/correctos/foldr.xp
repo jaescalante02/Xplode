@@ -1,0 +1,65 @@
+program
+
+proc int binary(int, int);
+
+function int menor(int a, int b){
+
+  if(a<b){
+
+    return a;
+
+  }
+
+  return b;
+
+}
+
+function int mayor(int a, int b){
+
+  if(a>b){
+
+    return a;
+
+  }
+
+  return b;
+
+}
+
+function int foldr(int index, int tam, var binary f, var int[] arr){
+
+if(tam==index){
+
+return arr[tam-1];
+
+}
+
+return f(arr[index], foldr(index+1, tam, f, arr));
+
+
+}
+
+begin
+
+let int[30] a;
+let int j, respuesta;
+
+j:=0;
+
+while(j<30){
+
+  read(a[j]);
+  j:=j+1;
+
+}
+
+respuesta := foldr(0, 30, menor, a);
+
+write("menor= ", respuesta,"\n");
+
+respuesta := foldr(0, 30, mayor, a);
+
+write("mayor= ", respuesta,"\n");
+
+
+end

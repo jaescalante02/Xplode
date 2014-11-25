@@ -1,9 +1,9 @@
 	_str10_7 --> "Escriba la dimension de una matriz cuadrada\n"
 	_str14_7 --> "Escriba la primera matriz\n"
 	_str25_7 --> "Escriba la segunda matriz\n"
-	_str51_7 --> "Matriz resultante:\n"
-	_str58_22 --> " "
-	_str61_9 --> "\n"
+	_str53_7 --> "Matriz resultante:\n"
+	_str60_22 --> " "
+	_str63_9 --> "\n"
 
 
 
@@ -138,8 +138,9 @@ _l15:
 
 # ------------------------------------------------------
 _l14:
+		:=   j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) 0
 
-#WHILE situado en 39:3, termina en la etiqueta _end6
+#WHILE situado en 40:3, termina en la etiqueta _end6
 
 _whl6:
 		LESS j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) tam_30012(30012)(r->0)(arg->0)(tam=4)(numtp=2) _l16
@@ -151,8 +152,9 @@ _l17:
 # ------------------------------------------------------
 _l16:
 		:=   tmp_30016(30016)(r->0)(arg->0)(tam=4)(numtp=2) 0
+		:=   k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2) 0
 
-#WHILE situado en 41:5, termina en la etiqueta _end7
+#WHILE situado en 43:5, termina en la etiqueta _end7
 
 _whl7:
 		LESS k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2) tam_30012(30012)(r->0)(arg->0)(tam=4)(numtp=2) _l18
@@ -167,12 +169,12 @@ _l18:
 		ADDI _t15 _t14 k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2)
 		MULI _t16 _t15 4
 		:=[] _t17 mat1_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t16
-		ADDI _t18 tmp_30016(30016)(r->0)(arg->0)(tam=4)(numtp=2) _t17
-		MULI _t19 k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2) 50
-		ADDI _t20 _t19 j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2)
-		MULI _t21 _t20 4
-		:=[] _t22 mat2_10000(10000)(r->0)(arg->0)(tam=4)(numtp=2) _t21
-		ADDI _t23 _t18 _t22
+		MULI _t18 k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2) 50
+		ADDI _t19 _t18 j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2)
+		MULI _t20 _t19 4
+		:=[] _t21 mat2_10000(10000)(r->0)(arg->0)(tam=4)(numtp=2) _t20
+		MULI _t22 _t17 _t21
+		ADDI _t23 tmp_30016(30016)(r->0)(arg->0)(tam=4)(numtp=2) _t22
 		:=   tmp_30016(30016)(r->0)(arg->0)(tam=4)(numtp=2) _t23
 		ADDI _t24 k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2) 1
 		:=   k_30008(30008)(r->0)(arg->0)(tam=4)(numtp=2) _t24
@@ -208,11 +210,11 @@ _l22:
 
 # ------------------------------------------------------
 _end5:
-		WR   _str51_7 9
+		WR   _str53_7 9
 		:=   i_30000(30000)(r->0)(arg->0)(tam=4)(numtp=2) 0
 		:=   j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) 0
 
-#WHILE situado en 55:1, termina en la etiqueta _end8
+#WHILE situado en 57:1, termina en la etiqueta _end8
 
 _whl8:
 		LESS i_30000(30000)(r->0)(arg->0)(tam=4)(numtp=2) tam_30012(30012)(r->0)(arg->0)(tam=4)(numtp=2) _l23
@@ -225,7 +227,7 @@ _l24:
 _l23:
 		:=   j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) 0
 
-#WHILE situado en 57:3, termina en la etiqueta _end9
+#WHILE situado en 59:3, termina en la etiqueta _end9
 
 _whl9:
 		LESS j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) tam_30012(30012)(r->0)(arg->0)(tam=4)(numtp=2) _l25
@@ -241,7 +243,7 @@ _l25:
 		MULI _t32 _t31 4
 		:=[] _t33 mat3_20000(20000)(r->0)(arg->0)(tam=4)(numtp=2) _t32
 		WR   _t33 2
-		WR   _str58_22 9
+		WR   _str60_22 9
 		ADDI _t34 j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) 1
 		:=   j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) _t34
 		LESS j_30004(30004)(r->0)(arg->0)(tam=4)(numtp=2) tam_30012(30012)(r->0)(arg->0)(tam=4)(numtp=2) _l25
@@ -252,7 +254,7 @@ _l27:
 
 # ------------------------------------------------------
 _end9:
-		WR   _str61_9 9
+		WR   _str63_9 9
 		ADDI _t35 i_30000(30000)(r->0)(arg->0)(tam=4)(numtp=2) 1
 		:=   i_30000(30000)(r->0)(arg->0)(tam=4)(numtp=2) _t35
 		LESS i_30000(30000)(r->0)(arg->0)(tam=4)(numtp=2) tam_30012(30012)(r->0)(arg->0)(tam=4)(numtp=2) _l23
