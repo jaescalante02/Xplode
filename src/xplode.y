@@ -542,9 +542,12 @@ param_type
   : primitive_type {$$ = $1; }
   | x_ID {
   
+
       Symbol *s = root->findType($1->value);
       if(s)
         $$ = s->ntype;
+        
+
   
   }
   | param_type x_LBRACKET x_RBRACKET {      
@@ -1522,18 +1525,19 @@ function
       Symbol *s = actual->find($1->value);
       TypeDeclaration *tp = root->findType("_error")->ntype;
       FunctionType *f;
+
       if(!s){
       
         errorlog->addError(35,line,column,&$1->value);
       
       }else {
-      
+
         if(!s->ntype->isfunction()){
 
           errorlog->addError(36,line,column,&$1->value);
           
         } else {
-        
+
           f = (FunctionType *) s->ntype;
           TupleType *t = (TupleType *) f->arguments;
           std::list<Expression *>::iterator it = $3->begin();
@@ -1543,9 +1547,9 @@ function
           for(it2=t->types->begin();it2!=t->types->end();++it2, ++cont_param){
         
             if(it==$3->end()) break;
-          
-            if((f->reference->count(cont_param)>0)&& (!(*it)->isvariable())) errorlog->addError(0,0,0, NULL);
-          
+
+            if((f->reference) &&(f->reference->count(cont_param)>0)&& (!(*it)->isvariable())) errorlog->addError(0,0,0, NULL);
+
             if((*it)->ntype->isarray()){
             
               TypeDeclaration *t=(*it)->ntype,*t2 =(*it2)->first;

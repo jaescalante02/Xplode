@@ -1,20 +1,29 @@
 program
 
-begin
+function void prueba(var int[] b){
 
-let int i;
-let float[20] a;
-let float f;
+write(b[7], "\n");
 
-f:=0.65;
-while(i<20){
+b[7]:=12;
 
-  a[i]:=f;
-  i:=i+1;
-  f:=f-1.0;
 }
 
-write(a[3],"\n", a[11], "\n", a[4], "\n");
+begin
+
+//let int j, i, k;
+
+let int[10] a;
+let int[4][4] b;
+
+a[7]:=99;
+
+write(a[7], "\n");
+
+prueba(a);
+
+write(a[7], "\n");
+
+//prueba(b[2]);
 
 
 end

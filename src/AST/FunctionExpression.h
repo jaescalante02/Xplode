@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "Expression.h"
 #include "../SymTable.h"
+#include "../AST/Variable.h"
 
 #ifndef X_FUNCTIONEXP
 #define X_FUNCTIONEXP
@@ -60,14 +61,31 @@ class FunctionExpression : public Expression {
   
       ++cont;
 
-      inst = new Instruction((reference->count(cont2)>0)?PARAM_REF_LABEL:PARAM_LABEL);
-      inst->result = (*iter)->toTAC(tac, symtab);
-      inst->leftop = new Quad_Constant((*iter)->ntype->numtype);
-      inst->rightop = new Quad_Constant(tam_dealloc);      
+      if((reference)&&(reference->count(cont2)>0)){
+
+        Variable *v = (Variable *) *iter;
+        inst = v->lval_toTAC(tac, symtab);
+
+        inst->op = PARAM_REF_LABEL;
+        //inst->result = inst->leftop;
+        //inst->leftop = inst->rightop;
+
+      
+      }else{
+
+        inst = new Instruction(PARAM_LABEL);
+        inst->result = (*iter)->toTAC(tac, symtab);
+        inst->leftop = new Quad_Constant((*iter)->ntype->numtype);
+        inst->rightop = new Quad_Constant(tam_dealloc);
+      
+      
+      }
+            
       ins.push_back(inst);
       
-      if(reference->count(cont2)>0) tam_dealloc += 4;
+      if((reference)&&(reference->count(cont2)>0)) tam_dealloc += 4;
       else tam_dealloc += (*iter)->ntype->size; 
+
 
     }
 
@@ -85,7 +103,8 @@ class FunctionExpression : public Expression {
     inst = new Instruction(CALL_LABEL);
     Quad_Variable *q = new Quad_Variable(tac->labelmaker->getlabel(TEMPORAL));  
     inst->result = q;
-    inst->leftop = new Quad_Variable(fname);
+    Symbol *sym = symtab->find(fname);
+    inst->leftop = new Quad_Variable(fname, sym->offset, sym->porref, sym->isarg, sym->ntype->size, sym->ntype->numtype);
     inst->rightop = new Quad_Constant(cont);
     tac->push_quad(inst);
 
@@ -93,7 +112,7 @@ class FunctionExpression : public Expression {
     inst->result = q;
     inst->leftop = new Quad_Constant(tam_dealloc);
     tac->push_quad(inst);    
-    
+
     return inst->result;
     
   }

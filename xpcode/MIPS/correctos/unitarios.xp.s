@@ -1,7 +1,7 @@
 .data
-_str17_12:  .asciiz "\n"
-_str17_25:  .asciiz "\n"
-_str17_37:  .asciiz "\n"
+_str20_13:  .asciiz "\n"
+_str24_13:  .asciiz "\n"
+_str5_13:  .asciiz "\n"
 
 .text
 
@@ -10,74 +10,81 @@ _l1:
 
 INIT:
 
-		addi $29 $29 -92
-		li.s $f1 0.65
-		mov.s $f2 $f1
-_whl1:
-
-		li $5 20
-		addi $6 $0 0
-		add $6 $6 $29
-		lw $6 4($6)
-		blt $6 $5 _l2
-_l3:
-
-		b _end1
-_l2:
-
-		li $7 4
-		mul $8 $6 $7
-		addi $8 $8 4
-		add $8 $8 $29
-		swc1 $f2 4($8)
-		li $9 1
-		add $10 $6 $9
-		move $6 $10
-		li.s $f3 1.0
-		sub.s $f4 $f2 $f3
-		mov.s $f2 $f4
-		li $11 20
-		blt $6 $11 _l2
-_l4:
-
-		b _end1
-_end1:
-
-		li $12 4
-		li $13 3
-		mul $14 $13 $12
-		addi $14 $14 4
-		add $14 $14 $29
-		lwc1 $f5 4($14)
-		mov.s $f12 $f5
-		li $2 2
+		addi $29 $29 -104
+		li $5 4
+		li $6 7
+		mul $7 $6 $5
+		li $8 99
+		addi $7 $7 0
+		add $7 $7 $29
+		sw $8 4($7)
+		li $9 4
+		li $10 7
+		mul $11 $10 $9
+		addi $11 $11 0
+		add $11 $11 $29
+		lw $12 4($11)
+		move $4 $12
+		li $2 1
 		syscall
-		la $4 _str17_12
+		la $4 _str20_13
 		li $2 4
 		syscall
-		li $15 4
-		li $16 11
-		mul $17 $16 $15
-		addi $17 $17 4
-		add $17 $17 $29
-		lwc1 $f6 4($17)
-		mov.s $f12 $f6
-		li $2 2
+		addi $13 $0 4
+		add $13 $13 $29
+		sw $13 0($29)
+		addi $29 $29 -4
+		addi $29 $29 -4
+		la $13 prueba
+		jal $13
+		lw $13 0($29)
+		addi $29 $29 4
+		li $14 4
+		li $15 7
+		mul $16 $15 $14
+		addi $16 $16 0
+		add $16 $16 $29
+		lw $17 4($16)
+		move $4 $17
+		li $2 1
 		syscall
-		la $4 _str17_25
-		li $2 4
-		syscall
-		li $18 4
-		li $19 4
-		mul $20 $19 $18
-		addi $20 $20 4
-		add $20 $20 $29
-		lwc1 $f7 4($20)
-		mov.s $f12 $f7
-		li $2 2
-		syscall
-		la $4 _str17_37
+		la $4 _str24_13
 		li $2 4
 		syscall
 		li $2 10
 		syscall
+prueba:
+
+		addi $29 $29 -4
+		sw $31 4($29)
+		addi $29 $29 -4
+		sw $30 4($29)
+		addi $30 $29 12
+		addi $29 $29 0
+		li $18 4
+		li $19 7
+		mul $20 $19 $18
+		addi $22 $0 0
+		add $22 $22 $30
+		lw $22 4($22)
+		add $20 $20 $22
+		lw $21 0($20)
+		move $4 $21
+		li $2 1
+		syscall
+		la $4 _str5_13
+		li $2 4
+		syscall
+		li $22 4
+		li $23 7
+		mul $24 $23 $22
+		li $25 12
+		addi $6 $0 0
+		add $6 $6 $30
+		lw $6 4($6)
+		add $24 $24 $6
+		sw $25 0($24)
+		lw $31 -4($30)
+		move $29 $30
+		lw $30 -8($30)
+		jr $31

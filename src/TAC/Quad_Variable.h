@@ -29,7 +29,7 @@ class Quad_Variable : public Quad_Expression {
   
   Quad_Variable(std::string v, int off= NO_OFFSET_NUM, bool r=false, bool a=false, int t=-1, int nt=-1){  
     
-    if(off==NO_OFFSET_NUM){
+    if((off==NO_OFFSET_NUM) || (t<1)){
     
       var=v;
     

@@ -1,0 +1,57 @@
+program
+
+
+proc int op(int);
+
+function void prueba(var op f){
+
+let int i;
+
+  i:= f(6);
+  write("La funcion devuelve: ", i, "\n");
+
+}
+
+function int cuadrado(int i){
+
+  return i*i;
+
+}
+
+function int cubo(int j){
+
+  return j*j*j;
+
+}
+
+function int fib(int num){
+
+  let int j, k;
+
+  if(num<2){
+
+    return 1;
+
+  }
+
+  j:=fib(num-1);
+  k:=fib(num-2);
+  return k + j;
+
+}
+
+begin
+
+let int j, i, k;
+
+//let int[10][10] a;
+
+prueba(cuadrado);
+prueba(cubo);
+prueba(fib);
+
+//write(cuadrado(8), "\n");
+
+
+
+end

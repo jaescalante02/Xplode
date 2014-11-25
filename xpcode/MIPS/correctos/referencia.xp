@@ -1,0 +1,41 @@
+program
+
+function void prueba2(var int a){
+
+write(a, "\n");
+
+a:=7;
+
+write(a, "\n");
+
+
+
+}
+
+function void prueba(var int b){
+
+write(b, "\n");
+
+b:=5;
+
+write(b, "\n");
+
+prueba2(b);
+write(b, "\n");
+
+}
+
+begin
+
+let int i;
+
+i:=3;
+write(i, "\n");
+
+prueba(i);
+
+write(i, "\n");
+
+
+
+end

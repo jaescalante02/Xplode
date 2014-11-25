@@ -1,6 +1,6 @@
-	_str17_12 --> "\n"
-	_str17_25 --> "\n"
-	_str17_37 --> "\n"
+	_str20_13 --> "\n"
+	_str24_13 --> "\n"
+	_str5_13 --> "\n"
 
 
 
@@ -10,47 +10,36 @@
 
 _l1:
 INIT:
-		ALLC 92
-		:=   f_84(84)(r->0)(arg->0)(tam=4)(numtp=5) 0.65
-
-#WHILE situado en 10:1, termina en la etiqueta _end1
-
-_whl1:
-		LESS i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 20 _l2
-
-# ------------------------------------------------------
-_l3:
-		JUMP _end1
-
-# ------------------------------------------------------
-_l2:
-		MULI _t1 i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 4
-		[]:= a_4(4)(r->0)(arg->0)(tam=4)(numtp=5) _t1 f_84(84)(r->0)(arg->0)(tam=4)(numtp=5)
-		ADDI _t2 i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 1
-		:=   i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t2
-		SUBF _t3 f_84(84)(r->0)(arg->0)(tam=4)(numtp=5) 1.0
-		:=   f_84(84)(r->0)(arg->0)(tam=4)(numtp=5) _t3
-		LESS i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 20 _l2
-
-# ------------------------------------------------------
-_l4:
-		JUMP _end1
-
-# ------------------------------------------------------
-_end1:
-		MULI _t4 3 4
-		:=[] _t5 a_4(4)(r->0)(arg->0)(tam=4)(numtp=5) _t4
-		WR   _t5 5
-		WR   _str17_12 9
-		MULI _t6 11 4
-		:=[] _t7 a_4(4)(r->0)(arg->0)(tam=4)(numtp=5) _t6
-		WR   _t7 5
-		WR   _str17_25 9
-		MULI _t8 4 4
-		:=[] _t9 a_4(4)(r->0)(arg->0)(tam=4)(numtp=5) _t8
-		WR   _t9 5
-		WR   _str17_37 9
+		ALLC 104
+		MULI _t1 7 4
+		[]:= a_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t1 99
+		MULI _t2 7 4
+		:=[] _t3 a_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t2
+		WR   _t3 2
+		WR   _str20_13 9
+		BFUN
+		PARF a_0(0)(r->0)(arg->0)(tam=40)(numtp=6)
+		CALL _t4 prueba(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		EFUN _t4 4
+		MULI _t5 7 4
+		:=[] _t6 a_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t5
+		WR   _t6 2
+		WR   _str24_13 9
 		EXIT
+
+# ------------------------------------------------------
+
+#FUNCTION situado en 3:1
+
+prueba:
+		ALLF 0
+		MULI _t7 7 4
+		:=[] _t8 b_0(0)(r->1)(arg->1)(tam=4)(numtp=2) _t7
+		WR   _t8 2
+		WR   _str5_13 9
+		MULI _t9 7 4
+		[]:= b_0(0)(r->1)(arg->1)(tam=4)(numtp=2) _t9 12
+		RET 
 
 # ------------------------------------------------------
 

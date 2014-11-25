@@ -135,7 +135,7 @@
         assembler->add(new MIPS_Instruction(LOADW_MIPS,
                            reg, new MIPS_Offset(reg->number)));
                            
-        if(var->ref){
+        if((var->ref) && (var->numtype!=TYPE_FUNCTION)){
         
           assembler->add(new MIPS_Instruction(LOADW_MIPS,
                            reg, new MIPS_Offset(reg->number, 0)));        

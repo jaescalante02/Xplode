@@ -449,21 +449,53 @@ class MIPS_Program {
 
     
     } else {
-                                     
-      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
-                           Rd, ZERO_REGISTER, new MIPS_Variable(var->offset + 4))); 
-
-      Rb = (var->arg)?FP_REGISTER:SP_REGISTER;
-
-      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
-                           Rd, Rd, Rb)); 
-  
-      instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
-                           Rd, new MIPS_Offset(Rb->number, 0)));
+      
+      if(var->numtype==TYPE_FUNCTION){
+      
+        instructions.push_back(new MIPS_Instruction(LA_MIPS,
+                           Rd, new MIPS_Variable(var->var))); 
+      
+        instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rd, new MIPS_Offset(29, 0)));
                           
-      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+
+      
+      } else {
+                                     
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Rd, ZERO_REGISTER, new MIPS_Variable(var->offset + 4)));
+        
+        if((var->numtype==TYPE_FUNCTION)&&(inst->leftop)){
+        
+          MIPS_Register *Rl;
+        
+          this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl);  
+                 
+          instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rd, Rd, Rl));        
+        
+        }                    
+
+        Rb = (var->arg)?FP_REGISTER:SP_REGISTER;
+
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rd, Rd, Rb)); 
+
+
+        instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rd, new MIPS_Offset(29, 0)));
+                          
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            SP_REGISTER, SP_REGISTER, 
                            new MIPS_Variable(-4))); 
+
+      }
+      
+
+                         
                            
    }                                                  
   
@@ -473,19 +505,34 @@ class MIPS_Program {
   
     MIPS_Register  *Rl;
         //Rr lo quite numero de parametros
-    this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl);  
+
 
     Quad_Variable *instvar= (Quad_Variable *) inst->leftop;
 
+    if(instvar->ref){
+
+      this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl); 
+      
+      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           SP_REGISTER, SP_REGISTER, 
+                           new MIPS_Variable(-4)));
+ 
+
+    }else{
+    
+    Rl = this->allocator->takeregister();
+    
     instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            SP_REGISTER, SP_REGISTER, 
                            new MIPS_Variable(-4)));
+
 
     instructions.push_back(new MIPS_Instruction(LA_MIPS, Rl, 
                                               new MIPS_Variable(instvar->var)));  
 
 
-
+    }
+    
     instructions.push_back(new MIPS_Instruction(JUMP_FUNCTION_MIPS, Rl)); 
         
     this->allocator->clear();
@@ -623,14 +670,37 @@ class MIPS_Program {
              
       this->allocator->getreg(this, NULL, NULL, inst->leftop, &Rl, inst->rightop, &Rr);  
 
-      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+      if(var->arg){
+      
+        MIPS_Register *Ra=this->allocator->takeregister();
+
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Ra, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
+
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Ra, Ra, FP_REGISTER)); 
+  
+        instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           Ra, new MIPS_Offset(Ra->number)));
+
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rl, Rl, Ra)); 
+
+        instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+                           Rr, new MIPS_Offset(Rl->number, 0)));
+      
+      } else {
+
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            Rl, Rl, new MIPS_Variable(var->offset))); 
 
-      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            Rl, Rl, SP_REGISTER)); 
 
-      instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
+        instructions.push_back(new MIPS_Instruction(STOREW_MIPS,
                            Rr, new MIPS_Offset(Rl->number)));
+      
+      }
                            
     } else {
     
@@ -666,15 +736,37 @@ class MIPS_Program {
   
       this->allocator->getreg(this, inst->result, &Rd, inst->rightop, &Rr);  
 
-      instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+      if(var->arg){
+      
+        MIPS_Register *Ra=this->allocator->takeregister();
+
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
+                           Ra, ZERO_REGISTER, new MIPS_Variable(var->offset))); 
+
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Ra, Ra, FP_REGISTER)); 
+  
+        instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           Ra, new MIPS_Offset(Ra->number)));
+
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+                           Rr, Rr, Ra)); 
+
+        instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+                           Rd, new MIPS_Offset(Rr->number, 0)));
+      
+      } else {
+
+        instructions.push_back(new MIPS_Instruction(ADD_CONSTANT_MIPS,
                            Rr, Rr, new MIPS_Variable(var->offset))); 
 
-      instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
+        instructions.push_back(new MIPS_Instruction(ADD_REGISTER_MIPS,
                            Rr, Rr, SP_REGISTER)); 
 
-      instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
+        instructions.push_back(new MIPS_Instruction(LOADW_MIPS,
                            Rd, new MIPS_Offset(Rr->number)));
-                           
+      }  
+                         
     } else {
     
       MIPS_Register *Rr;
