@@ -1,6 +1,5 @@
-	_str20_13 --> "\n"
-	_str24_13 --> "\n"
-	_str5_13 --> "\n"
+	_str11_7 --> "true\n"
+	_str15_7 --> "false\n"
 
 
 
@@ -10,36 +9,26 @@
 
 _l1:
 INIT:
-		ALLC 104
-		MULI _t1 7 4
-		[]:= a_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t1 99
-		MULI _t2 7 4
-		:=[] _t3 a_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t2
-		WR   _t3 2
-		WR   _str20_13 9
-		BFUN
-		PARF a_0(0)(r->0)(arg->0)(tam=40)(numtp=6)
-		CALL _t4 prueba(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
-		EFUN _t4 4
-		MULI _t5 7 4
-		:=[] _t6 a_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t5
-		WR   _t6 2
-		WR   _str24_13 9
-		EXIT
+		ALLC 4
+
+#IF situado en 9:1, termina en la etiqueta _els1
+
+_if1:
+		JUMP _els1
+
+# ------------------------------------------------------
+_l2:
+		WR   _str11_7 9
+		JUMP _end1
 
 # ------------------------------------------------------
 
-#FUNCTION situado en 3:1
+#ELSE situado en 13:6, termina en la etiqueta _end1
 
-prueba:
-		ALLF 0
-		MULI _t7 7 4
-		:=[] _t8 b_0(0)(r->1)(arg->1)(tam=4)(numtp=2) _t7
-		WR   _t8 2
-		WR   _str5_13 9
-		MULI _t9 7 4
-		[]:= b_0(0)(r->1)(arg->1)(tam=4)(numtp=2) _t9 12
-		RET 
+_els1:
+		WR   _str15_7 9
+_end1:
+		EXIT
 
 # ------------------------------------------------------
 

@@ -949,6 +949,23 @@ class MIPS_Program {
       instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));    
     
     
+    } else if(aux->num==TYPE_CHAR){
+    
+      MIPS_Register *Rd;  
+      this->allocator->getreg(this, NULL, NULL, inst->result, &Rd);
+      
+      Quad_Variable *instvar= (Quad_Variable *) inst->result;
+      instructions.push_back(new MIPS_Instruction(MOVE_MIPS,
+                             new MIPS_Register(ARGUMENT_REGISTER),           
+                             Rd));
+                             
+      instructions.push_back(new MIPS_Instruction(LI_MIPS, 
+                             new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
+                             new MIPS_Variable(SYSCALL_WRITE_CHAR_NUMBER)));
+                                       
+      instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));    
+    
+    
     }
   
   }
@@ -988,6 +1005,22 @@ class MIPS_Program {
 
       instructions.push_back(new MIPS_Instruction(MOVE_FLOAT_MIPS,           
                              Rd, new MIPS_Float_Register(RESULT_FREGISTER)));  
+    
+    
+    } else if(aux->num==TYPE_CHAR){
+    
+      MIPS_Register *Rd;  
+      this->allocator->getreg(this, inst->result, &Rd, NULL, NULL);
+                                   
+      instructions.push_back(new MIPS_Instruction(LI_MIPS, 
+                             new MIPS_Register(SYSCALL_NUMBER_REGISTER),     
+                             new MIPS_Variable(SYSCALL_READ_CHAR_NUMBER)));
+                                       
+      instructions.push_back(new MIPS_Instruction(SYSCALL_MIPS));  
+      
+      Quad_Variable *instvar= (Quad_Variable *) inst->result;
+      instructions.push_back(new MIPS_Instruction(MOVE_MIPS,           
+                             Rd, new MIPS_Register(RESULT_REGISTER)));  
     
     
     }

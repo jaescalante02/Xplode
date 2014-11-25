@@ -48,8 +48,10 @@
 #define SYSCALL_WRITE_STRING_NUMBER       4
 #define SYSCALL_WRITE_INT_NUMBER          1
 #define SYSCALL_WRITE_FLOAT_NUMBER        2
+#define SYSCALL_WRITE_CHAR_NUMBER         11
 #define SYSCALL_READ_INT_NUMBER           5
 #define SYSCALL_READ_FLOAT_NUMBER         6
+#define SYSCALL_READ_CHAR_NUMBER          12
 #define ARGUMENT_REGISTER                 4
 #define ARGUMENT_FREGISTER                12
 #define RESULT_REGISTER                   2

@@ -1,29 +1,20 @@
 program
 
-function void prueba(var int[] b){
 
-write(b[7], "\n");
-
-b[7]:=12;
-
-}
 
 begin
 
-//let int j, i, k;
+let char a;
 
-let int[10] a;
-let int[4][4] b;
+if(false){
 
-a[7]:=99;
+write("true\n");
 
-write(a[7], "\n");
+}else{
 
-prueba(a);
+write("false\n");
 
-write(a[7], "\n");
-
-//prueba(b[2]);
+}
 
 
 end
