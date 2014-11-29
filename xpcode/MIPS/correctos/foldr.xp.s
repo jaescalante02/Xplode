@@ -1,8 +1,8 @@
 .data
-_str58_27:  .asciiz "\n"
-_str58_7:  .asciiz "menor="
-_str62_27:  .asciiz "\n"
-_str62_7:  .asciiz "mayor="
+_str58_28:  .asciiz "\n"
+_str58_7:  .asciiz "menor= "
+_str62_28:  .asciiz "\n"
+_str62_7:  .asciiz "mayor= "
 
 .text
 
@@ -69,7 +69,7 @@ _end1:
 		move $4 $17
 		li $2 1
 		syscall
-		la $4 _str58_27
+		la $4 _str58_28
 		li $2 4
 		syscall
 		addi $18 $0 124
@@ -100,7 +100,7 @@ _end1:
 		move $4 $21
 		li $2 1
 		syscall
-		la $4 _str62_27
+		la $4 _str62_28
 		li $2 4
 		syscall
 		li $2 10

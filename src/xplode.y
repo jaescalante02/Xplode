@@ -551,7 +551,7 @@ param_type
   
   }
   | param_type x_LBRACKET x_RBRACKET {      
-     $$ = new ArrayType($1,-1);
+     $$ = new ArrayType($1,1);
    } 
   ;
   

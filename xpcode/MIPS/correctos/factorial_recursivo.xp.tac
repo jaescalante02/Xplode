@@ -20,7 +20,7 @@ INIT:
 		WR   _str31_19 9
 		BFUN
 		PARM j_4(4)(r->0)(arg->0)(tam=4)(numtp=2) 2 0
-		CALL _t2 fact(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		CALL _t2 fact(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t2 4
 		WR   _t2 2
 		WR   _str31_34 9
@@ -63,7 +63,7 @@ _els2:
 		SUBI _t3 num_0(0)(r->0)(arg->1)(tam=4)(numtp=2) 1
 		BFUN
 		PARM _t3 2 0
-		CALL _t4 fact(0)(r->0)(arg->0)(tam=0)(numtp=8) 1
+		CALL _t4 fact(0)(r->0)(arg->0)(tam=4)(numtp=8) 1
 		EFUN _t4 4
 		:=   j_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t4
 		MULI _t5 num_0(0)(r->0)(arg->1)(tam=4)(numtp=2) j_0(0)(r->0)(arg->0)(tam=4)(numtp=2)

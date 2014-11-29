@@ -15,7 +15,7 @@ function void sort(var int[] x,var int[] res, int x1, int x2){
   j:=mid+1;
   ind:=x1;
   
-  while((i<=mid) && (j<=x2)){
+  while((i<mid) && (j<x2)){
     if(x[i]<x[j]){
       res[ind]:=x[i];
       i:=i+1;
@@ -27,12 +27,12 @@ function void sort(var int[] x,var int[] res, int x1, int x2){
     ind:=ind+1;
   }
   
-  while(i<=mid){
+  while(i<mid){
     res[ind]:=x[i];
     i:=i+1;
     ind:=ind+1;
   }
-  while(j<=x2){
+  while(j<x2){
     res[ind]:=x[j];
     j:=j+1;
     ind:=ind+1;

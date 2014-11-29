@@ -50,7 +50,7 @@ while(i<arcs){
 costo[src]:=0;
 i:=0;
 
-while(i<src){
+while(i<nodos){
   let int menor,tmp;
   menor:=-1;
   tmp:=0;
@@ -68,7 +68,7 @@ while(i<src){
     }
     tmp:=tmp+1;
   }
-  
+
   if(menor==-1){
     break;
   }

@@ -129,7 +129,7 @@ _end3:
 #WHILE situado en 53:1, termina en la etiqueta _end4
 
 _whl4:
-		LESS i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) src_20(20)(r->0)(arg->0)(tam=4)(numtp=2) _l11
+		LESS i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) nodos_12(12)(r->0)(arg->0)(tam=4)(numtp=2) _l11
 
 # ------------------------------------------------------
 _l12:
@@ -303,7 +303,7 @@ _l31:
 _end7:
 		ADDI _t51 i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 1
 		:=   i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t51
-		LESS i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) src_20(20)(r->0)(arg->0)(tam=4)(numtp=2) _l11
+		LESS i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) nodos_12(12)(r->0)(arg->0)(tam=4)(numtp=2) _l11
 
 # ------------------------------------------------------
 _l32:

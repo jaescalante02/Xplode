@@ -1,7 +1,7 @@
-	_str58_27 --> "\n"
-	_str58_7 --> "menor="
-	_str62_27 --> "\n"
-	_str62_7 --> "mayor="
+	_str58_28 --> "\n"
+	_str58_7 --> "menor= "
+	_str62_28 --> "\n"
+	_str62_7 --> "mayor= "
 
 
 
@@ -48,7 +48,7 @@ _end1:
 		:=   respuesta_124(124)(r->0)(arg->0)(tam=4)(numtp=2) _t4
 		WR   _str58_7 9
 		WR   respuesta_124(124)(r->0)(arg->0)(tam=4)(numtp=2) 2
-		WR   _str58_27 9
+		WR   _str58_28 9
 		BFUN
 		PARF a_0(0)(r->0)(arg->0)(tam=120)(numtp=6)
 		PARF mayor(0)(r->0)(arg->0)(tam=4)(numtp=8)
@@ -59,7 +59,7 @@ _end1:
 		:=   respuesta_124(124)(r->0)(arg->0)(tam=4)(numtp=2) _t5
 		WR   _str62_7 9
 		WR   respuesta_124(124)(r->0)(arg->0)(tam=4)(numtp=2) 2
-		WR   _str62_27 9
+		WR   _str62_28 9
 		EXIT
 
 # ------------------------------------------------------
@@ -133,7 +133,7 @@ _l9:
 _els3:
 		ADDI _t9 index_0(0)(r->0)(arg->1)(tam=4)(numtp=2) 1
 		BFUN
-		PARF arr_12(12)(r->1)(arg->1)(tam=-4)(numtp=6)
+		PARF arr_12(12)(r->1)(arg->1)(tam=4)(numtp=6)
 		PARF f(8)(r->1)(arg->1)(tam=4)(numtp=8)
 		PARM tam_4(4)(r->0)(arg->1)(tam=4)(numtp=2) 2 8
 		PARM _t9 2 12

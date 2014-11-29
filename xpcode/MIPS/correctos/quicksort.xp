@@ -12,10 +12,13 @@ function void quicksort(int m, int n, var int[] a){
   v:=a[n];
   
   while(true){
+  
+    i:=i+1;
     while(a[i]<v){
       i:=i+1;
     }
     
+    j:=j-1;
     while(a[j]>v){
       j:=j-1;
     }
@@ -23,13 +26,13 @@ function void quicksort(int m, int n, var int[] a){
       break;
     }
     
-    x = a[i];
-    a[i]=a[j];
-    a[j]=x;
+    x := a[i];
+    a[i]:=a[j];
+    a[j]:=x;
   }
-  x=a[i];
-  a[i]=a[n];
-  a[n]=x;
+  x:=a[i];
+  a[i]:=a[n];
+  a[n]:=x;
   
   quicksort(m,j,a);
   quicksort(i+1,n,a);
@@ -49,6 +52,13 @@ i:=0;
 write("Escriba los elementos del arreglo\n");
 while(i<tam){
   read(x[i]);
+  i:=i+1;
+}
+
+i:=0;
+write("Arreglo ordenado:\n");
+while(i<tam){
+  write(x[i]," ");
   i:=i+1;
 }
 

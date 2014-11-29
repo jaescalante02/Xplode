@@ -28,7 +28,7 @@ INIT:
 		BFUN
 		PARM j_4(4)(r->0)(arg->0)(tam=4)(numtp=2) 2 0
 		PARM i_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 2 4
-		CALL _t3 ack(0)(r->0)(arg->0)(tam=0)(numtp=8) 2
+		CALL _t3 ack(0)(r->0)(arg->0)(tam=4)(numtp=8) 2
 		EFUN _t3 8
 		WR   _t3 2
 		WR   _str33_46 9
@@ -71,7 +71,7 @@ _l4:
 		BFUN
 		PARM 1 2 0
 		PARM _t5 2 4
-		CALL _t6 ack(0)(r->0)(arg->0)(tam=0)(numtp=8) 2
+		CALL _t6 ack(0)(r->0)(arg->0)(tam=4)(numtp=8) 2
 		EFUN _t6 8
 		RET  _t6
 _els2:
@@ -79,14 +79,14 @@ _els2:
 		BFUN
 		PARM _t7 2 0
 		PARM m_0(0)(r->0)(arg->1)(tam=4)(numtp=2) 2 4
-		CALL _t8 ack(0)(r->0)(arg->0)(tam=0)(numtp=8) 2
+		CALL _t8 ack(0)(r->0)(arg->0)(tam=4)(numtp=8) 2
 		EFUN _t8 8
 		:=   r1_0(0)(r->0)(arg->0)(tam=4)(numtp=2) _t8
 		SUBI _t9 m_0(0)(r->0)(arg->1)(tam=4)(numtp=2) 1
 		BFUN
 		PARM r1_0(0)(r->0)(arg->0)(tam=4)(numtp=2) 2 0
 		PARM _t9 2 4
-		CALL _t10 ack(0)(r->0)(arg->0)(tam=0)(numtp=8) 2
+		CALL _t10 ack(0)(r->0)(arg->0)(tam=4)(numtp=8) 2
 		EFUN _t10 8
 		RET  _t10
 		RET  0

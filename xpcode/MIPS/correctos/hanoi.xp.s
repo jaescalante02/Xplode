@@ -1,11 +1,11 @@
 .data
-_str14_9:  .asciiz "Mover plato de "
-_str16_9:  .asciiz " a "
-_str18_9:  .asciiz "\n"
-_str28_7:  .asciiz "Escriba el numero de platos iniciales, que se moveran del plato 1 al 2\n"
-_str8_11:  .asciiz "Mover plato de "
-_str8_35:  .asciiz " a "
-_str8_47:  .asciiz "\n"
+_str13_9:  .asciiz "Mover plato de "
+_str15_9:  .asciiz " a "
+_str17_9:  .asciiz "\n"
+_str27_7:  .asciiz "Escriba el numero de platos iniciales, que se moveran del plato 1 al 2\n"
+_str7_11:  .asciiz "Mover plato de "
+_str7_35:  .asciiz " a "
+_str7_47:  .asciiz "\n"
 
 .text
 
@@ -15,7 +15,7 @@ _l1:
 INIT:
 
 		addi $29 $29 -8
-		la $4 _str28_7
+		la $4 _str27_7
 		li $2 4
 		syscall
 		li $2 5
@@ -63,7 +63,7 @@ _l3:
 		b _els1
 _l2:
 
-		la $4 _str8_11
+		la $4 _str7_11
 		li $2 4
 		syscall
 		addi $13 $0 4
@@ -72,7 +72,7 @@ _l2:
 		move $4 $13
 		li $2 1
 		syscall
-		la $4 _str8_35
+		la $4 _str7_35
 		li $2 4
 		syscall
 		addi $14 $0 8
@@ -81,7 +81,7 @@ _l2:
 		move $4 $14
 		li $2 1
 		syscall
-		la $4 _str8_47
+		la $4 _str7_47
 		li $2 4
 		syscall
 		addi $15 $0 8
@@ -129,7 +129,7 @@ _els1:
 		jal $21
 		lw $21 0($29)
 		addi $29 $29 16
-		la $4 _str14_9
+		la $4 _str13_9
 		li $2 4
 		syscall
 		addi $22 $0 4
@@ -138,7 +138,7 @@ _els1:
 		move $4 $22
 		li $2 1
 		syscall
-		la $4 _str16_9
+		la $4 _str15_9
 		li $2 4
 		syscall
 		addi $23 $0 8
@@ -147,38 +147,38 @@ _els1:
 		move $4 $23
 		li $2 1
 		syscall
-		la $4 _str18_9
+		la $4 _str17_9
 		li $2 4
 		syscall
 		li $24 1
 		addi $25 $0 0
 		add $25 $25 $30
 		lw $25 4($25)
-		sub $7 $25 $24
-		addi $8 $0 8
-		add $8 $8 $30
-		sw $23 4($8)
-		addi $8 $0 4
-		add $8 $8 $30
-		sw $22 4($8)
-		addi $8 $0 0
-		add $8 $8 $30
-		sw $25 4($8)
+		sub $5 $25 $24
+		addi $7 $0 8
+		add $7 $7 $30
+		sw $23 4($7)
+		addi $7 $0 4
+		add $7 $7 $30
+		sw $22 4($7)
+		addi $7 $0 0
+		add $7 $7 $30
+		sw $25 4($7)
 		addi $29 $29 -4
 		sw $22 4($29)
 		addi $29 $29 -4
 		sw $23 4($29)
-		addi $8 $0 12
-		add $8 $8 $30
-		lw $8 4($8)
-		addi $29 $29 -4
-		sw $8 4($29)
+		addi $7 $0 12
+		add $7 $7 $30
+		lw $7 4($7)
 		addi $29 $29 -4
 		sw $7 4($29)
 		addi $29 $29 -4
-		la $9 hanoi
-		jal $9
-		lw $9 0($29)
+		sw $5 4($29)
+		addi $29 $29 -4
+		la $8 hanoi
+		jal $8
+		lw $8 0($29)
 		addi $29 $29 16
 		lw $31 -4($30)
 		move $29 $30
